@@ -2,7 +2,7 @@ package com.carbonblack.intellij.rpmspec.psi
 
 import com.intellij.psi.PsiElement
 
-interface RpmSpecPropertyElement : PsiElement {
+interface RpmSpecPreambleElement : PsiElement {
     @JvmDefault
     val key: String?
         get() {

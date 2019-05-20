@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>com.carbonblack.intellij.rpmspec</id>
-    <name>RPM SPEC FileX</name>
+    <name>RPM SPEC File</name>
     <vendor email="tlusk@carbonblack.com" url="http://www.carbonblack.com">Carbon Black</vendor>
 
     <description><![CDATA[

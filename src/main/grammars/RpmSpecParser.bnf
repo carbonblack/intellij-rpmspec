@@ -12,11 +12,21 @@
   elementTypeClass="com.carbonblack.intellij.rpmspec.psi.RpmSpecElementType"
   tokenTypeClass="com.carbonblack.intellij.rpmspec.psi.RpmSpecTokenType"
 
-  implements("property") = "com.carbonblack.intellij.rpmspec.psi.RpmSpecPropertyElement"
+  implements("preamble") = "com.carbonblack.intellij.rpmspec.psi.RpmSpecPreambleElement"
 }
 
 rpmSpecFile ::= item_*
 
-private item_ ::= (property|COMMENT|CRLF|BODY_ITEM)
+private item_ ::= (macroDefinition|macro|preamble|changelogHeader|mainBodyItem|COMMENT|CRLF|TEXT|CODE|KEYWORD)
 
-property ::= (KEY? SEPARATOR VALUE?) | KEY
+mainBodyItem ::= BODY_ITEM VALUE?
+
+macro ::= MACRO_START (macro|MACRO_VALUE)+ MACRO_END?
+
+keywordValue ::= (VALUE|macro)+
+
+macroDefinition ::= KEYWORD MACRO_VALUE keywordValue?
+
+preamble ::= KEY SEPARATOR keywordValue
+
+changelogHeader ::= CHANGELOG_DATE CHANGELOG_NAME CHANGELOG_EMAIL TEXT? CHANGELOG_VERSION
