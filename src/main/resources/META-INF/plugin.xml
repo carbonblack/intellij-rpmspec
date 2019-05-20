@@ -1,0 +1,27 @@
+<idea-plugin>
+    <id>com.carbonblack.intellij.rpmspec</id>
+    <name>RPM SPEC FileX</name>
+    <vendor email="tlusk@carbonblack.com" url="http://www.carbonblack.com">Carbon Black</vendor>
+
+    <description><![CDATA[
+    Plugin for syntax highlighting of RPM SPEC files.
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileTypeFactory implementation="com.carbonblack.intellij.rpmspec.RpmSpecFileTypeFactory"/>
+        <lang.parserDefinition language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecSyntaxHighlighterFactory"/>
+        <colorSettingsPage implementation="com.carbonblack.intellij.rpmspec.RpmSpecColorSettingsPage"/>
+        <lang.foldingBuilder language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecFoldingBuilder"/>
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>

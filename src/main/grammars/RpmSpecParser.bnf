@@ -1,0 +1,22 @@
+{
+  parserClass="com.carbonblack.intellij.rpmspec.parser.RpmSpecParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="RpmSpec"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.carbonblack.intellij.rpmspec.psi"
+  psiImplPackage="com.carbonblack.intellij.rpmspec.psi.impl"
+
+  elementTypeHolderClass="com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes"
+  elementTypeClass="com.carbonblack.intellij.rpmspec.psi.RpmSpecElementType"
+  tokenTypeClass="com.carbonblack.intellij.rpmspec.psi.RpmSpecTokenType"
+
+  implements("property") = "com.carbonblack.intellij.rpmspec.psi.RpmSpecPropertyElement"
+}
+
+rpmSpecFile ::= item_*
+
+private item_ ::= (property|COMMENT|CRLF|BODY_ITEM)
+
+property ::= (KEY? SEPARATOR VALUE?) | KEY
