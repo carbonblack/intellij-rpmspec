@@ -12,19 +12,43 @@ class RpmSpecColorSettingsPage : ColorSettingsPage {
 
     override fun getHighlighter(): SyntaxHighlighter = RpmSpecSyntaxHighligher()
 
-    override fun getDemoText(): String =
-        "# You are reading the \".properties\" entry.\n" +
-        "! The exclamation mark can also mark text as comments.\n" +
-        "website = http://en.wikipedia.org/\n" +
-        "language = English\n" +
-        "# The backslash below tells the application to continue reading\n" +
-        "# the value onto the next line.\n" +
-        "message = Welcome to \\\n" +
-        "          Wikipedia!\n" +
-        "# Add spaces to the key\n" +
-        "key\\ with\\ spaces = This is the value that could be looked up with the key \"key with spaces\".\n" +
-        "# Unicode\n" +
-        "tab : \\u0009"
+    override fun getDemoText(): String = """
+        Name:           cello
+        Version:        1.0
+        Release:        1%{?dist}
+        Summary:        Hello World example implemented in C
+
+        License:        GPLv3+
+        URL:            https://www.example.com/%{name}
+        Source0:        https://www.example.com/%{name}/releases/%{name}-%{version}.tar.gz
+
+        Patch0:         cello-output-first-patch.patch
+
+        BuildRequires:  gcc
+        BuildRequires:  make
+
+        # This  is a comment and should be greyed out
+        %description
+        The long-tail description for our Hello World Example implemented in
+        C.
+        %prep
+        %setup -q
+
+        %patch0
+
+        %build
+        make %{?_smp_mflags}
+
+        %install
+        %make_install
+
+        %files
+        %license LICENSE
+        %{_bindir}/%{name}
+
+        %changelog
+        * Tue May 31 2016 Adam Miller <maxamillion@fedoraproject.org> - 1.0-1
+        - First cello package""".trimIndent()
 
     override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey>? = null
 
@@ -38,6 +62,15 @@ class RpmSpecColorSettingsPage : ColorSettingsPage {
         private val DESCRIPTORS = arrayOf(
                 AttributesDescriptor("Key", RpmSpecSyntaxHighligher.KEY),
                 AttributesDescriptor("Separator", RpmSpecSyntaxHighligher.SEPARATOR),
-                AttributesDescriptor("Value", RpmSpecSyntaxHighligher.VALUE))
+                AttributesDescriptor("Value", RpmSpecSyntaxHighligher.VALUE),
+                AttributesDescriptor("Body Item", RpmSpecSyntaxHighligher.BODY_ITEM),
+                AttributesDescriptor("Macro Braces", RpmSpecSyntaxHighligher.MACRO_ITEM),
+                AttributesDescriptor("Macro", RpmSpecSyntaxHighligher.MACRO_VALUE_ITEM),
+                AttributesDescriptor("Comment", RpmSpecSyntaxHighligher.COMMENT),
+                AttributesDescriptor("Text", RpmSpecSyntaxHighligher.TEXT),
+                AttributesDescriptor("Changelog Date", RpmSpecSyntaxHighligher.CHANGELOG_DATE),
+                AttributesDescriptor("Changelog Name", RpmSpecSyntaxHighligher.CHANGELOG_NAME),
+                AttributesDescriptor("Changelog Email", RpmSpecSyntaxHighligher.CHANGELOG_EMAIL),
+                AttributesDescriptor("Version", RpmSpecSyntaxHighligher.VERSION))
     }
 }
