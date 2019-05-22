@@ -23,8 +23,8 @@ class RpmSpecCodeInsightFixtureTestCase : LightCodeInsightFixtureTestCase() {
         myFixture.configureByFiles("CompletionTestData.spec")
         myFixture.complete(CompletionType.BASIC, 1)
         val strings = myFixture.lookupElementStrings
-        Assert.assertTrue(strings!!.containsAll(Arrays.asList("py", "pybasever", "pyname", "pyshortver")))
-        Assert.assertEquals(4, strings.size)
+        Assert.assertTrue(strings!!.containsAll(Arrays.asList("pybasever", "pyname", "pyshortver")))
+        Assert.assertEquals(3, strings.size)
     }
 
     /*fun testAnnotator() {

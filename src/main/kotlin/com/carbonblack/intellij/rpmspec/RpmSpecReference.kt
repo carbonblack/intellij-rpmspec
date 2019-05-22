@@ -5,40 +5,30 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
-class RpmSpecReference(element: PsiElement, textRange: TextRange) : PsiReferenceBase<PsiElement>(element, textRange), PsiPolyVariantReference {
+class RpmSpecReference(element: PsiElement, textRange: TextRange) :
+        PsiReferenceBase<PsiElement>(element, textRange), PsiPolyVariantReference {
     private val key: String = element.text.substring(textRange.startOffset, textRange.endOffset)
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val project = myElement.project
-        val macros = RpmSpecUtil.findMacros(project, key)
-        val results = ArrayList<ResolveResult>()
-        for (macro in macros) {
-            results.add(PsiElementResolveResult(macro))
-        }
+        val file = myElement.containingFile
+        val macros = RpmSpecUtil.findMacros(file, key)
+        val results = macros.map { PsiElementResolveResult(it) }
         return results.toTypedArray()
     }
 
     override fun resolve(): PsiElement? {
         val resolveResults = multiResolve(false)
-        return if (resolveResults.isNotEmpty()) resolveResults[0].element else null
+        return resolveResults.firstOrNull()?.element
     }
 
     override fun getVariants(): Array<Any> {
-        val project = myElement.project
-        val macros = RpmSpecUtil.findMacros(project)
-        val variants = HashMap<String, LookupElement>()
-        val retval = ArrayList<LookupElement>()
-        for (macro in macros) {
-            if (macro.name.isNotEmpty() && !variants.containsKey(macro.name)) {
-                    variants[macro.name] =
-                            LookupElementBuilder.create(macro)
-                                    .withIcon(RpmSpecIcons.FILE)
-                                    .withTypeText(macro.containingFile.name)
-            }
-        }
-        retval.addAll(variants.values)
-        return retval.toTypedArray()
+        val file = myElement.containingFile
+        val macros = RpmSpecUtil.findMacros(file)
+        val variants = macros.filter { it.name.isNotEmpty() }.map {
+            it.name to LookupElementBuilder.create(it)
+                .withIcon(RpmSpecIcons.FILE)
+                .withTypeText(it.containingFile.name) }.toMap()
+        return ArrayList(variants.values).toTypedArray()
     }
 }

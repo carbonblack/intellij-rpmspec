@@ -19,9 +19,9 @@ class RpmSpecFoldingBuilder : FoldingBuilderEx() {
             val value = if (literalExpression.value is String) literalExpression.value as String? else null
 
             if (value != null && value.startsWith("simple:")) {
-                val project = literalExpression.project
+                val file = literalExpression.containingFile
                 val key = value.substring(7)
-                val macros = RpmSpecUtil.findMacros(project, key)
+                val macros = RpmSpecUtil.findMacros(file, key)
                 if (macros.size == 1) {
                     descriptors.add(object : FoldingDescriptor(literalExpression.node,
                             TextRange(literalExpression.textRange.startOffset + 1,

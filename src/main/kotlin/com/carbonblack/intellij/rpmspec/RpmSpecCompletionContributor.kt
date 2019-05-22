@@ -18,4 +18,7 @@ class RpmSpecCompletionContributor : CompletionContributor() {
                 }
         )
     }
+
+    // override fun invokeAutoPopup(position: PsiElement, typeChar: Char): Boolean =
+    //         typeChar == '%'
 }
