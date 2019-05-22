@@ -33,8 +33,8 @@ CRLF=[\r\n]
 WHITE_SPACE=[\ \t\f]
 COMMENT=("#")[^\r\n]*
 SEPARATOR=:
-PREAMBLE_KEY_CHARACTER=[a-zA-Z0-9]
-COMMAND_SECTIONS=%(prep|build|install|check|files)
+PREAMBLE_KEY_CHARACTER=[a-zA-Z0-9()]
+COMMAND_SECTIONS=%(prep|build|install|check|files|post|postun|posttrans|pre|preun|pretrans|clean)
 KEYWORDS=%(if|else|endif|ifarch)
 
 %state PREAMBLE_VALUE
@@ -100,12 +100,12 @@ KEYWORDS=%(if|else|endif|ifarch)
       \w+\s+\w+(\s+\w+)?                          { return RpmSpecTypes.CHANGELOG_NAME; }
       \<\S+\>                                     { return RpmSpecTypes.CHANGELOG_EMAIL; }
       \s+-\s+                                     { return RpmSpecTypes.TEXT; }
-      \S+                                         { yybegin(CHANGELOG); return RpmSpecTypes.CHANGELOG_VERSION; }
+      [^\s%]+                                     { yybegin(CHANGELOG); return RpmSpecTypes.CHANGELOG_VERSION; }
 }
 
 <CHANGELOG> {
-      [^*][^\r\n]+                                { return RpmSpecTypes.TEXT; }
-      [\r\n]*[^*\r\n]+                            { return RpmSpecTypes.TEXT; }
+      [^*%][^\r\n]+                               { return RpmSpecTypes.TEXT; }
+      [\r\n]*[^*%\r\n]+                           { return RpmSpecTypes.TEXT; }
       {CRLF}+                                     { yybegin(CHANGELOG_HEADER); return TokenType.WHITE_SPACE; }
 }
 
