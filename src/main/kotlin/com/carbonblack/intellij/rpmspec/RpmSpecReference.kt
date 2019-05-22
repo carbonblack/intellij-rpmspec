@@ -4,7 +4,8 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 
-import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class RpmSpecReference(element: PsiElement, textRange: TextRange) : PsiReferenceBase<PsiElement>(element, textRange), PsiPolyVariantReference {
     private val key: String = element.text.substring(textRange.startOffset, textRange.endOffset)
@@ -27,13 +28,17 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) : PsiReference
     override fun getVariants(): Array<Any> {
         val project = myElement.project
         val macros = RpmSpecUtil.findMacros(project)
-        val variants = ArrayList<LookupElement>()
+        val variants = HashMap<String, LookupElement>()
+        val retval = ArrayList<LookupElement>()
         for (macro in macros) {
-            if (macro.name.isNotEmpty()) {
-                variants.add(LookupElementBuilder.create(macro).withIcon(RpmSpecIcons.FILE).withTypeText(macro.containingFile.name)
-                )
+            if (macro.name.isNotEmpty() && !variants.containsKey(macro.name)) {
+                    variants[macro.name] =
+                            LookupElementBuilder.create(macro)
+                                    .withIcon(RpmSpecIcons.FILE)
+                                    .withTypeText(macro.containingFile.name)
             }
         }
-        return variants.toTypedArray()
+        retval.addAll(variants.values)
+        return retval.toTypedArray()
     }
 }
