@@ -19,6 +19,10 @@
         <lang.syntaxHighlighterFactory language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecSyntaxHighlighterFactory"/>
         <colorSettingsPage implementation="com.carbonblack.intellij.rpmspec.RpmSpecColorSettingsPage"/>
         <lang.foldingBuilder language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecFoldingBuilder"/>
+        <psi.referenceContributor implementation="com.carbonblack.intellij.rpmspec.RpmSpecReferenceContributor"/>
+        <lang.refactoringSupport language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecRefactoringSupportProvider"/>
+        <lang.findUsagesProvider language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecFindUsagesProvider"/>
+        <completion.contributor language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecCompletionContributor"/>
     </extensions>
 
     <actions>

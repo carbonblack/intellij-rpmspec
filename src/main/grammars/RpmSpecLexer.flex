@@ -92,6 +92,7 @@ KEYWORDS=%(if|else|endif|ifarch)
       [^\r\n%][^%]*                               { return RpmSpecTypes.TEXT; }
       ^%\{                                        { yypushState(MACRO_EXPANSION); return RpmSpecTypes.MACRO_START; }
       ^%                                          { yypushState(MACRO_SIMPLE_FORM); return RpmSpecTypes.MACRO_START; }
+      {KEYWORDS}                                  { yybegin(YYINITIAL); yypushState(MACRO_ARGUMENTS); return RpmSpecTypes.KEYWORD; }
 }
 
 <CHANGELOG_HEADER> {

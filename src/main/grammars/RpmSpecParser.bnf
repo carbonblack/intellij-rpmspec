@@ -11,21 +11,22 @@
   elementTypeHolderClass="com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes"
   elementTypeClass="com.carbonblack.intellij.rpmspec.psi.RpmSpecElementType"
   tokenTypeClass="com.carbonblack.intellij.rpmspec.psi.RpmSpecTokenType"
-
-  implements("preamble") = "com.carbonblack.intellij.rpmspec.psi.RpmSpecPreambleElement"
 }
 
 rpmSpecFile ::= item_*
 
-private item_ ::= (macroDefinition|macro|preamble|changelogHeader|mainBodyItem|COMMENT|CRLF|TEXT|CODE|KEYWORD)
+private item_ ::= (macroDefinition|enclosedMacro|preamble|changelogHeader|mainBodyItem|COMMENT|CRLF|TEXT|CODE|KEYWORD)
 
 mainBodyItem ::= BODY_ITEM VALUE?
 
-macro ::= MACRO_START (macro|MACRO_VALUE)+ MACRO_END?
+macro ::= MACRO_VALUE {implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElement"
+                           mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
 
-keywordValue ::= (VALUE|macro)+
+enclosedMacro ::= MACRO_START (macro|enclosedMacro)+ MACRO_END?
 
-macroDefinition ::= KEYWORD MACRO_VALUE keywordValue?
+keywordValue ::= (VALUE|enclosedMacro)+
+
+macroDefinition ::= KEYWORD macro keywordValue?
 
 preamble ::= KEY SEPARATOR keywordValue
 

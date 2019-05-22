@@ -21,8 +21,8 @@ class RpmSpecFoldingBuilder : FoldingBuilderEx() {
             if (value != null && value.startsWith("simple:")) {
                 val project = literalExpression.project
                 val key = value.substring(7)
-                val properties = RpmSpecUtil.findProperties(project, key)
-                if (properties.size == 1) {
+                val macros = RpmSpecUtil.findMacros(project, key)
+                if (macros.size == 1) {
                     descriptors.add(object : FoldingDescriptor(literalExpression.node,
                             TextRange(literalExpression.textRange.startOffset + 1,
                                     literalExpression.textRange.endOffset - 1),
@@ -31,8 +31,8 @@ class RpmSpecFoldingBuilder : FoldingBuilderEx() {
                             // IMPORTANT: keys can come with no values, so a test for null is needed
                             // IMPORTANT: Convert embedded \n to backslash n, so that the string will look like it has LF embedded
                             // in it and embedded " to escaped "
-                            val valueOf = properties[0].value
-                            return valueOf?.replace("\n".toRegex(), "\\n")?.replace("\"".toRegex(), "\\\\\"") ?: ""
+                            val valueOf = macros[0].name
+                            return valueOf.replace("\n".toRegex(), "\\n").replace("\"".toRegex(), "\\\\\"")
                         }
                     })
                 }
