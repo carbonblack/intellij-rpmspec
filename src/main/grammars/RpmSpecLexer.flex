@@ -2,9 +2,10 @@ package com.carbonblack.intellij.rpmspec;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes;
 import com.intellij.psi.TokenType;
 import java.util.Stack;
+
+import static com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes.*;
 
 %%
 
@@ -29,101 +30,110 @@ import java.util.Stack;
     }
 %}
 
-CRLF=[\r\n]
-WHITE_SPACE=[\ \t\f]
-COMMENT=("#")[^\r\n]*
-SEPARATOR=:
-PREAMBLE_KEY_CHARACTER=[a-zA-Z0-9()]
-COMMAND_SECTIONS=%(prep|build|install|check|files|post|postun|posttrans|pre|preun|pretrans|clean)
-KEYWORDS=%(if|else|endif|ifarch)
 
-%state PREAMBLE_VALUE
-%state MACRO_EXPANSION
-%state MACRO_SIMPLE_FORM
-%state MACRO_DEFINITION_NAME
-%state MACRO_DEFINITION_VALUE
-%state MACRO_ARGUMENTS
-%state DESCRIPTION
-%state COMMAND_SECTION
-%state CHANGELOG_HEADER
-%state CHANGELOG
-%state PACKAGE_NAME
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Whitespaces
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+EOL              = \n | \r | \r\n
+LINE_WS          = [\ \t\f]
+WHITE_SPACE_CHAR = {EOL} | {LINE_WS}
+WHITE_SPACE      = {WHITE_SPACE_CHAR}+
+
+
+INPUT_CHARACTER =  [^\r\n]
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Identifier
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+ALPHA           = [a-zA-Z]
+NUMERIC         = [0-9]
+IDENTIFIER_CHAR = {ALPHA}|{NUMERIC}|"_"
+
+IDENTIFIER      = {IDENTIFIER_CHAR}+
+SUFFIX          = {IDENTIFIER}
+CODE            = [^\r\n\ \t\f{}()%:?]+
+
+
+EXPONENT      = [eE] [-+]? [0-9_]+
+
+
+FLT_LITERAL   = ( {DEC_LITERAL} \. {DEC_LITERAL} {EXPONENT}? {SUFFIX}? )
+              | ( {DEC_LITERAL} {EXPONENT} {SUFFIX}? )
+              | ( {DEC_LITERAL} "f" [\p{xidcontinue}]* )
+
+FLT_LITERAL_TDOT = {DEC_LITERAL} \.
+
+INT_LITERAL = ( {DEC_LITERAL}
+              | {HEX_LITERAL}
+              | {OCT_LITERAL}
+              | {BIN_LITERAL} ) {SUFFIX}?
+
+DEC_LITERAL = [0-9] [0-9_]*
+HEX_LITERAL = "0x" [a-fA-F0-9_]*
+OCT_LITERAL = "0o" [0-7_]*
+BIN_LITERAL = "0b" [01_]*
+
+COMMENT   =   "#" {INPUT_CHARACTER}*
+
+KEYWORDS=%(if|else|endif|ifarch)
+TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|BuildRequires|Recommends|Obsoletes|Source\d*|Patch\d+)
+
+%state INITIAL
 
 %%
 
+
 <YYINITIAL> {
-      {PREAMBLE_KEY_CHARACTER}+                   { return RpmSpecTypes.KEY; }
-      {SEPARATOR}                                 { yybegin(PREAMBLE_VALUE); return RpmSpecTypes.SEPARATOR; }
+  "{"                             { return LBRACE; }
+  "}"                             { return RBRACE; }
+  "("                             { return LPAREN; }
+  ")"                             { return RPAREN; }
+  ":"                             { return COLON; }
+  "%"                             { return PERCENT; }
+  "?"                             { return QUESTION_MARK; }
+
+  //{KEYWORDS}                      { return RESERVED_KEYWORD; }
+  ^{TAGS}                         { return PREAMBLE_TAG; }
+  {COMMENT}                       { return COMMENT; }
+
+  ^"%ifarch"                      { return IF; }
+  ^"%if"                          { return IF; }
+  ^"%else"                        { return ELSE; }
+  ^"%endif"                       { return ENDIF; }
+  "true"|"false"                  { return BOOL_LITERAL; }
+  ^"%prep"                        { return PREP; }
+  ^"%build"                       { return BUILD; }
+  ^"%install"                     { return INSTALL; }
+  ^"%check"                       { return CHECK; }
+  ^"%files"                       { return FILES; }
+  ^"%post"                        { return POST; }
+  ^"%postun"                      { return POSTUN; }
+  ^"%posttrans"                   { return POSTTRANS; }
+  ^"%pre"                         { return PRE; }
+  ^"%preun"                       { return PREUN; }
+  ^"%pretrans"                    { return PRETRANS; }
+  ^"%clean"                       { return CLEAN; }
+  ^"%description"                 { return DESCRIPTION; }
+  ^"%changelog"                   { return CHANGELOG; }
+  ^"%package"                     { return PACKAGE; }
+  ^"%global"                      { return GLOBAL; }
+  ^"%define"                      { return DEFINE; }
+  ^"%undefine"                    { return UNDEFINE; }
+
+  {IDENTIFIER}                    { return IDENTIFIER; }
+
+  /* LITERALS */
+
+  // Floats must come first, to parse 1e1 as a float and not as an integer with a suffix
+  {FLT_LITERAL}                   { return FLOAT_LITERAL; }
+
+  {INT_LITERAL}                   { return INTEGER_LITERAL; }
+
+  {CODE}                          { return CODE; }
+
+  {WHITE_SPACE}                   { return TokenType.WHITE_SPACE; }
 }
 
-<MACRO_ARGUMENTS> {
-      [^\r\n%#]+                                  { return RpmSpecTypes.CODE; }
-      {CRLF}+                                     { yypopState(); return TokenType.WHITE_SPACE; }
-}
-
-<COMMAND_SECTION> {
-      [^\r\n%#][^%#]*                             { return RpmSpecTypes.CODE; }
-}
-
-<PREAMBLE_VALUE> {
-      [^\r\n%]+                                   { return RpmSpecTypes.VALUE; }
-      {CRLF}+                                     { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
-}
-
-<MACRO_EXPANSION> {
-      [^}%]+                                      { return RpmSpecTypes.MACRO_VALUE; }
-      \}                                          { yypopState(); return RpmSpecTypes.MACRO_END; }
-}
-
-<MACRO_SIMPLE_FORM> {
-      \S+                                         { yypopState(); return RpmSpecTypes.MACRO_VALUE; }
-}
-
-<MACRO_DEFINITION_NAME> {
-      \S+                                         { yybegin(MACRO_DEFINITION_VALUE); return RpmSpecTypes.MACRO_VALUE; }
-}
-
-<MACRO_DEFINITION_VALUE> {
-      [^\r\n%]+                                   { return RpmSpecTypes.VALUE; }
-      {CRLF}+                                     { yypopState(); return TokenType.WHITE_SPACE; }
-}
-
-<DESCRIPTION> {
-      [^\r\n%][^%]*                               { return RpmSpecTypes.TEXT; }
-      ^%\{                                        { yypushState(MACRO_EXPANSION); return RpmSpecTypes.MACRO_START; }
-      ^%                                          { yypushState(MACRO_SIMPLE_FORM); return RpmSpecTypes.MACRO_START; }
-      {KEYWORDS}                                  { yybegin(YYINITIAL); yypushState(MACRO_ARGUMENTS); return RpmSpecTypes.KEYWORD; }
-}
-
-<CHANGELOG_HEADER> {
-      \*\s+\w+\s+\w+\s+\d+\s+\d+                  { return RpmSpecTypes.CHANGELOG_DATE; }
-      \w+\s+\w+(\s+\w+)?                          { return RpmSpecTypes.CHANGELOG_NAME; }
-      \<\S+\>                                     { return RpmSpecTypes.CHANGELOG_EMAIL; }
-      \s+-\s+                                     { return RpmSpecTypes.TEXT; }
-      [^\s%]+                                     { yybegin(CHANGELOG); return RpmSpecTypes.CHANGELOG_VERSION; }
-}
-
-<CHANGELOG> {
-      [^*%][^\r\n]+                               { return RpmSpecTypes.TEXT; }
-      [\r\n]*[^*%\r\n]+                           { return RpmSpecTypes.TEXT; }
-      {CRLF}+                                     { yybegin(CHANGELOG_HEADER); return TokenType.WHITE_SPACE; }
-}
-
-<PACKAGE_NAME> {
-    [^\r\n%]+                                     { return RpmSpecTypes.VALUE; }
-    {CRLF}+                                       { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
-}
-
-{KEYWORDS}                                        { yypushState(MACRO_ARGUMENTS); return RpmSpecTypes.KEYWORD; }
-^%\{                                              { yypushState(MACRO_ARGUMENTS); yypushState(MACRO_EXPANSION); return RpmSpecTypes.MACRO_START; }
-^%                                                { yypushState(MACRO_ARGUMENTS); yypushState(MACRO_SIMPLE_FORM); return RpmSpecTypes.MACRO_START; }
-%\{                                               { yypushState(MACRO_EXPANSION); return RpmSpecTypes.MACRO_START; }
-%                                                 { yypushState(MACRO_SIMPLE_FORM); return RpmSpecTypes.MACRO_START; }
-%description                                      { yybegin(DESCRIPTION); return RpmSpecTypes.BODY_ITEM; }
-%changelog                                        { yybegin(CHANGELOG_HEADER); return RpmSpecTypes.BODY_ITEM; }
-%package                                          { yybegin(PACKAGE_NAME); return RpmSpecTypes.BODY_ITEM; }
-%(global|define|undefine)                         { yypushState(MACRO_DEFINITION_NAME); return RpmSpecTypes.KEYWORD; }
-{COMMENT}                                         { return RpmSpecTypes.COMMENT; }
-{COMMAND_SECTIONS}                                { yybegin(COMMAND_SECTION); return RpmSpecTypes.BODY_ITEM; }
-({WHITE_SPACE}+|{CRLF}+)                          { return TokenType.WHITE_SPACE; }
-[^]                                               { return TokenType.BAD_CHARACTER; }
+[^]                               { return TokenType.BAD_CHARACTER; }

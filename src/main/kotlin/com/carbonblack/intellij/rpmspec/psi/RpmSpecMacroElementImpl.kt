@@ -9,11 +9,11 @@ import com.intellij.psi.PsiReference
 
 abstract class RpmSpecMacroElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), RpmSpecMacroElement {
     override fun getNameIdentifier(): PsiElement? =
-        node.findChildByType(RpmSpecTypes.MACRO_VALUE)?.psi
+        node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi
 
 
     override fun setName(name: String): PsiElement {
-        val keyNode = node.findChildByType(RpmSpecTypes.MACRO_VALUE)
+        val keyNode = node.findChildByType(RpmSpecTypes.IDENTIFIER)
 
         if (keyNode != null) {
             val macro = RpmSpecElementFactory.createMacro(project, name)
@@ -24,7 +24,7 @@ abstract class RpmSpecMacroElementImpl(node: ASTNode) : ASTWrapperPsiElement(nod
     }
 
     override fun getName(): String {
-        val valueNode = node.findChildByType(RpmSpecTypes.MACRO_VALUE)
+        val valueNode = node.findChildByType(RpmSpecTypes.IDENTIFIER)
         return valueNode!!.text
     }
 

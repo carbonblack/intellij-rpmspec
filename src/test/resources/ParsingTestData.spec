@@ -31,6 +31,14 @@ Source0:        https://www.example.com/%{name}/releases/%{name}-%{version}.tar.
 
 Patch0:         cello-output-first-patch.patch
 
+%if %{with rpmwheels}
+Requires: python-setuptools-wheel
+Requires: python-pip-wheel
+%else
+Provides: bundled(python3-pip) = 19.0.3
+Provides: bundled(python3-setuptools) = 40.8.0
+%endif
+
 BuildRequires:  gcc
 BuildRequires:  make
 

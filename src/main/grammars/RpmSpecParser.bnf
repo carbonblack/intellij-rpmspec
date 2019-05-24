@@ -13,9 +13,43 @@
   tokenTypeClass="com.carbonblack.intellij.rpmspec.psi.RpmSpecTokenType"
 }
 
-rpmSpecFile ::= item_*
+rpmSpecFile ::= packageBody item_*
 
-private item_ ::= (macroDefinition|enclosedMacro|preamble|changelogHeader|mainBodyItem|COMMENT|CRLF|TEXT|CODE|KEYWORD)
+private item_ ::= (packageSection|genericSection)
+
+private anyWord ::= (IDENTIFIER|FLOAT_LITERAL|INTEGER_LITERAL|CODE|COLON|PERCENT PERCENT)
+private wordOrMacro ::= (fullMacro|anyWord)
+
+macroDefinition ::= (GLOBAL|DEFINE) macro (wordOrMacro|LPAREN|RPAREN)+
+macroUndefine ::= UNDEFINE macro
+fullMacro ::= PERCENT (LBRACE QUESTION_MARK? macro (COLON? wordOrMacro+)? RBRACE|macro (LPAREN anyWord RPAREN)?) anyWord*
+
+packageSection ::= PACKAGE wordOrMacro? packageBody
+packageBody ::= (COMMENT|<<IfExpr packageBody>>|fullMacro|macroDefinition|macroUndefine|tag)*
+
+meta IfExpr ::= if wordOrMacro+ <<param>> item_* <<ElseBranch <<param>>>>? endif
+meta ElseBranch ::= else <<param>> item_*
+
+tag ::= PREAMBLE_TAG COLON (wordOrMacro|LPAREN|RPAREN)+
+
+genericSection ::= (description|prep|build|install|files|changelog) wordOrMacro? genericBody
+genericBody ::= (COMMENT|<<IfExpr genericBody>>|macroDefinition|macroUndefine|(wordOrMacro|LBRACE|RBRACE|QUESTION_MARK|LPAREN|RPAREN|other))*
+
+
+
+macro ::= IDENTIFIER {implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElement"
+                      mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
+
+
+private other ::= (PRE|BOOL_LITERAL|POST|CLEAN|CHECK|PREUN|POSTUN|PRETRANS|POSTTRANS)
+
+
+
+
+
+
+
+/*private old ::= (macroDefinition|enclosedMacro|preamble|changelogHeader|mainBodyItem|COMMENT|CRLF|TEXT|CODE|KEYWORD)
 
 mainBodyItem ::= BODY_ITEM VALUE?
 
@@ -26,8 +60,8 @@ enclosedMacro ::= MACRO_START (macro|enclosedMacro)+ MACRO_END?
 
 keywordValue ::= (VALUE|enclosedMacro)+
 
-macroDefinition ::= KEYWORD macro keywordValue?
+//macroDefinition ::= KEYWORD macro keywordValue?
 
 preamble ::= KEY SEPARATOR keywordValue
 
-changelogHeader ::= CHANGELOG_DATE CHANGELOG_NAME CHANGELOG_EMAIL TEXT? CHANGELOG_VERSION
+changelogHeader ::= CHANGELOG_DATE CHANGELOG_NAME CHANGELOG_EMAIL TEXT? CHANGELOG_VERSION*/

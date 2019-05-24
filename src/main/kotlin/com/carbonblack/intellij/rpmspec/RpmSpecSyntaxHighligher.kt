@@ -16,7 +16,8 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
 
     override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
         return when (tokenType) {
-            RpmSpecTypes.SEPARATOR -> SEPARATOR_KEYS
+            RpmSpecTypes.MACRO -> MACRO_KEYS
+            /*RpmSpecTypes.SEPARATOR -> SEPARATOR_KEYS
             RpmSpecTypes.KEY -> KEY_KEYS
             RpmSpecTypes.VALUE -> VALUE_KEYS
             RpmSpecTypes.KEYWORD -> KEY_KEYS
@@ -30,7 +31,7 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
             RpmSpecTypes.CHANGELOG_DATE -> CHANGELOG_DATE_KEYS
             RpmSpecTypes.CHANGELOG_NAME -> CHANGELOG_NAME_KEYS
             RpmSpecTypes.CHANGELOG_EMAIL -> CHANGELOG_EMAIL_KEYS
-            RpmSpecTypes.CHANGELOG_VERSION -> VERSION_KEYS
+            RpmSpecTypes.CHANGELOG_VERSION -> VERSION_KEYS*/
             TokenType.BAD_CHARACTER -> BAD_CHAR_KEYS
             else -> EMPTY_KEYS
         }

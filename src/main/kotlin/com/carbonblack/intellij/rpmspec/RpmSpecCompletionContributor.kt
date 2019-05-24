@@ -8,7 +8,7 @@ import com.intellij.util.ProcessingContext
 class RpmSpecCompletionContributor : CompletionContributor() {
     init {
         extend(CompletionType.BASIC,
-                PlatformPatterns.psiElement(RpmSpecTypes.MACRO_VALUE).withLanguage(RpmSpecLanguage.INSTANCE),
+                PlatformPatterns.psiElement(RpmSpecTypes.IDENTIFIER).withLanguage(RpmSpecLanguage.INSTANCE),
                 object : CompletionProvider<CompletionParameters>() {
                     public override fun addCompletions(parameters: CompletionParameters,
                                                        context: ProcessingContext,
