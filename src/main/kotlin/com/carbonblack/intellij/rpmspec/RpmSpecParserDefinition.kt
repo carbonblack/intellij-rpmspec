@@ -34,6 +34,6 @@ class RpmSpecParserDefinition : ParserDefinition {
         val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
         val COMMENTS = TokenSet.create(RpmSpecTypes.COMMENT)
 
-        val FILE = IFileElementType(RpmSpecLanguage.INSTANCE)
+        val FILE = IFileElementType(RpmSpecLanguage)
     }
 }

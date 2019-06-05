@@ -4,7 +4,7 @@ import com.intellij.openapi.fileTypes.LanguageFileType
 
 import javax.swing.*
 
-class RpmSpecFileType private constructor() : LanguageFileType(RpmSpecLanguage.INSTANCE) {
+object RpmSpecFileType : LanguageFileType(RpmSpecLanguage) {
 
     override fun getName(): String = "RPM SPEC"
 
@@ -13,8 +13,4 @@ class RpmSpecFileType private constructor() : LanguageFileType(RpmSpecLanguage.I
     override fun getDefaultExtension(): String = "spec"
 
     override fun getIcon(): Icon? = RpmSpecIcons.FILE
-
-    companion object {
-        val INSTANCE = RpmSpecFileType()
-    }
 }

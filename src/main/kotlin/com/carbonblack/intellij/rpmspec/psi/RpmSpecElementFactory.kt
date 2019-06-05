@@ -12,6 +12,6 @@ object RpmSpecElementFactory {
 
     private fun createFile(project: Project, text: String): RpmSpecFile {
         val name = "dummy.spec"
-        return PsiFileFactory.getInstance(project).createFileFromText(name, RpmSpecFileType.INSTANCE, text) as RpmSpecFile
+        return PsiFileFactory.getInstance(project).createFileFromText(name, RpmSpecFileType, text) as RpmSpecFile
     }
 }
