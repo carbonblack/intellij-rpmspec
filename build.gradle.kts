@@ -41,7 +41,7 @@ intellij {
     version = "2019.1.2"
 }
 
-val generateParser = tasks.create("generateParser", GenerateParser::class) {
+val generateSpecParser = tasks.create("generateSpecParser", GenerateParser::class) {
     source = "$projectDir/src/main/grammars/RpmSpecParser.bnf"
     targetRoot = "$projectDir/src/main/gen"
     pathToParser = "/com/carbonblack/intellij/rpmspec/parser/RpmSpecParser.java"
@@ -49,15 +49,30 @@ val generateParser = tasks.create("generateParser", GenerateParser::class) {
     purgeOldFiles = true
 }
 
-val generateLexer = tasks.create("generateLexer", GenerateLexer::class) {
+val generateSpecLexer = tasks.create("generateSpecLexer", GenerateLexer::class) {
     source = "$projectDir/src/main/grammars/RpmSpecLexer.flex"
     targetDir = "$projectDir/src/main/gen/com/carbonblack/intellij/rpmspec"
     targetClass = "_RpmSpecLexer"
     purgeOldFiles = true
 }
 
+val generateMacroParser = tasks.create("generateMacroParser", GenerateParser::class) {
+    source = "$projectDir/src/main/grammars/RpmMacroParser.bnf"
+    targetRoot = "$projectDir/src/main/gen"
+    pathToParser = "/com/carbonblack/intellij/rpmmacro/parser/RpmMacroParser.java"
+    pathToPsiRoot = "/com/carbonblack/intellij/rpmmacro/psi"
+    purgeOldFiles = true
+}
+
+val generateMacroLexer = tasks.create("generateMacroLexer", GenerateLexer::class) {
+    source = "$projectDir/src/main/grammars/RpmMacroLexer.flex"
+    targetDir = "$projectDir/src/main/gen/com/carbonblack/intellij/rpmmacro"
+    targetClass = "_RpmMacroLexer"
+    purgeOldFiles = true
+}
+
 val generateGrammars = tasks.register("generateGrammars") {
-    dependsOn(generateParser, generateLexer)
+    dependsOn(generateSpecParser, generateSpecLexer, generateMacroParser, generateMacroLexer)
 }
 
 tasks.withType<KotlinCompile> {

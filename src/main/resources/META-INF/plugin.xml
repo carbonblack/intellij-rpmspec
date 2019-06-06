@@ -13,6 +13,7 @@
     <depends>com.intellij.modules.lang</depends>
     -->
 
+    <!-- RPM SPEC File -->
     <extensions defaultExtensionNs="com.intellij">
         <fileTypeFactory implementation="com.carbonblack.intellij.rpmspec.RpmSpecFileTypeFactory"/>
         <lang.parserDefinition language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecParserDefinition"/>
@@ -26,6 +27,12 @@
 
         <annotator language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecHighlightingAnnotator"/>
         <lang.braceMatcher language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecBraceMatcher"/>
+    </extensions>
+
+    <!-- RPM Macro File -->
+    <extensions defaultExtensionNs="com.intellij">
+        <fileTypeFactory implementation="com.carbonblack.intellij.rpmmacro.RpmMacroFileTypeFactory"/>
+        <lang.parserDefinition language="RpmMacro" implementationClass="com.carbonblack.intellij.rpmmacro.RpmMacroParserDefinition"/>
     </extensions>
 
     <actions>

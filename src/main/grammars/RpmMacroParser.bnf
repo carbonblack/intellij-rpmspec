@@ -1,0 +1,21 @@
+{
+  parserClass="com.carbonblack.intellij.rpmmacro.parser.RpmMacroParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="RpmMacro"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.carbonblack.intellij.rpmmacro.psi"
+  psiImplPackage="com.carbonblack.intellij.rpmmacro.psi.impl"
+
+  elementTypeHolderClass="com.carbonblack.intellij.rpmmacro.psi.RpmMacroTypes"
+  elementTypeClass="com.carbonblack.intellij.rpmmacro.psi.RpmMacroElementType"
+  tokenTypeClass="com.carbonblack.intellij.rpmmacro.psi.RpmMacroTokenType"
+}
+
+rpmMacroFile ::= (COMMENT | macroDefinition)*
+
+macroDefinition ::= MACRO_DEFINITION_START (LBRACE IDENTIFIER RBRACE|IDENTIFIER) anything+ !BACKSLASH
+
+anything ::= ( LBRACE | RBRACE | LPAREN | RPAREN | COLON | PERCENT | QUESTION_MARK |
+               IDENTIFIER | FLOAT_LITERAL | INTEGER_LITERAL | CODE | BACKSLASH | ESCAPED_BACKSLASH )
