@@ -4,10 +4,14 @@ import com.carbonblack.intellij.rpmspec.RpmSpecReference
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReference
+import com.intellij.psi.*
+import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
+import com.intellij.psi.impl.source.tree.LeafElement
+import com.intellij.psi.impl.source.tree.injected.StringLiteralEscaper
+import com.intellij.psi.impl.source.tree.java.PsiLiteralExpressionImpl
+import com.intellij.psi.tree.IElementType
 
-abstract class RpmSpecMacroElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), RpmSpecMacroElement {
+abstract class RpmSpecMacroElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), RpmSpecMacroElement, ContributedReferenceHost  { //, ContributedReferenceHost {
     override fun getNameIdentifier(): PsiElement? =
         node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi
 
@@ -28,7 +32,9 @@ abstract class RpmSpecMacroElementImpl(node: ASTNode) : ASTWrapperPsiElement(nod
         return valueNode!!.text
     }
 
-    override fun getReference(): PsiReference {
-        return RpmSpecReference(this, TextRange(0, name.length))
-    }
+    override fun getReference(): PsiReference
+        = RpmSpecReference(this, TextRange(0, name.length))
+
+    override fun getReferences(): Array<PsiReference>
+        = ReferenceProvidersRegistry.getReferencesFromProviders(this)
 }

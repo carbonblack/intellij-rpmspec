@@ -10,7 +10,7 @@ object RpmMacroFileType : LanguageFileType(RpmMacroLanguage) {
 
     override fun getDescription(): String = "RPM macro language file"
 
-    override fun getDefaultExtension(): String = "rpmmacro"
+    override fun getDefaultExtension(): String = "rpmmacros"
 
     override fun getIcon(): Icon? = RpmMacroIcons.FILE
 }

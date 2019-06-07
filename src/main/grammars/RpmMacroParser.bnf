@@ -11,11 +11,26 @@
   elementTypeHolderClass="com.carbonblack.intellij.rpmmacro.psi.RpmMacroTypes"
   elementTypeClass="com.carbonblack.intellij.rpmmacro.psi.RpmMacroElementType"
   tokenTypeClass="com.carbonblack.intellij.rpmmacro.psi.RpmMacroTokenType"
+
+    tokens = [
+        LBRACE            = '{'
+        RBRACE            = '}'
+        LPAREN            = '('
+        RPAREN            = ')'
+        COLON             = ':'
+        PERCENT           = '%'
+        QUESTION_MARK     = '?'
+        BACKSLASH         = '\'
+        ESCAPED_BACKSLASH = '\\'
+    ]
 }
 
 rpmMacroFile ::= (COMMENT | macroDefinition)*
 
-macroDefinition ::= MACRO_DEFINITION_START (LBRACE IDENTIFIER RBRACE|IDENTIFIER) anything+ !BACKSLASH
+macroDefinition ::= MACRO_DEFINITION_START ( '{' macro '}' | macro ) anything+ !'\'
 
-anything ::= ( LBRACE | RBRACE | LPAREN | RPAREN | COLON | PERCENT | QUESTION_MARK |
-               IDENTIFIER | FLOAT_LITERAL | INTEGER_LITERAL | CODE | BACKSLASH | ESCAPED_BACKSLASH )
+anything ::= ( '{' | '}' | '(' | ')' | ':' | '%' | '?' |
+               IDENTIFIER | FLOAT_LITERAL | INTEGER_LITERAL | CODE | '\' | '\\' )
+
+macro ::= IDENTIFIER {implements="com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacroElement"
+                      mixin="com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacroElementImpl"}

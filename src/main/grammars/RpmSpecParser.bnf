@@ -11,18 +11,28 @@
   elementTypeHolderClass="com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes"
   elementTypeClass="com.carbonblack.intellij.rpmspec.psi.RpmSpecElementType"
   tokenTypeClass="com.carbonblack.intellij.rpmspec.psi.RpmSpecTokenType"
+
+    tokens = [
+        LBRACE            =  '{'
+        RBRACE            =  '}'
+        LPAREN            =  '('
+        RPAREN            =  ')'
+        COLON             =  ':'
+        PERCENT           =  '%'
+        QUESTION_MARK     =  '?'
+    ]
 }
 
 rpmSpecFile ::= packageBody item_*
 
 private item_ ::= (packageSection|genericSection)
 
-private anyWord ::= (IDENTIFIER|FLOAT_LITERAL|INTEGER_LITERAL|CODE|COLON|PERCENT PERCENT)
+private anyWord ::= (IDENTIFIER|FLOAT_LITERAL|INTEGER_LITERAL|CODE|':'|'%' '%')
 private wordOrMacro ::= (fullMacro|anyWord)
 
-macroDefinition ::= (GLOBAL|DEFINE) macro (wordOrMacro|LPAREN|RPAREN)+
-macroUndefine ::= UNDEFINE macro
-fullMacro ::= PERCENT (LBRACE QUESTION_MARK? macro (COLON? wordOrMacro+)? RBRACE|macro (LPAREN anyWord RPAREN)?) anyWord*
+macroDefinition ::= (global|define) macro (wordOrMacro|'('|')')+
+macroUndefine ::= undefine macro
+fullMacro ::= '%' ('{' '?'? macro (':'? wordOrMacro+)? '}'|macro ('(' anyWord ')')?) anyWord*
 
 packageSection ::= PACKAGE wordOrMacro? packageBody
 packageBody ::= (COMMENT|<<IfExpr packageBody>>|fullMacro|macroDefinition|macroUndefine|tag)*
@@ -30,10 +40,10 @@ packageBody ::= (COMMENT|<<IfExpr packageBody>>|fullMacro|macroDefinition|macroU
 meta IfExpr ::= if wordOrMacro+ <<param>> item_* <<ElseBranch <<param>>>>? endif
 meta ElseBranch ::= else <<param>> item_*
 
-tag ::= PREAMBLE_TAG COLON (wordOrMacro|LPAREN|RPAREN)+
+tag ::= PREAMBLE_TAG ':' (wordOrMacro|'('|')')+
 
 genericSection ::= (description|prep|build|install|files|changelog) wordOrMacro? genericBody
-genericBody ::= (COMMENT|<<IfExpr genericBody>>|macroDefinition|macroUndefine|(wordOrMacro|LBRACE|RBRACE|QUESTION_MARK|LPAREN|RPAREN|other))*
+genericBody ::= (COMMENT|<<IfExpr genericBody>>|macroDefinition|macroUndefine|(wordOrMacro|'{'|'}'|'?'|'('|')'|other))*
 
 
 

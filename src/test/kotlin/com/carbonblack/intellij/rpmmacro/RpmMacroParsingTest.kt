@@ -1,14 +1,14 @@
-package com.carbonblack.intellij.rpmspec
+package com.carbonblack.intellij.rpmmacro
 
 import com.intellij.testFramework.ParsingTestCase
 
-class RpmSpecParsingTest : ParsingTestCase("", "spec", RpmSpecParserDefinition()) {
+class RpmMacroParsingTest : ParsingTestCase("", "rpmmacros", RpmMacroParserDefinition()) {
 
     fun testParsingTestData() {
         doTest(true)
     }
 
-    override fun getTestDataPath(): String = "src/test/resources/spec"
+    override fun getTestDataPath(): String = "src/test/resources/macros"
 
     override fun skipSpaces(): Boolean = false
 

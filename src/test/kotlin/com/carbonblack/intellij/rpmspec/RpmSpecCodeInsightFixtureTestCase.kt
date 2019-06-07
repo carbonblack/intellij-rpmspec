@@ -10,14 +10,8 @@ import org.junit.Assert
 import java.util.Arrays
 
 class RpmSpecCodeInsightFixtureTestCase : LightCodeInsightFixtureTestCase() {
-    @Throws(Exception::class)
-    override fun setUp() {
-        super.setUp()
-    }
 
-    override fun getTestDataPath(): String {
-        return "src/test/resources"
-    }
+    override fun getTestDataPath(): String = "src/test/resources/spec"
 
     fun testCompletion() {
         myFixture.configureByFiles("CompletionTestData.spec")

@@ -32,6 +32,10 @@ sourceSets{
     }
 }
 
+tasks.withType<Test> {
+    environment("NO_FS_ROOTS_ACCESS_CHECK", "true")
+}
+
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 }
