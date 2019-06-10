@@ -77,6 +77,9 @@ BIN_LITERAL = "0b" [01_]*
 
 COMMENT   =   "#" {INPUT_CHARACTER}*
 
+IF_KEYWORDS=(if|ifarch|ifnarch|ifos|ifnos)
+ELSE_KEYWORDS=(else|elifarch|elifos|elif)
+
 KEYWORDS=%(if|else|endif|ifarch)
 TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|BuildRequires|Recommends|Obsoletes|Source\d*|Patch\d+)
 
@@ -94,15 +97,16 @@ TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|Bu
   "%"                             { return PERCENT; }
   "?"                             { return QUESTION_MARK; }
 
-  //{KEYWORDS}                      { return RESERVED_KEYWORD; }
+  //{KEYWORDS}                    { return RESERVED_KEYWORD; }
   ^{TAGS}                         { return PREAMBLE_TAG; }
   {COMMENT}                       { return COMMENT; }
 
-  ^"%ifarch"                      { return IF; }
-  ^"%if"                          { return IF; }
-  ^"%else"                        { return ELSE; }
+  ^%{IF_KEYWORDS}                 { return IF; }
+  ^%{ELSE_KEYWORDS}               { return ELSE; }
   ^"%endif"                       { return ENDIF; }
+
   "true"|"false"                  { return BOOL_LITERAL; }
+
   ^"%prep"                        { return PREP; }
   ^"%build"                       { return BUILD; }
   ^"%install"                     { return INSTALL; }

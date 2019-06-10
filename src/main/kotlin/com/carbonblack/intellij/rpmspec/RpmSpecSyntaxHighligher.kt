@@ -17,6 +17,32 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
     override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
         return when (tokenType) {
             RpmSpecTypes.MACRO -> MACRO_KEYS
+            RpmSpecTypes.COMMENT -> COMMENT_KEYS
+            RpmSpecTypes.IF -> BODY_ITEM_KEYS
+            RpmSpecTypes.ELSE -> BODY_ITEM_KEYS
+            RpmSpecTypes.ENDIF -> BODY_ITEM_KEYS
+
+            RpmSpecTypes.PREP -> BODY_ITEM_KEYS
+            RpmSpecTypes.BUILD -> BODY_ITEM_KEYS
+            RpmSpecTypes.INSTALL -> BODY_ITEM_KEYS
+            RpmSpecTypes.CHECK -> BODY_ITEM_KEYS
+            RpmSpecTypes.FILES -> BODY_ITEM_KEYS
+            RpmSpecTypes.POST -> BODY_ITEM_KEYS
+            RpmSpecTypes.POSTUN -> BODY_ITEM_KEYS
+            RpmSpecTypes.POSTTRANS -> BODY_ITEM_KEYS
+            RpmSpecTypes.PRE -> BODY_ITEM_KEYS
+            RpmSpecTypes.PREUN -> BODY_ITEM_KEYS
+            RpmSpecTypes.PRETRANS -> BODY_ITEM_KEYS
+            RpmSpecTypes.CLEAN -> BODY_ITEM_KEYS
+            RpmSpecTypes.DESCRIPTION -> BODY_ITEM_KEYS
+            RpmSpecTypes.CHANGELOG -> BODY_ITEM_KEYS
+            RpmSpecTypes.PACKAGE -> BODY_ITEM_KEYS
+            RpmSpecTypes.GLOBAL -> BODY_ITEM_KEYS
+            RpmSpecTypes.DEFINE -> BODY_ITEM_KEYS
+            RpmSpecTypes.UNDEFINE -> BODY_ITEM_KEYS
+
+            RpmSpecTypes.PREAMBLE_TAG -> KEY_KEYS
+
             /*RpmSpecTypes.SEPARATOR -> SEPARATOR_KEYS
             RpmSpecTypes.KEY -> KEY_KEYS
             RpmSpecTypes.VALUE -> VALUE_KEYS
@@ -26,7 +52,6 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
             RpmSpecTypes.MACRO_END -> MACRO_KEYS
             RpmSpecTypes.MACRO -> MACRO_KEYS
             RpmSpecTypes.MACRO_VALUE -> MACRO_VALUE_KEYS
-            RpmSpecTypes.COMMENT -> COMMENT_KEYS
             RpmSpecTypes.TEXT -> TEXT_KEYS
             RpmSpecTypes.CHANGELOG_DATE -> CHANGELOG_DATE_KEYS
             RpmSpecTypes.CHANGELOG_NAME -> CHANGELOG_NAME_KEYS

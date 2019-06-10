@@ -25,7 +25,7 @@
 
 rpmSpecFile ::= packageBody item_*
 
-private item_ ::= (packageSection|genericSection)
+private item_ ::= (packageSection|descriptionSection|changelogSection|otherSections)
 
 private anyWord ::= (IDENTIFIER|FLOAT_LITERAL|INTEGER_LITERAL|CODE|':'|'%' '%')
 private wordOrMacro ::= (fullMacro|anyWord)
@@ -34,44 +34,24 @@ macroDefinition ::= (global|define) macro (wordOrMacro|'('|')')+
 macroUndefine ::= undefine macro
 fullMacro ::= '%' ('{' '?'? macro (':'? wordOrMacro+)? '}'|macro ('(' anyWord ')')?) anyWord*
 
-packageSection ::= PACKAGE wordOrMacro? packageBody
+packageSection ::= package wordOrMacro? packageBody
 packageBody ::= (COMMENT|<<IfExpr packageBody>>|fullMacro|macroDefinition|macroUndefine|tag)*
 
 meta IfExpr ::= if wordOrMacro+ <<param>> item_* <<ElseBranch <<param>>>>? endif
 meta ElseBranch ::= else <<param>> item_*
 
-tag ::= PREAMBLE_TAG ':' (wordOrMacro|'('|')')+
+tag ::= PREAMBLE_TAG ':' tagValue
+tagValue ::= (wordOrMacro|'('|')')+
 
-genericSection ::= (description|prep|build|install|files|changelog) wordOrMacro? genericBody
+meta genericSection ::= <<param>> wordOrMacro? genericBody
 genericBody ::= (COMMENT|<<IfExpr genericBody>>|macroDefinition|macroUndefine|(wordOrMacro|'{'|'}'|'?'|'('|')'|other))*
 
-
+descriptionSection ::= <<genericSection description>>
+changelogSection ::= <<genericSection changelog>>
+otherSections ::= <<genericSection (prep|build|install|files)>>
 
 macro ::= IDENTIFIER {implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElement"
                       mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
 
 
-private other ::= (PRE|BOOL_LITERAL|POST|CLEAN|CHECK|PREUN|POSTUN|PRETRANS|POSTTRANS)
-
-
-
-
-
-
-
-/*private old ::= (macroDefinition|enclosedMacro|preamble|changelogHeader|mainBodyItem|COMMENT|CRLF|TEXT|CODE|KEYWORD)
-
-mainBodyItem ::= BODY_ITEM VALUE?
-
-macro ::= MACRO_VALUE {implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElement"
-                           mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
-
-enclosedMacro ::= MACRO_START (macro|enclosedMacro)+ MACRO_END?
-
-keywordValue ::= (VALUE|enclosedMacro)+
-
-//macroDefinition ::= KEYWORD macro keywordValue?
-
-preamble ::= KEY SEPARATOR keywordValue
-
-changelogHeader ::= CHANGELOG_DATE CHANGELOG_NAME CHANGELOG_EMAIL TEXT? CHANGELOG_VERSION*/
+private other ::= (pre|BOOL_LITERAL|post|clean|check|preun|postun|pretrans|posttrans)
