@@ -4,4 +4,4 @@ import com.intellij.lexer.FlexAdapter
 
 import java.io.Reader
 
-class RpmSpecLexerAdapter : FlexAdapter(RpmSpecLexer(null as Reader?))
+class RpmSpecLexerAdapter : FlexAdapter(RpmSpecLexer(null))

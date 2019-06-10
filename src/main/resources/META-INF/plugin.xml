@@ -31,9 +31,11 @@
     <!-- RPM Macro File -->
     <extensions defaultExtensionNs="com.intellij">
         <fileTypeFactory implementation="com.carbonblack.intellij.rpmmacro.RpmMacroFileTypeFactory"/>
+        <lang.syntaxHighlighterFactory language="RpmMacro" implementationClass="com.carbonblack.intellij.rpmmacro.RpmMacroSyntaxHighlighterFactory"/>
         <lang.parserDefinition language="RpmMacro" implementationClass="com.carbonblack.intellij.rpmmacro.RpmMacroParserDefinition"/>
         <lang.findUsagesProvider language="RpmMacro" implementationClass="com.carbonblack.intellij.rpmmacro.RpmMacroFindUsagesProvider"/>
         <indexedRootsProvider implementation="com.carbonblack.intellij.rpmmacro.RpmMacroIndexableSetContributor"/>
+        <annotator language="RpmMacro" implementationClass="com.carbonblack.intellij.rpmmacro.RpmMacroHighlightingAnnotator"/>
     </extensions>
 
     <actions>
