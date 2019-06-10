@@ -36,7 +36,7 @@ object RpmSpecUtil {
         var result = emptyList<RpmSpecMacroDefinition>()
         if (file is RpmSpecFile) {
             val definitions = PsiTreeUtil.findChildrenOfType(file, RpmSpecMacroDefinition::class.java)
-            result = definitions.filter { it.macro.name == key }
+            result = definitions.filter { it.macro?.name == key }
         }
         return result
     }

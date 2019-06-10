@@ -24,7 +24,7 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val definitions = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacroDefinition::class.java)
-        val result : MutableList<PsiElement> = definitions.filter { it.macro.name == key }.map { it.macro }.toMutableList()
+        val result : MutableList<PsiElement?> = definitions.filter { it.macro?.name == key }.map { it.macro }.toMutableList()
 
         val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(myElement.project))
         val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(myElement.project).findFile(it) }
@@ -33,13 +33,13 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
             result += macros
         }
 
-        val results = result.map { PsiElementResolveResult(it) }
+        val results = result.filterNotNull().map { PsiElementResolveResult(it) }
         return results.toTypedArray()
     }
 
     override fun resolve(): PsiElement? {
         val definitions = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacroDefinition::class.java)
-        val result  = definitions.filter { it.macro.name == key }.map { it.macro }
+        val result  = definitions.filter { it.macro?.name == key }.map { it.macro }
         if (result.isNotEmpty()) {
             return result.first()
         }

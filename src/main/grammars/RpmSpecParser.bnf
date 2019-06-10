@@ -19,6 +19,7 @@
         RPAREN            =  ')'
         COLON             =  ':'
         PERCENT           =  '%'
+        ESCAPED_PERCENT   =  '%%'
         QUESTION_MARK     =  '?'
     ]
 }
@@ -30,17 +31,17 @@ private item_ ::= (packageSection|descriptionSection|changelogSection|otherSecti
 private anyWord ::= (IDENTIFIER|FLOAT_LITERAL|INTEGER_LITERAL|CODE|':'|'%' '%')
 private wordOrMacro ::= (fullMacro|anyWord)
 
-macroDefinition ::= (global|define) macro (wordOrMacro|'('|')')+
-macroUndefine ::= undefine macro
-fullMacro ::= '%' ('{' '?'? macro (':'? wordOrMacro+)? '}'|macro ('(' anyWord ')')?) anyWord*
+macroDefinition ::= (global|define) macro (wordOrMacro|'('|')')+ {pin=1}
+macroUndefine ::= undefine macro {pin=1}
+fullMacro ::= '%' ('{' '?'? macro (':'? wordOrMacro+)? '}'|macro ('(' anyWord ')')?) anyWord* {pin=1}
 
-packageSection ::= package wordOrMacro? packageBody
+packageSection ::= package wordOrMacro? packageBody {pin=1}
 packageBody ::= (COMMENT|EOL|<<IfExpr packageBody>>|fullMacro|macroDefinition|macroUndefine|tag)*
 
-meta IfExpr ::= if wordOrMacro+ <<param>> item_* <<ElseBranch <<param>>>>? endif
+meta IfExpr ::= if wordOrMacro+ <<param>> item_* <<ElseBranch <<param>>>>? endif {pin=1}
 meta ElseBranch ::= else <<param>> item_*
 
-tag ::= PREAMBLE_TAG ':' tagValue
+tag ::= PREAMBLE_TAG ':' tagValue {pin=2}
 tagValue ::= (wordOrMacro|'('|')')+
 
 meta genericSection ::= <<param>> wordOrMacro? genericBody
@@ -54,4 +55,4 @@ macro ::= IDENTIFIER {implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecMa
                       mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
 
 
-private other ::= (pre|BOOL_LITERAL|post|clean|check|preun|postun|pretrans|posttrans)
+private other ::= ('%%'|pre|BOOL_LITERAL|post|clean|check|preun|postun|pretrans|posttrans)

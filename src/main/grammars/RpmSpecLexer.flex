@@ -94,6 +94,7 @@ TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|Bu
   ")"                             { return RPAREN; }
   ":"                             { return COLON; }
   "%"                             { return PERCENT; }
+  "%%"                            { return ESCAPED_PERCENT; }
   "?"                             { return QUESTION_MARK; }
 
   //{KEYWORDS}                    { return RESERVED_KEYWORD; }
