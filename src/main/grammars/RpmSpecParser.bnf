@@ -23,7 +23,7 @@
     ]
 }
 
-rpmSpecFile ::= packageBody item_*
+rpmSpecFile ::= EOL* packageBody item_*
 
 private item_ ::= (packageSection|descriptionSection|changelogSection|otherSections)
 
@@ -35,7 +35,7 @@ macroUndefine ::= undefine macro
 fullMacro ::= '%' ('{' '?'? macro (':'? wordOrMacro+)? '}'|macro ('(' anyWord ')')?) anyWord*
 
 packageSection ::= package wordOrMacro? packageBody
-packageBody ::= (COMMENT|<<IfExpr packageBody>>|fullMacro|macroDefinition|macroUndefine|tag)*
+packageBody ::= (COMMENT|EOL|<<IfExpr packageBody>>|fullMacro|macroDefinition|macroUndefine|tag)*
 
 meta IfExpr ::= if wordOrMacro+ <<param>> item_* <<ElseBranch <<param>>>>? endif
 meta ElseBranch ::= else <<param>> item_*
@@ -44,7 +44,7 @@ tag ::= PREAMBLE_TAG ':' tagValue
 tagValue ::= (wordOrMacro|'('|')')+
 
 meta genericSection ::= <<param>> wordOrMacro? genericBody
-genericBody ::= (COMMENT|<<IfExpr genericBody>>|macroDefinition|macroUndefine|(wordOrMacro|'{'|'}'|'?'|'('|')'|other))*
+genericBody ::= (COMMENT|EOL|<<IfExpr genericBody>>|macroDefinition|macroUndefine|(wordOrMacro|'{'|'}'|'?'|'('|')'|other))*
 
 descriptionSection ::= <<genericSection description>>
 changelogSection ::= <<genericSection changelog>>

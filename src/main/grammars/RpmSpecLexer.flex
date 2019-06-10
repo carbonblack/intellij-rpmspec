@@ -37,8 +37,7 @@ import static com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes.*;
 
 EOL              = \n | \r | \r\n
 LINE_WS          = [\ \t\f]
-WHITE_SPACE_CHAR = {EOL} | {LINE_WS}
-WHITE_SPACE      = {WHITE_SPACE_CHAR}+
+WHITE_SPACE      = {LINE_WS}+
 
 
 INPUT_CHARACTER =  [^\r\n]
@@ -81,7 +80,7 @@ IF_KEYWORDS=(if|ifarch|ifnarch|ifos|ifnos)
 ELSE_KEYWORDS=(else|elifarch|elifos|elif)
 
 KEYWORDS=%(if|else|endif|ifarch)
-TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|BuildRequires|Recommends|Obsoletes|Source\d*|Patch\d+)
+TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|BuildRequires|Recommends|Obsoletes|Conflicts|Source\d*|Patch\d+)
 
 %state INITIAL
 
@@ -137,6 +136,7 @@ TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|Bu
 
   {CODE}                          { return CODE; }
 
+  {EOL}                           { return EOL; }
   {WHITE_SPACE}                   { return TokenType.WHITE_SPACE; }
 }
 
