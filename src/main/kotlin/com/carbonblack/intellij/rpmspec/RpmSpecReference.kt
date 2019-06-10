@@ -3,12 +3,18 @@ package com.carbonblack.intellij.rpmspec
 import com.carbonblack.intellij.rpmmacro.RpmMacroFileType
 import com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacro
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinition
+import com.google.common.cache.CacheBuilder
+import com.google.common.cache.CacheLoader
+import com.google.common.cache.LoadingCache
 import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 import kotlin.collections.ArrayList
 
@@ -38,16 +44,7 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
             return result.first()
         }
 
-        val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(myElement.project))
-        val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(myElement.project).findFile(it) }
-        for (file in rpmMacroFiles) {
-            val macros = PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java).filter { it.name == key }
-            if (macros.isNotEmpty()) {
-                return macros.first()
-            }
-        }
-
-        return null
+        return systemMacrosCache.get(Pair(key, myElement.project)).orElse(null)
     }
 
     override fun getVariants(): Array<Any> {
@@ -58,5 +55,24 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
                 .withIcon(RpmSpecIcons.FILE)
                 .withTypeText(it.containingFile.name) }.toMap()
         return ArrayList(variants.values).toTypedArray()
+    }
+
+    companion object {
+        val systemMacrosCache: LoadingCache<Pair<String, Project>, Optional<PsiElement>> = CacheBuilder.newBuilder()
+                .maximumSize(1000)
+                .expireAfterWrite(10, TimeUnit.MINUTES)
+                .build(object : CacheLoader<Pair<String, Project>, Optional<PsiElement>>() {
+                    override fun load(pair: Pair<String, Project>): Optional<PsiElement> {
+                        val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(pair.second))
+                        val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(pair.second).findFile(it) }
+                        for (file in rpmMacroFiles) {
+                            val macros = PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java).filter { it.name == pair.first }
+                            if (macros.isNotEmpty()) {
+                                return Optional.of(macros.first())
+                            }
+                        }
+                        return Optional.empty()
+                    }
+                })
     }
 }
