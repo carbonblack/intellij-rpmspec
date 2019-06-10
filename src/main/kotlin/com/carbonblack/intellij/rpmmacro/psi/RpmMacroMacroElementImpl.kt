@@ -6,7 +6,6 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
-import com.intellij.psi.PsiReferenceService
 
 abstract class RpmMacroMacroElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), RpmMacroMacroElement {
     override fun getNameIdentifier(): PsiElement? =

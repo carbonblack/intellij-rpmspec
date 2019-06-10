@@ -32,11 +32,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <fileTypeFactory implementation="com.carbonblack.intellij.rpmmacro.RpmMacroFileTypeFactory"/>
         <lang.parserDefinition language="RpmMacro" implementationClass="com.carbonblack.intellij.rpmmacro.RpmMacroParserDefinition"/>
-        <psi.referenceContributor implementation="com.carbonblack.intellij.rpmmacro.RpmMacroReferenceContributor"/>
         <lang.findUsagesProvider language="RpmMacro" implementationClass="com.carbonblack.intellij.rpmmacro.RpmMacroFindUsagesProvider"/>
-
         <indexedRootsProvider implementation="com.carbonblack.intellij.rpmmacro.RpmMacroIndexableSetContributor"/>
-        <fileTypeDetector implementation="com.carbonblack.intellij.rpmmacro.RpmMacroFileTypeDetector" order="FIRST"/>
     </extensions>
 
     <actions>

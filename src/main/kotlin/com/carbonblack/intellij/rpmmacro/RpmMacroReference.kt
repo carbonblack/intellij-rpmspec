@@ -3,8 +3,6 @@ package com.carbonblack.intellij.rpmmacro
 import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
-import com.intellij.psi.search.FileTypeIndex
-import com.intellij.psi.search.GlobalSearchScope
 
 import kotlin.collections.ArrayList
 
@@ -13,23 +11,7 @@ class RpmMacroReference(element: PsiElement, textRange: TextRange) :
     private val key: String = element.text.substring(textRange.startOffset, textRange.endOffset)
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        var file = myElement.containingFile
-
-        val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(myElement.project))
-        for (vfile in virtualFiles) {
-            if (vfile.name == "macros") {
-                print("hi")
-            }
-        }
-
-        /*val fileViewProvider = PsiManager.getInstance(myElement.project).findViewProvider(
-                LocalFileSystem.getInstance().findFileByPath("/usr/lib/rpm/macros")!!)
-
-        file = LanguageParserDefinitions.INSTANCE.forLanguage(RpmSpecLanguage).createFile(fileViewProvider)*/
-
-        val macros = RpmMacroUtil.findMacroDefinitions(myElement.project, key).map { it.macro }
-        //com.intellij.util.indexing.IndexableSetContributor
-        //var test : PsiFile = RpmSpecFile()
+        val macros = RpmMacroUtil.findMacros(myElement.project, key)
         val results = macros.map { PsiElementResolveResult(it) }
         return results.toTypedArray()
     }

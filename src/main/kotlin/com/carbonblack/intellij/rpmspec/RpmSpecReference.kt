@@ -1,14 +1,14 @@
 package com.carbonblack.intellij.rpmspec
 
 import com.carbonblack.intellij.rpmmacro.RpmMacroFileType
-import com.carbonblack.intellij.rpmspec.psi.RpmSpecFile
+import com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacro
+import com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinition
 import com.intellij.codeInsight.lookup.*
-import com.intellij.lang.LanguageParserDefinitions
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.*
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.PsiTreeUtil
 
 import kotlin.collections.ArrayList
 
@@ -17,30 +17,37 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
     private val key: String = element.text.substring(textRange.startOffset, textRange.endOffset)
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        var file = myElement.containingFile
+        val definitions = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacroDefinition::class.java)
+        val result : MutableList<PsiElement> = definitions.filter { it.macro.name == key }.map { it.macro }.toMutableList()
 
         val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(myElement.project))
-        for (vfile in virtualFiles) {
-            if (vfile.name == "macros") {
-                print("hi")
-            }
+        val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(myElement.project).findFile(it) }
+        for (file in rpmMacroFiles) {
+            val macros = PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java).filter { it.name == key }
+            result += macros
         }
 
-        /*val fileViewProvider = PsiManager.getInstance(myElement.project).findViewProvider(
-                LocalFileSystem.getInstance().findFileByPath("/usr/lib/rpm/macros")!!)
-
-        file = LanguageParserDefinitions.INSTANCE.forLanguage(RpmSpecLanguage).createFile(fileViewProvider)*/
-
-        val macros = RpmSpecUtil.findMacroDefinitions(file, key).map { it.macro }
-        //com.intellij.util.indexing.IndexableSetContributor
-        //var test : PsiFile = RpmSpecFile()
-        val results = macros.map { PsiElementResolveResult(it) }
+        val results = result.map { PsiElementResolveResult(it) }
         return results.toTypedArray()
     }
 
     override fun resolve(): PsiElement? {
-        val resolveResults = multiResolve(false)
-        return resolveResults.firstOrNull()?.element
+        val definitions = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacroDefinition::class.java)
+        val result  = definitions.filter { it.macro.name == key }.map { it.macro }
+        if (result.isNotEmpty()) {
+            return result.first()
+        }
+
+        val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(myElement.project))
+        val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(myElement.project).findFile(it) }
+        for (file in rpmMacroFiles) {
+            val macros = PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java).filter { it.name == key }
+            if (macros.isNotEmpty()) {
+                return macros.first()
+            }
+        }
+
+        return null
     }
 
     override fun getVariants(): Array<Any> {

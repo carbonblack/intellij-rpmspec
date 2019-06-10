@@ -25,12 +25,13 @@
     ]
 }
 
-rpmMacroFile ::= (COMMENT | macroDefinition)*
+rpmMacroFile ::= (COMMENT | macro)*
 
-macroDefinition ::= MACRO_DEFINITION_START ( '{' macro '}' | macro ) anything+ !'\'
+macro ::= MACRO_DEFINITION_START ( '{' IDENTIFIER '}' | IDENTIFIER ) macroBody {
+    implements="com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacroElement"
+    mixin="com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacroElementImpl"}
+
+macroBody ::= anything+ !'\'
 
 anything ::= ( '{' | '}' | '(' | ')' | ':' | '%' | '?' |
                IDENTIFIER | FLOAT_LITERAL | INTEGER_LITERAL | CODE | '\' | '\\' )
-
-macro ::= IDENTIFIER {implements="com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacroElement"
-                      mixin="com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacroElementImpl"}
