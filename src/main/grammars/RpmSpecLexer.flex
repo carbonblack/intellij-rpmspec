@@ -55,6 +55,8 @@ TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|Bu
   "%"                             { return PERCENT; }
   "%%"                            { return ESCAPED_PERCENT; }
   "?"                             { return QUESTION_MARK; }
+  ^"*"                            { return ASTERISK; }
+  ^"-"                            { return MINUS; }
 
   ^{TAGS}                         { return PREAMBLE_TAG; }
   {COMMENT}                       { return COMMENT; }

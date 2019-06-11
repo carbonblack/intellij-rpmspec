@@ -17,6 +17,7 @@ class RpmSpecBraceMatcher : PairedBraceMatcher {
         return (WHITE_SPACE === tokenType
                 || tokenType === RpmSpecTypes.RBRACE
                 || tokenType === RpmSpecTypes.RPAREN
+                || tokenType === RpmSpecTypes.EOL
                 || null == tokenType)
     }
 

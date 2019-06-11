@@ -10,7 +10,10 @@ class RpmMacroHighlightingAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         val identifier = (element as? RpmMacroMacro)?.nameIdentifier
         if (identifier != null) {
-            holder.createAnnotation(HighlightSeverity.INFORMATION, identifier.textRange, null).textAttributes = RpmMacroSyntaxHighligher.MACRO_ITEM
+            holder.createAnnotation(
+                    HighlightSeverity.INFORMATION,
+                    identifier.textRange,
+                    null).textAttributes = RpmMacroSyntaxHighligher.MACRO_ITEM
         }
     }
 }
