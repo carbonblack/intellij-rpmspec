@@ -30,12 +30,15 @@ rpmSpecFile ::= EOL* packageBody section*
 
 private section ::= (packageSection|descriptionSection|changelogSection|otherSections)
 
+private anything ::= (wordOrMacro|'{'|'}'|'?'|'('|')')
 private anyWord ::= (IDENTIFIER|BOOL_LITERAL|FLOAT_LITERAL|INTEGER_LITERAL|CODE|':'|'%%')
 private wordOrMacro ::= (fullMacro|anyWord)
 
 macroDefinition ::= (global|define) macro (wordOrMacro|'('|')')+ {pin=1}
 macroUndefine ::= undefine macro {pin=1}
 fullMacro ::= '%' ('{' '?'? macro (':'? wordOrMacro+)? '}'|macro ('(' anyWord ')')?) anyWord* {pin=1}
+macro ::= IDENTIFIER {implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElement"
+                      mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
 
 packageSection ::= package wordOrMacro? packageBody {pin=1}
 packageBody ::= (COMMENT|EOL|<<ifExpr packageBody>>|fullMacro|macroDefinition|macroUndefine|tag)*
@@ -45,10 +48,10 @@ meta elseBranch ::= else <<param>> section* {pin=1}
 endIfExpr ::= endif
 
 tag ::= PREAMBLE_TAG ':' tagValue {pin=2}
-tagValue ::= (wordOrMacro|'('|')')+
+tagValue ::= anything+
 
 meta genericSection ::= <<param>> wordOrMacro? genericBody {pin=1}
-genericBody ::= (COMMENT|EOL|<<ifExpr genericBody>>|macroDefinition|macroUndefine|(wordOrMacro|'{'|'}'|'?'|'('|')'|'*'|'-'))*
+genericBody ::= (COMMENT|EOL|<<ifExpr genericBody>>|macroDefinition|macroUndefine|(anything|'*'|'-'))*
 
 descriptionSection ::= <<genericSection description>>
 otherSections ::= <<genericSection (pre|prep|build|install|files|post|clean|check|preun|postun|pretrans|posttrans)>>
@@ -56,8 +59,5 @@ otherSections ::= <<genericSection (pre|prep|build|install|files|post|clean|chec
 changelogSection ::= changelog changelogBody {pin=1}
 changelogBody ::= (EOL|changelogItem)*
 changelogItem ::= (changelogHeader EOL changelogEntry*)
-changelogHeader ::= '*' (wordOrMacro|'{'|'}'|'?'|'('|')')+ {pin=1}
-changelogEntry ::= '-' (wordOrMacro|'{'|'}'|'?'|'('|')'|EOL)+ {pin=1}
-
-macro ::= IDENTIFIER {implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElement"
-                      mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
+changelogHeader ::= '*' anything+ {pin=1}
+changelogEntry ::= '-' (anything|EOL)+ {pin=1}
