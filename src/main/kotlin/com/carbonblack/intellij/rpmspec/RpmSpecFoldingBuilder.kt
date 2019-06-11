@@ -1,5 +1,7 @@
 package com.carbonblack.intellij.rpmspec
 
+import com.carbonblack.intellij.rpmspec.psi.RpmSpecIfExpr
+import com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
@@ -11,31 +13,19 @@ import java.util.*
 
 class RpmSpecFoldingBuilder : FoldingBuilderEx() {
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val group = FoldingGroup.newGroup("simple")
-
         val descriptors = ArrayList<FoldingDescriptor>()
-        val literalExpressions = PsiTreeUtil.findChildrenOfType(root, PsiLiteralExpression::class.java)
-        for (literalExpression in literalExpressions) {
-            val value = if (literalExpression.value is String) literalExpression.value as String? else null
-
-            if (value != null && value.startsWith("simple:")) {
-                val file = literalExpression.containingFile
-                val key = value.substring(7)
-                val macros = RpmSpecUtil.findMacros(file, key)
-                if (macros.size == 1) {
-                    descriptors.add(object : FoldingDescriptor(literalExpression.node,
-                            TextRange(literalExpression.textRange.startOffset + 1,
-                                    literalExpression.textRange.endOffset - 1),
-                            group) {
-                        override fun getPlaceholderText(): String? {
-                            // IMPORTANT: keys can come with no values, so a test for null is needed
-                            // IMPORTANT: Convert embedded \n to backslash n, so that the string will look like it has LF embedded
-                            // in it and embedded " to escaped "
-                            val valueOf = macros[0].name
-                            return valueOf.replace("\n".toRegex(), "\\n").replace("\"".toRegex(), "\\\\\"")
-                        }
-                    })
-                }
+        val ifStatements = PsiTreeUtil.findChildrenOfType(root, RpmSpecIfExpr::class.java)
+        for (ifStatement in ifStatements) {
+            val startOffset = ifStatement.node.findChildByType(RpmSpecTypes.EOL)?.textRange?.startOffset
+            if (startOffset != null) {
+                descriptors.add(object : FoldingDescriptor(ifStatement.node,
+                        TextRange(startOffset,
+                                ifStatement.textRange.endOffset),
+                        FoldingGroup.newGroup("rpm-spec-if-statement")) {
+                    override fun getPlaceholderText(): String? {
+                        return "...${ifStatement.endIfExpr?.text ?: ""}"
+                    }
+                })
             }
         }
         return descriptors.toTypedArray()
@@ -46,6 +36,6 @@ class RpmSpecFoldingBuilder : FoldingBuilderEx() {
     }
 
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return true
+        return false
     }
 }
