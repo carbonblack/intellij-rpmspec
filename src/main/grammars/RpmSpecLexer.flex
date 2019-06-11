@@ -30,7 +30,7 @@ NUMERIC         = [0-9]
 IDENTIFIER_CHAR = {ALPHA}|{NUMERIC}|"_"
 
 IDENTIFIER      = {IDENTIFIER_CHAR}+
-CODE_CHARS      = [^\r\n\ \t\f{}()%:?]+
+CODE_CHARS      = [^\r\n\ \t\f{}()%:?<>]+
 
 INT_LITERAL   = {NUMERIC}+
 FLT_LITERAL   = {INT_LITERAL} \. {INT_LITERAL}
@@ -55,8 +55,11 @@ TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|Bu
   "%"                             { return PERCENT; }
   "%%"                            { return ESCAPED_PERCENT; }
   "?"                             { return QUESTION_MARK; }
-  ^"*"                            { return ASTERISK; }
-  ^"-"                            { return MINUS; }
+  "<"                             { return LT; }
+  ">"                             { return GT; }
+  ^"*"                            { return CL_HEADER_TOKEN; }
+  ^"-"                            { return CL_ITEM_TOKEN; }
+  "-"                             { return MINUS; }
 
   ^{TAGS}                         { return PREAMBLE_TAG; }
   {COMMENT}                       { return COMMENT; }

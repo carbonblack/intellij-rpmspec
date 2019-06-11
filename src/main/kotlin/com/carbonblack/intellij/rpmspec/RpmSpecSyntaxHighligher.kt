@@ -70,6 +70,7 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
         val MACRO_ITEM = createTextAttributesKey("RPM_SPEC_MACRO_ITEM", DefaultLanguageHighlighterColors.CONSTANT)
         val MACRO_VALUE_ITEM = createTextAttributesKey("RPM_SPEC_MACRO_VALUE_ITEM", DefaultLanguageHighlighterColors.CONSTANT)
         val COMMENT = createTextAttributesKey("RPM_SPEC_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
+        val BRACES = createTextAttributesKey("RPM_SPEC_CODE", DefaultLanguageHighlighterColors.IDENTIFIER)
         val TEXT = createTextAttributesKey("RPM_SPEC_TEXT", DefaultLanguageHighlighterColors.DOC_COMMENT)
         val CHANGELOG_DATE = createTextAttributesKey("RPM_SPEC_CHANGELOG_DATE", DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP)
         val CHANGELOG_NAME = createTextAttributesKey("RPM_SPEC_CHANGELOG_NAME", DefaultLanguageHighlighterColors.DOC_COMMENT_TAG_VALUE)

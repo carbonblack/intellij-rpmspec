@@ -32,16 +32,24 @@ class RpmSpecHighlightingAnnotator : Annotator {
                         TextRange(startOffset, endOffset),
                         null).textAttributes = RpmSpecSyntaxHighligher.TEXT
             }
-        } else if (element is RpmSpecChangelogItem) {
+        }
+
+        val colorType = when (element) {
+            is RpmSpecFullMacro -> RpmSpecSyntaxHighligher.BRACES
+            is RpmSpecChangelogItem -> RpmSpecSyntaxHighligher.TEXT
+            is RpmSpecTagValue -> RpmSpecSyntaxHighligher.VALUE
+            is RpmSpecChangelogDate -> RpmSpecSyntaxHighligher.CHANGELOG_DATE
+            is RpmSpecChangelogAuthor -> RpmSpecSyntaxHighligher.CHANGELOG_NAME
+            is RpmSpecChangelogEmail -> RpmSpecSyntaxHighligher.CHANGELOG_EMAIL
+            is RpmSpecChangelogVersion -> RpmSpecSyntaxHighligher.VERSION
+            else -> null
+        }
+
+        if(colorType != null) {
             holder.createAnnotation(
                     HighlightSeverity.INFORMATION,
                     element.textRange,
-                    null).textAttributes = RpmSpecSyntaxHighligher.TEXT
-        } else if (element is RpmSpecTagValue) {
-            holder.createAnnotation(
-                    HighlightSeverity.INFORMATION,
-                    element.textRange,
-                    null).textAttributes = RpmSpecSyntaxHighligher.VALUE
+                    null).textAttributes = colorType
         }
     }
 }
