@@ -45,7 +45,7 @@ endIfExpr ::= endif
 tag ::= PREAMBLE_TAG ':' tagValue {pin=2}
 tagValue ::= (wordOrMacro|'('|')')+
 
-meta genericSection ::= <<param>> wordOrMacro? genericBody
+meta genericSection ::= <<param>> wordOrMacro? genericBody {pin=1}
 genericBody ::= (COMMENT|EOL|<<ifExpr genericBody>>|macroDefinition|macroUndefine|(wordOrMacro|'{'|'}'|'?'|'('|')'))*
 
 descriptionSection ::= <<genericSection description>>

@@ -16,11 +16,18 @@ class RpmSpecHighlightingAnnotator : Annotator {
                 holder.createAnnotation(HighlightSeverity.WARNING, element.textRange, null).textAttributes = RpmSpecSyntaxHighligher.VERSION
             }
         } else if (element is RpmSpecDescriptionSection) {
-            val startOffset = element.genericSection.genericBody.textRange.startOffset
-            val endOffset = element.genericSection.genericBody.ifExprList.firstOrNull()?.textRange?.startOffset ?: element.genericSection.textRange.endOffset
-            holder.createAnnotation(HighlightSeverity.INFORMATION, TextRange(startOffset, endOffset), null).textAttributes = RpmSpecSyntaxHighligher.TEXT
+            val body = element.genericSection.genericBody
+            val bodyTextRange = element.genericSection.genericBody?.textRange
+            if(body != null && bodyTextRange != null) {
+                val startOffset = bodyTextRange.startOffset
+                val endOffset = body.ifExprList.firstOrNull()?.textRange?.startOffset ?: bodyTextRange.endOffset
+                holder.createAnnotation(HighlightSeverity.INFORMATION, TextRange(startOffset, endOffset), null).textAttributes = RpmSpecSyntaxHighligher.TEXT
+            }
         } else if (element is RpmSpecChangelogSection) {
-            holder.createAnnotation(HighlightSeverity.INFORMATION, element.genericSection.genericBody.textRange, null).textAttributes = RpmSpecSyntaxHighligher.TEXT
+            val bodyTextRange = element.genericSection.genericBody?.textRange
+            if(bodyTextRange != null) {
+                holder.createAnnotation(HighlightSeverity.INFORMATION, bodyTextRange, null).textAttributes = RpmSpecSyntaxHighligher.TEXT
+            }
         } else if (element is RpmSpecTagValue) {
             holder.createAnnotation(HighlightSeverity.INFORMATION, element.textRange, null).textAttributes = RpmSpecSyntaxHighligher.VALUE
         }
