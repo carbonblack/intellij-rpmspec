@@ -26,6 +26,13 @@ class RpmSpecHighlightingAnnotator : Annotator {
                         TextRange(startOffset, endOffset),
                         null).textAttributes = RpmSpecSyntaxHighligher.TEXT
             }
+        } else if (element is RpmSpecMacroDefinition) {
+            element.node.findChildByType(RpmSpecTypes.IDENTIFIER)?.let {
+                holder.createAnnotation(
+                        HighlightSeverity.INFORMATION,
+                        it.textRange,
+                        null).textAttributes = RpmSpecSyntaxHighligher.MACRO_ITEM
+            }
         }
 
         val colorType = when (element) {

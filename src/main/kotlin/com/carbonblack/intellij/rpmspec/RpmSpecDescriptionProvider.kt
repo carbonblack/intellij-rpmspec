@@ -1,6 +1,7 @@
 package com.carbonblack.intellij.rpmspec
 
 import com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacro
+import com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinition
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecTag
 import com.intellij.codeInsight.highlighting.HighlightUsagesDescriptionLocation
 import com.intellij.psi.ElementDescriptionLocation
@@ -13,8 +14,10 @@ import com.intellij.usageView.UsageViewTypeLocation
 
 class RpmSpecDescriptionProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
-        if (element is RpmSpecTag) {
-            return when (location) {
+        return when (element) {
+            is RpmSpecTag,
+            is RpmMacroMacro,
+            is RpmSpecMacroDefinition  -> when (location) {
                 is UsageViewNodeTextLocation -> element.text
                 is UsageViewShortNameLocation -> element.text
                 is UsageViewLongNameLocation -> element.text
@@ -22,17 +25,7 @@ class RpmSpecDescriptionProvider : ElementDescriptionProvider {
                 is HighlightUsagesDescriptionLocation -> element.text
                 else -> null
             }
-        } else if (element is RpmMacroMacro) {
-            return when (location) {
-                is UsageViewNodeTextLocation -> element.text
-                is UsageViewShortNameLocation -> element.text
-                is UsageViewLongNameLocation -> element.text
-                is UsageViewTypeLocation -> ""
-                is HighlightUsagesDescriptionLocation -> element.text
-                else -> null
-            }
+            else -> null
         }
-
-        return null
     }
 }

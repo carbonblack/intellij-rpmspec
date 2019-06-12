@@ -35,10 +35,12 @@ private anything ::= (wordOrMacro|'{'|'}'|'?'|'('|')'|'<'|'>')
 private anyWord ::= (IDENTIFIER|BOOL_LITERAL|FLOAT_LITERAL|INTEGER_LITERAL|CODE|':'|'%%'|'-')
 private wordOrMacro ::= (shellCommand|fullMacro|anyWord)
 
-macroDefinition ::= (global|define) macro (wordOrMacro|'('|')')+ {pin=1}
+macroDefinition ::= (global|define) IDENTIFIER (wordOrMacro|'('|')')+ {pin=1
+    implements="com.intellij.psi.PsiNameIdentifierOwner"
+    mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinitionElementImpl"}
 macroUndefine ::= undefine macro {pin=1}
 fullMacro ::= '%' ('{' '?'? macro (':'? wordOrMacro+)? '}'|macro ('(' anyWord ')')?) {pin=1}
-macro ::= IDENTIFIER {implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElement"
+macro ::= IDENTIFIER {implements="com.intellij.psi.PsiNameIdentifierOwner"
                       mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
 
 shellCommand ::= '%' '('  wordOrMacro+ ')' {pin=2}
@@ -51,7 +53,7 @@ meta elseBranch ::= else <<param>> section* {pin=1}
 endIfExpr ::= endif
 
 tag ::= PREAMBLE_TAG ('(' IDENTIFIER ')')? ':' tagValue {pin=2
-    implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecTagElement"
+    implements="com.intellij.psi.PsiNameIdentifierOwner"
     mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecTagElementImpl"}
 tagValue ::= anything+
 

@@ -28,7 +28,7 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val definitions = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacroDefinition::class.java)
-        val result : MutableList<PsiElement?> = definitions.filter { it.macro?.name == key }.map { it.macro }.toMutableList()
+        val result : MutableList<PsiElement?> = definitions.filter { it.name == key }.toMutableList()
 
         val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(myElement.project))
         val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(myElement.project).findFile(it) }
@@ -44,7 +44,7 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
     override fun resolve(): PsiElement? {
         // Search local macros
         val definitions = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacroDefinition::class.java)
-        val result  = definitions.filter { it.macro?.name == key }.map { it.macro }
+        val result  = definitions.filter { it.name == key }
         if (result.isNotEmpty()) {
             return result.first()
         }
@@ -69,8 +69,8 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
 
     override fun getVariants(): Array<LookupElementBuilder> {
         val macros = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacro::class.java)
-        val variants : MutableMap<String, LookupElementBuilder> = mutableMapOf()
-        variants += macros.filter { it.name.isNotEmpty() }.map {
+        val variants : MutableMap<String?, LookupElementBuilder> = mutableMapOf()
+        variants += macros.filter { it.name?.isNotEmpty() ?: false }.map {
             it.name to LookupElementBuilder.create(it)
                 .withIcon(RpmSpecIcons.FILE)
                 .withTypeText(it.containingFile.name) }

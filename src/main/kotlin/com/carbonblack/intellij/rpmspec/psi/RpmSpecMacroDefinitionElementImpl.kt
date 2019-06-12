@@ -6,11 +6,11 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 
-abstract class RpmSpecMacroElementImpl(node: ASTNode) :
+abstract class RpmSpecMacroDefinitionElementImpl(node: ASTNode) :
         ASTWrapperPsiElement(node), PsiNameIdentifierOwner {
 
     override fun getNameIdentifier(): PsiElement? =
-        node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi
+            node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi
 
     override fun setName(name: String): PsiElement {
         node.findChildByType(RpmSpecTypes.IDENTIFIER)?.let {
@@ -21,11 +21,17 @@ abstract class RpmSpecMacroElementImpl(node: ASTNode) :
         return this
     }
 
-    override fun getName(): String? {
-        return node.findChildByType(RpmSpecTypes.IDENTIFIER)?.text
+    override fun getName(): String? =
+            node.findChildByType(RpmSpecTypes.IDENTIFIER)?.text
+
+    override fun getReference(): PsiReference? {
+        node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi?.let {
+            return RpmSpecReference(it, TextRange(0, it.textLength))
+        }
+        return null
     }
 
-    override fun getReference(): PsiReference {
-        return RpmSpecReference(this, TextRange(0, name?.length ?: 0))
+    override fun getTextOffset(): Int {
+        return nameIdentifier?.textOffset ?: 0
     }
 }

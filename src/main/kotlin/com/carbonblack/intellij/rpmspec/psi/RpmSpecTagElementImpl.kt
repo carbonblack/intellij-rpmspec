@@ -6,28 +6,27 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 
-abstract class RpmSpecTagElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), RpmSpecTagElement {
+abstract class RpmSpecTagElementImpl(node: ASTNode) :
+        ASTWrapperPsiElement(node), PsiNameIdentifierOwner {
+
     override fun getNameIdentifier(): PsiElement? =
         node.findChildByType(RpmSpecTypes.PREAMBLE_TAG)?.psi
 
-
     override fun setName(name: String): PsiElement {
-        val keyNode = node.findChildByType(RpmSpecTypes.PREAMBLE_TAG)
-
-        if (keyNode != null) {
+        node.findChildByType(RpmSpecTypes.PREAMBLE_TAG)?.let {
             val macro = RpmSpecElementFactory.createTag(project, name)
             val newKeyNode = macro.firstChild.node
-            node.replaceChild(keyNode, newKeyNode)
+            node.replaceChild(it, newKeyNode)
         }
         return this
     }
 
-    override fun getName(): String {
+    override fun getName(): String? {
         val valueNode = node.findChildByType(RpmSpecTypes.PREAMBLE_TAG)
-        return valueNode!!.text
+        return valueNode?.text
     }
 
     override fun getReference(): PsiReference {
-        return RpmSpecReference(this, TextRange(0, name.length))
+        return RpmSpecReference(this, TextRange(0, name?.length ?: 0))
     }
 }
