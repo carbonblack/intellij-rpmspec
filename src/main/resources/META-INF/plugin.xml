@@ -7,6 +7,16 @@
     Plugin for syntax highlighting of RPM SPEC files.
     ]]></description>
 
+    <change-notes><![CDATA[
+        <html>
+        <b>Changes in version 0.9.1:</b>
+        <ul>
+          <li>Support all IDE products and not just IntelliJ IDEA</li>
+        </ul><br>
+        </html>
+            ]]>
+    </change-notes>
+
     <depends>com.intellij.modules.lang</depends>
 
     <!-- RPM SPEC File -->
