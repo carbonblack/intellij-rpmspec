@@ -23,7 +23,7 @@
         <lang.refactoringSupport language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecRefactoringSupportProvider"/>
         <lang.findUsagesProvider language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecFindUsagesProvider"/>
         <completion.contributor language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecCompletionContributor"/>
-
+        <lang.commenter language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecCommenter"/>
         <elementDescriptionProvider implementation="com.carbonblack.intellij.rpmspec.RpmSpecDescriptionProvider"/>
         <annotator language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecHighlightingAnnotator"/>
         <lang.braceMatcher language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecBraceMatcher"/>
