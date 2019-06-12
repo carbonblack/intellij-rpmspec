@@ -73,12 +73,19 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
     }
 
     override fun getVariants(): Array<LookupElementBuilder> {
-        val macros = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacro::class.java)
         val variants : MutableMap<String?, LookupElementBuilder> = mutableMapOf()
+
+        val macros = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacro::class.java)
         variants += macros.filter { it.name?.isNotEmpty() ?: false }.map {
             it.name to LookupElementBuilder.create(it)
                 .withIcon(RpmSpecIcons.FILE)
                 .withTypeText(it.containingFile.name) }
+
+        val macroDefinitions = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacroDefinition::class.java)
+        variants += macroDefinitions.filter { it.name?.isNotEmpty() ?: false }.map {
+            it.name to LookupElementBuilder.create(it)
+                    .withIcon(RpmSpecIcons.FILE)
+                    .withTypeText(it.containingFile.name) }
 
         val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(myElement.project))
         val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(myElement.project).findFile(it) }

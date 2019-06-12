@@ -5,13 +5,14 @@ import com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.*
 import com.intellij.openapi.editor.*
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 
 import java.util.*
 
-class RpmSpecFoldingBuilder : FoldingBuilderEx() {
+class RpmSpecFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         val descriptors = ArrayList<FoldingDescriptor>()
         val ifStatements = PsiTreeUtil.findChildrenOfType(root, RpmSpecIfExpr::class.java)

@@ -31,6 +31,14 @@ Source0:        https://www.example.com/%{name}/releases/%{name}-%{version}.tar.
 
 Patch0:         cello-output-first-patch.patch
 
+%if %{with rpmwheels}<fold text='...%endif'>
+Requires: python-setuptools-wheel
+Requires: python-pip-wheel
+%else
+Provides: bundled(python3-pip) = 19.0.3
+Provides: bundled(python3-setuptools) = 40.8.0
+%endif</fold>
+
 BuildRequires:  gcc
 BuildRequires:  make
 
@@ -53,7 +61,6 @@ make %{?_smp_mflags}
 %files
 %license LICENSE
 %{_bindir}/%{name}
-%{upstream_version<caret>}
 
 %changelog
 * Tue May 31 2016 Adam Miller <maxamillion@fedoraproject.org> - 1.0-1

@@ -1,6 +1,5 @@
 package com.carbonblack.intellij.rpmspec
 
-import com.carbonblack.intellij.rpmspec.psi.RpmSpecMacro
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction
@@ -17,54 +16,35 @@ class RpmSpecCodeInsightFixtureTestCase : LightCodeInsightFixtureTestCase() {
         myFixture.configureByFiles("CompletionTestData.spec")
         myFixture.complete(CompletionType.BASIC, 1)
         val strings = myFixture.lookupElementStrings
-        Assert.assertTrue(strings!!.containsAll(Arrays.asList("pybasever", "pyname", "pyshortver")))
-        Assert.assertEquals(3, strings.size)
+        Assert.assertTrue(strings!!.containsAll(Arrays.asList("pybasever", "pyshortver")))
     }
 
-    /*fun testAnnotator() {
-        myFixture.configureByFiles("AnnotatorTestData.java", "DefaultTestData.simple")
-        myFixture.checkHighlighting(false, false, true, true)
-    }
-
-    un testFormatter() {
-        myFixture.configureByFiles("FormatterTestData.simple")
-        CodeStyle.getLanguageSettings(myFixture.file).SPACE_AROUND_ASSIGNMENT_OPERATORS = true
-        CodeStyle.getLanguageSettings(myFixture.file).KEEP_BLANK_LINES_IN_CODE = 2
-        WriteCommandAction.writeCommandAction(project).run<RuntimeException> {
-            CodeStyleManager.getInstance(project).reformatText(myFixture.file,
-                    ContainerUtil.newArrayList<TextRange>(myFixture.file.textRange))
-        }
-        myFixture.checkResultByFile("DefaultTestData.simple")
-    }
-
-    fun testRename() {
-        myFixture.configureByFiles("RenameTestData.java", "RenameTestData.simple")
-        myFixture.renameElementAtCaret("websiteUrl")
-        myFixture.checkResultByFile("RenameTestData.simple", "RenameTestDataAfter.simple", false)
+    fun testAnnotator() {
+        myFixture.configureByFiles("ParsingTestData.spec")
+        myFixture.checkHighlighting(true, true, true, true)
     }
 
     fun testFolding() {
-        myFixture.configureByFiles("DefaultTestData.simple")
-        myFixture.testFolding("$testDataPath/FoldingTestData.java")
+        myFixture.testFolding("$testDataPath/FoldingTestData.spec")
     }
 
     fun testFindUsages() {
-        val usageInfos = myFixture.testFindUsages("ParsingTestData.spec")
-        Assert.assertEquals(1, usageInfos.size)
+        val usageInfos = myFixture.testFindUsages("FindUsagesTestData.spec")
+        Assert.assertEquals(3, usageInfos.size)
     }
 
     fun testCommenter() {
-        myFixture.configureByText(RpmSpecFileType.INSTANCE, "<caret>website = http://en.wikipedia.org/")
+        myFixture.configureByText(RpmSpecFileType, "<caret>%global my_macro 3")
         val commentAction = CommentByLineCommentAction()
         commentAction.actionPerformedImpl(project, myFixture.editor)
-        myFixture.checkResult("#website = http://en.wikipedia.org/")
+        myFixture.checkResult("#%global my_macro 3")
         commentAction.actionPerformedImpl(project, myFixture.editor)
-        myFixture.checkResult("website = http://en.wikipedia.org/")
-    }*/
+        myFixture.checkResult("%global my_macro 3")
+    }
 
     fun testReference() {
         myFixture.configureByFiles("ReferenceTestData.spec")
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent
-        assertEquals("_bi", element.node.findChildByType(RpmSpecTypes.MACRO)!!.text)
+        val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent.node.findChildByType(RpmSpecTypes.MACRO)!!.psi
+        assertEquals("%global upstream_version %{general_version}%{?prerel}", element.reference?.resolve()?.text)
     }
 }
