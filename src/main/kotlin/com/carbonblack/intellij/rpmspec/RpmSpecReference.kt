@@ -3,6 +3,7 @@ package com.carbonblack.intellij.rpmspec
 import com.carbonblack.intellij.rpmmacro.RpmMacroFileType
 import com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacro
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinition
+import com.carbonblack.intellij.rpmspec.psi.RpmSpecTag
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
@@ -16,7 +17,6 @@ import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import java.util.*
-import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 
 import kotlin.collections.ArrayList
@@ -41,19 +41,29 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
     }
 
     override fun resolve(): PsiElement? {
+        // Search local macros
         val definitions = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacroDefinition::class.java)
         val result  = definitions.filter { it.macro?.name == key }.map { it.macro }
         if (result.isNotEmpty()) {
             return result.first()
         }
 
-        return try {
+        // Search system macros
+        val systemMacrosResult = try {
             systemMacrosCache.get(Pair(key, myElement.project)).orElse(null)
         } catch (e: UncheckedExecutionException) {
             null
         } catch (e: ProcessCanceledException) {
             null
         }
+        if (systemMacrosResult != null) {
+            return systemMacrosResult
+        }
+
+        // We might be a special macro mapped to a tag
+        val tags = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecTag::class.java)
+        val filteredTags = tags.filter { it.firstChild.text.toLowerCase() == key.toLowerCase() }
+        return filteredTags.firstOrNull()
     }
 
     override fun getVariants(): Array<Any> {
