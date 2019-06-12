@@ -91,6 +91,7 @@ TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|Bu
   ^"%global"                      { return GLOBAL; }
   ^"%define"                      { return DEFINE; }
   ^"%undefine"                    { return UNDEFINE; }
+  ^"%setup"                       { return SETUP; }
 
   /* LITERALS */
   {FLT_LITERAL}                   { return FLOAT_LITERAL; }

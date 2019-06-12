@@ -18,54 +18,19 @@ class RpmMacroSyntaxHighligher : SyntaxHighlighterBase() {
         return when (tokenType) {
             RpmMacroTypes.MACRO -> MACRO_KEYS
             RpmMacroTypes.COMMENT -> COMMENT_KEYS
-            /*RpmSpecTypes.SEPARATOR -> SEPARATOR_KEYS
-            RpmSpecTypes.KEY -> KEY_KEYS
-            RpmSpecTypes.VALUE -> VALUE_KEYS
-            RpmSpecTypes.KEYWORD -> KEY_KEYS
-            RpmSpecTypes.BODY_ITEM -> BODY_ITEM_KEYS
-            RpmSpecTypes.MACRO_START -> MACRO_KEYS
-            RpmSpecTypes.MACRO_END -> MACRO_KEYS
-            RpmSpecTypes.MACRO -> MACRO_KEYS
-            RpmSpecTypes.MACRO_VALUE -> MACRO_VALUE_KEYS
-            RpmSpecTypes.COMMENT -> COMMENT_KEYS
-            RpmSpecTypes.TEXT -> TEXT_KEYS
-            RpmSpecTypes.CHANGELOG_DATE -> CHANGELOG_DATE_KEYS
-            RpmSpecTypes.CHANGELOG_NAME -> CHANGELOG_NAME_KEYS
-            RpmSpecTypes.CHANGELOG_EMAIL -> CHANGELOG_EMAIL_KEYS
-            RpmSpecTypes.CHANGELOG_VERSION -> VERSION_KEYS*/
             TokenType.BAD_CHARACTER -> BAD_CHAR_KEYS
             else -> EMPTY_KEYS
         }
     }
 
     companion object {
-        val SEPARATOR = createTextAttributesKey("RPM_SPEC_SEPARATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN)
-        val KEY = createTextAttributesKey("RPM_SPEC_KEY", DefaultLanguageHighlighterColors.KEYWORD)
-        val VALUE = createTextAttributesKey("RPM_SPEC_VALUE", DefaultLanguageHighlighterColors.STRING)
-        val BODY_ITEM = createTextAttributesKey("RPM_SPEC_BODY_ITEM", DefaultLanguageHighlighterColors.INSTANCE_METHOD)
-        val MACRO_ITEM = createTextAttributesKey("RPM_SPEC_MACRO_ITEM", DefaultLanguageHighlighterColors.CONSTANT)
-        val MACRO_VALUE_ITEM = createTextAttributesKey("RPM_SPEC_MACRO_VALUE_ITEM", DefaultLanguageHighlighterColors.CONSTANT)
-        val COMMENT = createTextAttributesKey("RPM_SPEC_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
-        val TEXT = createTextAttributesKey("RPM_SPEC_TEXT", DefaultLanguageHighlighterColors.DOC_COMMENT)
-        val CHANGELOG_DATE = createTextAttributesKey("RPM_SPEC_CHANGELOG_DATE", DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP)
-        val CHANGELOG_NAME = createTextAttributesKey("RPM_SPEC_CHANGELOG_NAME", DefaultLanguageHighlighterColors.DOC_COMMENT_TAG_VALUE)
-        val CHANGELOG_EMAIL = createTextAttributesKey("RPM_SPEC_CHANGELOG_EMAIL", DefaultLanguageHighlighterColors.DOC_COMMENT_TAG)
-        val VERSION = createTextAttributesKey("RPM_VERSION", DefaultLanguageHighlighterColors.NUMBER)
+        val MACRO_ITEM = createTextAttributesKey("RPM_MACRO_MACRO_ITEM", DefaultLanguageHighlighterColors.CONSTANT)
+        val COMMENT = createTextAttributesKey("RPM_MACRO_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
         val BAD_CHARACTER = createTextAttributesKey("RPM_SPEC_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER)
 
         private val BAD_CHAR_KEYS = arrayOf(BAD_CHARACTER)
-        private val SEPARATOR_KEYS = arrayOf(SEPARATOR)
-        private val KEY_KEYS = arrayOf(KEY)
-        private val VALUE_KEYS = arrayOf(VALUE)
-        private val BODY_ITEM_KEYS = arrayOf(BODY_ITEM)
         private val MACRO_KEYS = arrayOf(MACRO_ITEM)
-        private val MACRO_VALUE_KEYS = arrayOf(MACRO_VALUE_ITEM)
         private val COMMENT_KEYS = arrayOf(COMMENT)
-        private val TEXT_KEYS = arrayOf(TEXT)
-        private val CHANGELOG_DATE_KEYS = arrayOf(CHANGELOG_DATE)
-        private val CHANGELOG_NAME_KEYS = arrayOf(CHANGELOG_NAME)
-        private val CHANGELOG_EMAIL_KEYS = arrayOf(CHANGELOG_EMAIL)
-        private val VERSION_KEYS = arrayOf(VERSION)
         private val EMPTY_KEYS = arrayOf<TextAttributesKey>()
     }
 }

@@ -53,7 +53,7 @@ tag ::= PREAMBLE_TAG ':' tagValue {pin=2 implements="com.carbonblack.intellij.rp
 tagValue ::= anything+
 
 meta genericSection ::= <<param>> wordOrMacro? genericBody {pin=1}
-genericBody ::= (COMMENT|EOL|<<ifExpr genericBody>>|macroDefinition|macroUndefine|(anything|CL_HEADER_TOKEN|CL_ITEM_TOKEN))*
+genericBody ::= (COMMENT|EOL|<<ifExpr genericBody>>|macroDefinition|macroUndefine|anything|CL_HEADER_TOKEN|CL_ITEM_TOKEN|SETUP)*
 
 descriptionSection ::= <<genericSection description>>
 otherSections ::= <<genericSection (pre|prep|build|install|post|clean|check|preun|postun|pretrans|posttrans)>>

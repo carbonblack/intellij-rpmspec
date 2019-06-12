@@ -21,6 +21,7 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
             RpmSpecTypes.IF -> RESERVED_KEYS
             RpmSpecTypes.ELSE -> RESERVED_KEYS
             RpmSpecTypes.ENDIF -> RESERVED_KEYS
+            RpmSpecTypes.SETUP -> RESERVED_KEYS
 
             RpmSpecTypes.PREP -> BODY_ITEM_KEYS
             RpmSpecTypes.BUILD -> BODY_ITEM_KEYS
@@ -44,20 +45,6 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
             RpmSpecTypes.PREAMBLE_TAG -> KEY_KEYS
             RpmSpecTypes.FILES_DIRECTIVE_TOKEN -> KEY_KEYS
 
-            /*RpmSpecTypes.SEPARATOR -> SEPARATOR_KEYS
-            RpmSpecTypes.KEY -> KEY_KEYS
-            RpmSpecTypes.VALUE -> VALUE_KEYS
-            RpmSpecTypes.KEYWORD -> KEY_KEYS
-            RpmSpecTypes.BODY_ITEM -> BODY_ITEM_KEYS
-            RpmSpecTypes.MACRO_START -> MACRO_KEYS
-            RpmSpecTypes.MACRO_END -> MACRO_KEYS
-            RpmSpecTypes.MACRO -> MACRO_KEYS
-            RpmSpecTypes.MACRO_VALUE -> MACRO_VALUE_KEYS
-            RpmSpecTypes.TEXT -> TEXT_KEYS
-            RpmSpecTypes.CHANGELOG_DATE -> CHANGELOG_DATE_KEYS
-            RpmSpecTypes.CHANGELOG_NAME -> CHANGELOG_NAME_KEYS
-            RpmSpecTypes.CHANGELOG_EMAIL -> CHANGELOG_EMAIL_KEYS
-            RpmSpecTypes.CHANGELOG_VERSION -> VERSION_KEYS*/
             TokenType.BAD_CHARACTER -> BAD_CHAR_KEYS
             else -> EMPTY_KEYS
         }
