@@ -31,6 +31,7 @@ class RpmSpecHighlightingAnnotator : Annotator {
         val colorType = when (element) {
             is RpmSpecMacro -> RpmSpecSyntaxHighligher.MACRO_ITEM
             is RpmSpecFullMacro -> RpmSpecSyntaxHighligher.BRACES
+            is RpmSpecShellCommand -> RpmSpecSyntaxHighligher.BRACES
             is RpmSpecChangelogItem -> RpmSpecSyntaxHighligher.TEXT
             is RpmSpecTagValue -> RpmSpecSyntaxHighligher.VALUE
             is RpmSpecChangelogDate -> RpmSpecSyntaxHighligher.CHANGELOG_DATE

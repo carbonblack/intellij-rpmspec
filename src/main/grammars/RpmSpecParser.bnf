@@ -33,13 +33,15 @@ private section ::= (packageSection|descriptionSection|changelogSection|otherSec
 
 private anything ::= (wordOrMacro|'{'|'}'|'?'|'('|')'|'<'|'>')
 private anyWord ::= (IDENTIFIER|BOOL_LITERAL|FLOAT_LITERAL|INTEGER_LITERAL|CODE|':'|'%%'|'-')
-private wordOrMacro ::= (fullMacro|anyWord)
+private wordOrMacro ::= (shellCommand|fullMacro|anyWord)
 
 macroDefinition ::= (global|define) macro (wordOrMacro|'('|')')+ {pin=1}
 macroUndefine ::= undefine macro {pin=1}
 fullMacro ::= '%' ('{' '?'? macro (':'? wordOrMacro+)? '}'|macro ('(' anyWord ')')?) {pin=1}
 macro ::= IDENTIFIER {implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElement"
                       mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
+
+shellCommand ::= '%' '('  wordOrMacro+ ')' {pin=2}
 
 packageSection ::= package wordOrMacro? packageBody {pin=1}
 packageBody ::= (COMMENT|EOL|<<ifExpr packageBody>>|fullMacro anyWord*|macroDefinition|macroUndefine|tag)*
@@ -48,8 +50,9 @@ meta ifExpr ::= if wordOrMacro+ EOL <<param>> section* <<elseBranch <<param>>>>?
 meta elseBranch ::= else <<param>> section* {pin=1}
 endIfExpr ::= endif
 
-tag ::= PREAMBLE_TAG ':' tagValue {pin=2 implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecTagElement"
-                                          mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecTagElementImpl"}
+tag ::= PREAMBLE_TAG ('(' IDENTIFIER ')')? ':' tagValue {pin=2
+    implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecTagElement"
+    mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecTagElementImpl"}
 tagValue ::= anything+
 
 meta genericSection ::= <<param>> wordOrMacro? genericBody {pin=1}
@@ -59,7 +62,7 @@ descriptionSection ::= <<genericSection description>>
 otherSections ::= <<genericSection (pre|prep|build|install|post|clean|check|preun|postun|pretrans|posttrans)>>
 
 filesSection ::= files wordOrMacro? filesBody {pin=1}
-filesBody ::= (filesDirective|COMMENT|EOL|<<ifExpr filesBody>>|macroDefinition|macroUndefine|fullMacro anyWord*)*
+filesBody ::= (filesDirective|COMMENT|EOL|<<ifExpr filesBody>>|macroDefinition|macroUndefine|wordOrMacro+)*
 filesDirective ::= FILES_DIRECTIVE_TOKEN (filesDirective|anything)+ {pin=1}
 
 changelogSection ::= changelog changelogBody {pin=1}
