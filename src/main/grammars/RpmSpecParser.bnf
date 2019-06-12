@@ -58,14 +58,14 @@ tag ::= PREAMBLE_TAG ('(' IDENTIFIER ')')? ':' tagValue {pin=2
 tagValue ::= anything+
 
 meta genericSection ::= <<param>> wordOrMacro? genericBody {pin=1}
-genericBody ::= (COMMENT|EOL|<<ifExpr genericBody>>|macroDefinition|macroUndefine|anything|CL_HEADER_TOKEN|CL_ITEM_TOKEN|SETUP)*
+genericBody ::= (COMMENT|EOL|<<ifExpr genericBody>>|macroDefinition|macroUndefine|anything|CL_HEADER_TOKEN|CL_ITEM_TOKEN|SETUP|filesDirective)*
 
 descriptionSection ::= <<genericSection description>>
 otherSections ::= <<genericSection (pre|prep|build|install|post|clean|check|preun|postun|pretrans|posttrans)>>
 
 filesSection ::= files wordOrMacro? filesBody {pin=1}
 filesBody ::= (filesDirective|COMMENT|EOL|<<ifExpr filesBody>>|macroDefinition|macroUndefine|wordOrMacro+)*
-filesDirective ::= FILES_DIRECTIVE_TOKEN (filesDirective|anything)+ {pin=1}
+filesDirective ::= FILES_DIRECTIVE_TOKEN (filesDirective|anything)* {pin=1}
 
 changelogSection ::= changelog changelogBody {pin=1}
 changelogBody ::= (EOL|changelogItem)*

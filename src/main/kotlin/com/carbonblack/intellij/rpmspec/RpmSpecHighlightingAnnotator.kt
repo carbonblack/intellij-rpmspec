@@ -48,11 +48,11 @@ class RpmSpecHighlightingAnnotator : Annotator {
             else -> null
         }
 
-        if(colorType != null) {
+        colorType?.let {
             holder.createAnnotation(
                     HighlightSeverity.INFORMATION,
                     element.textRange,
-                    null).textAttributes = colorType
+                    null).textAttributes = it
         }
     }
 }
