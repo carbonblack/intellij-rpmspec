@@ -2,6 +2,7 @@ package com.carbonblack.intellij.rpmspec
 
 import com.carbonblack.intellij.rpmmacro.RpmMacroFileType
 import com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacro
+import com.carbonblack.intellij.rpmspec.psi.RpmSpecMacro
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinition
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecTag
 import com.google.common.cache.CacheBuilder
@@ -66,13 +67,25 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
         return filteredTags.firstOrNull()
     }
 
-    override fun getVariants(): Array<Any> {
-        val file = myElement.containingFile
-        val macros = RpmSpecUtil.findMacros(file)
-        val variants = macros.filter { it.name.isNotEmpty() }.map {
+    override fun getVariants(): Array<LookupElementBuilder> {
+        val macros = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacro::class.java)
+        val variants : MutableMap<String, LookupElementBuilder> = mutableMapOf()
+        variants += macros.filter { it.name.isNotEmpty() }.map {
             it.name to LookupElementBuilder.create(it)
                 .withIcon(RpmSpecIcons.FILE)
-                .withTypeText(it.containingFile.name) }.toMap()
+                .withTypeText(it.containingFile.name) }
+
+        val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(myElement.project))
+        val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(myElement.project).findFile(it) }
+        for (file in rpmMacroFiles) {
+            variants += PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java)
+                    .filter { it.name.isNotEmpty() }
+                    .map {
+                        it.name to LookupElementBuilder.create(it)
+                                .withIcon(RpmSpecIcons.FILE)
+                                .withTypeText(it.containingFile.name) }
+        }
+
         return ArrayList(variants.values).toTypedArray()
     }
 
