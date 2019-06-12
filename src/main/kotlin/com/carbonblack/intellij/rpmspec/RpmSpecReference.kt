@@ -62,9 +62,14 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
         }
 
         // We might be a special macro mapped to a tag
-        val tags = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecTag::class.java)
-        val filteredTags = tags.filter { it.firstChild.text.toLowerCase() == key.toLowerCase() }
-        return filteredTags.firstOrNull()
+        if (key.toLowerCase() in tagsWithMacros
+                || key.toLowerCase().startsWith("patch")
+                || key.toLowerCase().startsWith("source")) {
+            val tags = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecTag::class.java)
+            val filteredTags = tags.filter { it.firstChild.text.toLowerCase() == key.toLowerCase() }
+            return filteredTags.firstOrNull()
+        }
+        return null
     }
 
     override fun getVariants(): Array<LookupElementBuilder> {
@@ -90,6 +95,10 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
     }
 
     companion object {
+        val tagsWithMacros = listOf("name", "version", "release", "epoch", "summary", "license",
+                "distribution", "disturl", "vendor", "group", "packager", "url", "vcs", "prefixes",
+                "prefix", "disttag", "bugurl", "removepathpostfixes", "modularitylabel")
+
         val systemMacrosCache: LoadingCache<Pair<String, Project>, Optional<PsiElement>> = CacheBuilder.newBuilder()
                 .maximumSize(1000)
                 .expireAfterWrite(10, TimeUnit.MINUTES)

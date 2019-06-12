@@ -22,8 +22,7 @@ abstract class RpmSpecTagElementImpl(node: ASTNode) :
     }
 
     override fun getName(): String? {
-        val valueNode = node.findChildByType(RpmSpecTypes.PREAMBLE_TAG)
-        return valueNode?.text
+        return node.findChildByType(RpmSpecTypes.PREAMBLE_TAG)?.text
     }
 
     override fun getReference(): PsiReference {
