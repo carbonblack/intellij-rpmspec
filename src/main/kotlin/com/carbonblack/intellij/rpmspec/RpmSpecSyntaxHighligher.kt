@@ -18,9 +18,9 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
         return when (tokenType) {
             RpmSpecTypes.MACRO -> MACRO_KEYS
             RpmSpecTypes.COMMENT -> COMMENT_KEYS
-            RpmSpecTypes.IF -> BODY_ITEM_KEYS
-            RpmSpecTypes.ELSE -> BODY_ITEM_KEYS
-            RpmSpecTypes.ENDIF -> BODY_ITEM_KEYS
+            RpmSpecTypes.IF -> RESERVED_KEYS
+            RpmSpecTypes.ELSE -> RESERVED_KEYS
+            RpmSpecTypes.ENDIF -> RESERVED_KEYS
 
             RpmSpecTypes.PREP -> BODY_ITEM_KEYS
             RpmSpecTypes.BUILD -> BODY_ITEM_KEYS
@@ -42,6 +42,7 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
             RpmSpecTypes.UNDEFINE -> BODY_ITEM_KEYS
 
             RpmSpecTypes.PREAMBLE_TAG -> KEY_KEYS
+            RpmSpecTypes.FILES_DIRECTIVE_TOKEN -> KEY_KEYS
 
             /*RpmSpecTypes.SEPARATOR -> SEPARATOR_KEYS
             RpmSpecTypes.KEY -> KEY_KEYS
@@ -67,6 +68,7 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
         val KEY = createTextAttributesKey("RPM_SPEC_KEY", DefaultLanguageHighlighterColors.KEYWORD)
         val VALUE = createTextAttributesKey("RPM_SPEC_VALUE", DefaultLanguageHighlighterColors.STRING)
         val BODY_ITEM = createTextAttributesKey("RPM_SPEC_BODY_ITEM", DefaultLanguageHighlighterColors.INSTANCE_METHOD)
+        val RESERVED = createTextAttributesKey("RPM_SPEC_RESERVED", DefaultLanguageHighlighterColors.INSTANCE_METHOD)
         val MACRO_ITEM = createTextAttributesKey("RPM_SPEC_MACRO_ITEM", DefaultLanguageHighlighterColors.CONSTANT)
         val MACRO_VALUE_ITEM = createTextAttributesKey("RPM_SPEC_MACRO_VALUE_ITEM", DefaultLanguageHighlighterColors.CONSTANT)
         val COMMENT = createTextAttributesKey("RPM_SPEC_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
@@ -82,6 +84,7 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
         private val SEPARATOR_KEYS = arrayOf(SEPARATOR)
         private val KEY_KEYS = arrayOf(KEY)
         private val VALUE_KEYS = arrayOf(VALUE)
+        private val RESERVED_KEYS = arrayOf(RESERVED)
         private val BODY_ITEM_KEYS = arrayOf(BODY_ITEM)
         private val MACRO_KEYS = arrayOf(MACRO_ITEM)
         private val MACRO_VALUE_KEYS = arrayOf(MACRO_VALUE_ITEM)

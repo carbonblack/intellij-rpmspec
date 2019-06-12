@@ -28,6 +28,7 @@ INPUT_CHARACTER =  [^\r\n]
 ALPHA           = [a-zA-Z]
 NUMERIC         = [0-9]
 IDENTIFIER_CHAR = {ALPHA}|{NUMERIC}|"_"
+NON_ID_CHAR     = [^a-zA-Z0-9_]
 
 IDENTIFIER      = {IDENTIFIER_CHAR}+
 CODE_CHARS      = [^\r\n\ \t\f{}()%:?<>]+
@@ -38,8 +39,9 @@ FLT_LITERAL   = {INT_LITERAL} \. {INT_LITERAL}
 COMMENT   =   "#" {INPUT_CHARACTER}*
 
 // Reserved Words
-IF_KEYWORDS=(if|ifarch|ifnarch|ifos|ifnos)
-ELSE_KEYWORDS=(else|elifarch|elifos|elif)
+IF_KEYWORDS=%(if|ifarch|ifnarch|ifos|ifnos)
+ELSE_KEYWORDS=%(else|elifarch|elifos|elif)
+FILES_DIRECTIVES=%(doc|config|attr|defattr|dir|docdir|ghost|verify|license|readme|exclude|pubkey|missingok|artifact)
 
 TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|BuildRequires|Recommends|Obsoletes|Conflicts|Source\d*|Patch\d+)
 
@@ -63,10 +65,11 @@ TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|Bu
 
   ^{TAGS}                         { return PREAMBLE_TAG; }
   {COMMENT}                       { return COMMENT; }
+  {FILES_DIRECTIVES}{NON_ID_CHAR} { yypushback(1); return FILES_DIRECTIVE_TOKEN; }
 
-  ^%{IF_KEYWORDS}                 { return IF; }
-  ^%{ELSE_KEYWORDS}               { return ELSE; }
-  ^"%endif"                       { return ENDIF; }
+  {IF_KEYWORDS}{NON_ID_CHAR}      { yypushback(1); return IF; }
+  {ELSE_KEYWORDS}{NON_ID_CHAR}    { yypushback(1); return ELSE; }
+  "%endif"{NON_ID_CHAR}           { yypushback(1); return ENDIF; }
 
   "true"|"false"                  { return BOOL_LITERAL; }
 

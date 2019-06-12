@@ -6,7 +6,9 @@ import com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinition
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
+import com.google.common.util.concurrent.UncheckedExecutionException
 import com.intellij.codeInsight.lookup.*
+import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
@@ -14,6 +16,7 @@ import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import java.util.*
+import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 
 import kotlin.collections.ArrayList
@@ -44,7 +47,13 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
             return result.first()
         }
 
-        return systemMacrosCache.get(Pair(key, myElement.project)).orElse(null)
+        return try {
+            systemMacrosCache.get(Pair(key, myElement.project)).orElse(null)
+        } catch (e: UncheckedExecutionException) {
+            null
+        } catch (e: ProcessCanceledException) {
+            null
+        }
     }
 
     override fun getVariants(): Array<Any> {

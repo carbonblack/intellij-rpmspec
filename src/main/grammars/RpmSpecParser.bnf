@@ -29,7 +29,7 @@
 
 rpmSpecFile ::= EOL* packageBody section*
 
-private section ::= (packageSection|descriptionSection|changelogSection|otherSections)
+private section ::= (packageSection|descriptionSection|changelogSection|otherSections|filesSection)
 
 private anything ::= (wordOrMacro|'{'|'}'|'?'|'('|')'|'<'|'>')
 private anyWord ::= (IDENTIFIER|BOOL_LITERAL|FLOAT_LITERAL|INTEGER_LITERAL|CODE|':'|'%%'|'-')
@@ -55,7 +55,11 @@ meta genericSection ::= <<param>> wordOrMacro? genericBody {pin=1}
 genericBody ::= (COMMENT|EOL|<<ifExpr genericBody>>|macroDefinition|macroUndefine|(anything|CL_HEADER_TOKEN|CL_ITEM_TOKEN))*
 
 descriptionSection ::= <<genericSection description>>
-otherSections ::= <<genericSection (pre|prep|build|install|files|post|clean|check|preun|postun|pretrans|posttrans)>>
+otherSections ::= <<genericSection (pre|prep|build|install|post|clean|check|preun|postun|pretrans|posttrans)>>
+
+filesSection ::= files wordOrMacro? filesBody {pin=1}
+filesBody ::= (filesDirective|COMMENT|EOL|<<ifExpr filesBody>>|macroDefinition|macroUndefine|fullMacro anyWord*)*
+filesDirective ::= FILES_DIRECTIVE_TOKEN (filesDirective|anything)+ {pin=1}
 
 changelogSection ::= changelog changelogBody {pin=1}
 changelogBody ::= (EOL|changelogItem)*

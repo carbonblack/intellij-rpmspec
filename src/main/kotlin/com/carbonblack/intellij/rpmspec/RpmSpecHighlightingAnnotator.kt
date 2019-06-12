@@ -10,16 +10,10 @@ import com.intellij.psi.PsiElement
 class RpmSpecHighlightingAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element is RpmSpecMacro) {
-            if (element.reference?.resolve() != null) {
-                holder.createAnnotation(
-                        HighlightSeverity.INFORMATION,
+            if (element.reference?.resolve() == null) {
+                holder.createWeakWarningAnnotation(
                         element.textRange,
-                        null).textAttributes = RpmSpecSyntaxHighligher.MACRO_ITEM
-            } else {
-                holder.createAnnotation(
-                        HighlightSeverity.WARNING,
-                        element.textRange,
-                        null).textAttributes = RpmSpecSyntaxHighligher.VERSION
+                        "Macro could not be resolved")
             }
         } else if (element is RpmSpecDescriptionSection) {
             val body = element.genericSection.genericBody
@@ -35,6 +29,7 @@ class RpmSpecHighlightingAnnotator : Annotator {
         }
 
         val colorType = when (element) {
+            is RpmSpecMacro -> RpmSpecSyntaxHighligher.MACRO_ITEM
             is RpmSpecFullMacro -> RpmSpecSyntaxHighligher.BRACES
             is RpmSpecChangelogItem -> RpmSpecSyntaxHighligher.TEXT
             is RpmSpecTagValue -> RpmSpecSyntaxHighligher.VALUE
