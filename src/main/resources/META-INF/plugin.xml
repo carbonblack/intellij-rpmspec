@@ -24,6 +24,7 @@
         <lang.findUsagesProvider language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecFindUsagesProvider"/>
         <completion.contributor language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecCompletionContributor"/>
 
+        <elementDescriptionProvider implementation="com.carbonblack.intellij.rpmspec.RpmSpecDescriptionProvider"/>
         <annotator language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecHighlightingAnnotator"/>
         <lang.braceMatcher language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecBraceMatcher"/>
         <lang.psiStructureViewFactory language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecStructureViewFactory"/>

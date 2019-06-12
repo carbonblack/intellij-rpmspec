@@ -1,6 +1,7 @@
 package com.carbonblack.intellij.rpmspec
 
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecMacro
+import com.carbonblack.intellij.rpmspec.psi.RpmSpecTag
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes
 import com.intellij.lang.cacheBuilder.*
 import com.intellij.lang.findUsages.FindUsagesProvider
@@ -24,26 +25,26 @@ class RpmSpecFindUsagesProvider : FindUsagesProvider {
     }
 
     override fun getType(element: PsiElement): String {
-        return if (element is RpmSpecMacro) {
-            "macro"
-        } else {
-            ""
+        return when (element) {
+            is RpmSpecMacro -> "macro"
+            is RpmSpecTag -> "tag"
+            else -> ""
         }
     }
 
     override fun getDescriptiveName(element: PsiElement): String {
-        return if (element is RpmSpecMacro) {
-            element.name
-        } else {
-            ""
+        return when (element) {
+            is RpmSpecMacro -> element.name
+            is RpmSpecTag -> element.text
+            else -> ""
         }
     }
 
     override fun getNodeText(element: PsiElement, useFullName: Boolean): String {
-        return if (element is RpmSpecMacro) {
-            element.name
-        } else {
-            ""
+        return when (element) {
+            is RpmSpecMacro -> element.name
+            is RpmSpecTag -> element.text
+            else -> ""
         }
     }
 }

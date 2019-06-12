@@ -10,6 +10,11 @@ object RpmSpecElementFactory {
         return file.firstChild as RpmSpecMacro
     }
 
+    fun createTag(project: Project, name: String): RpmSpecTag {
+        val file = createFile(project, name)
+        return file.firstChild as RpmSpecTag
+    }
+
     private fun createFile(project: Project, text: String): RpmSpecFile {
         val name = "dummy.spec"
         return PsiFileFactory.getInstance(project).createFileFromText(name, RpmSpecFileType, text) as RpmSpecFile

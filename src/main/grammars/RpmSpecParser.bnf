@@ -48,7 +48,8 @@ meta ifExpr ::= if wordOrMacro+ EOL <<param>> section* <<elseBranch <<param>>>>?
 meta elseBranch ::= else <<param>> section* {pin=1}
 endIfExpr ::= endif
 
-tag ::= PREAMBLE_TAG ':' tagValue {pin=2}
+tag ::= PREAMBLE_TAG ':' tagValue {pin=2 implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecTagElement"
+                                          mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecTagElementImpl"}
 tagValue ::= anything+
 
 meta genericSection ::= <<param>> wordOrMacro? genericBody {pin=1}
