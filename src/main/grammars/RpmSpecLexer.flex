@@ -44,7 +44,7 @@ ELSE_KEYWORDS=%(else|elifarch|elifos|elif)
 FILES_DIRECTIVES=%(doc|config|attr|defattr|dir|docdir|ghost|verify|license|readme|exclude|pubkey|missingok|artifact)
 
 TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|BuildRequires|
-      Recommends|Obsoletes|Conflicts|Source\d*|Patch\d+|BuildRoot)
+      Recommends|Obsoletes|Conflicts|Source\d*|Patch\d+|BuildRoot|Group|Url|BuildArch)
 
 %%
 
@@ -63,6 +63,7 @@ TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|Bu
   ^"*"                            { return CL_HEADER_TOKEN; }
   ^"-"                            { return CL_ITEM_TOKEN; }
   "-"                             { return MINUS; }
+  "\\"                            { return BACKSLASH; }
 
   ^{TAGS}                         { return PREAMBLE_TAG; }
   {COMMENT}                       { return COMMENT; }

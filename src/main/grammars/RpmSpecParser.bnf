@@ -24,6 +24,7 @@
         MINUS             =  '-'
         LT                =  '<'
         GT                =  '>'
+        BACKSLASH         =  '\'
     ]
 }
 
@@ -31,24 +32,25 @@ rpmSpecFile ::= EOL* packageBody section*
 
 private section ::= (packageSection|descriptionSection|changelogSection|otherSections|filesSection)
 
-private anything ::= (wordOrMacro|'{'|'}'|'?'|'('|')'|'<'|'>')
+private notMacro ::= CODE '{' wordOrMacro+ '}'
+private anything ::= (wordOrMacro|'?'|'('|')'|'<'|'>'|'{'|'}'|'\')
 private anyWord ::= (IDENTIFIER|BOOL_LITERAL|FLOAT_LITERAL|INTEGER_LITERAL|CODE|':'|'%%'|'-')
-private wordOrMacro ::= (shellCommand|fullMacro|anyWord)
+private wordOrMacro ::= (shellCommand|fullMacro|notMacro|anyWord)
 
-macroDefinition ::= (global|define) IDENTIFIER (wordOrMacro|'('|')')+ {pin=1
+macroDefinition ::= (global|define) IDENTIFIER ('\' EOL|wordOrMacro|'('|')')+ {pin=1
     implements="com.intellij.psi.PsiNameIdentifierOwner"
     mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinitionElementImpl"}
 macroUndefine ::= undefine macro {pin=1}
-fullMacro ::= '%' ('{' '?'? macro (':'? wordOrMacro+)? '}'|macro ('(' anyWord ')')?) {pin=1}
+fullMacro ::= '%' ('{' '?'? macro (':'? wordOrMacro+)? '}'| macro ('(' anyWord ')')?) {pin=1}
 macro ::= IDENTIFIER {implements="com.intellij.psi.PsiNameIdentifierOwner"
                       mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
 
 shellCommand ::= '%' '('  wordOrMacro+ ')' {pin=2}
 
-packageSection ::= package wordOrMacro? packageBody {pin=1}
-packageBody ::= (COMMENT|EOL|<<ifExpr packageBody>>|fullMacro anyWord*|macroDefinition|macroUndefine|tag)*
+packageSection ::= package wordOrMacro* EOL packageBody {pin=1}
+packageBody ::= (COMMENT|EOL|<<ifExpr packageBody>>|fullMacro anything*|macroDefinition|macroUndefine|tag)*
 
-meta ifExpr ::= if wordOrMacro+ EOL <<param>> section* <<elseBranch <<param>>>>? endIfExpr {pin=1}
+meta ifExpr ::= if anything+ EOL <<param>> section* <<elseBranch <<param>>>>? endIfExpr {pin=1}
 meta elseBranch ::= else <<param>> section* {pin=1}
 endIfExpr ::= endif
 
@@ -57,20 +59,20 @@ tag ::= PREAMBLE_TAG ('(' IDENTIFIER ')')? ':' tagValue {pin=2
     mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecTagElementImpl"}
 tagValue ::= anything+
 
-meta genericSection ::= <<param>> wordOrMacro? genericBody {pin=1}
+meta genericSection ::= <<param>> anything* EOL genericBody {pin=1}
 genericBody ::= (COMMENT|EOL|<<ifExpr genericBody>>|macroDefinition|macroUndefine|anything|CL_HEADER_TOKEN|CL_ITEM_TOKEN|SETUP|filesDirective)*
 
 descriptionSection ::= <<genericSection description>>
 otherSections ::= <<genericSection (pre|prep|build|install|post|clean|check|preun|postun|pretrans|posttrans)>>
 
-filesSection ::= files wordOrMacro? filesBody {pin=1}
-filesBody ::= (filesDirective|COMMENT|EOL|<<ifExpr filesBody>>|macroDefinition|macroUndefine|wordOrMacro+)*
+filesSection ::= files anything* EOL filesBody {pin=1}
+filesBody ::= (filesDirective|COMMENT|EOL|<<ifExpr filesBody>>|macroDefinition|macroUndefine|anything+)*
 filesDirective ::= FILES_DIRECTIVE_TOKEN (filesDirective|anything)* {pin=1}
 
 changelogSection ::= changelog changelogBody {pin=1}
 changelogBody ::= (EOL|changelogItem)*
 changelogItem ::= (changelogHeader EOL changelogEntry*)
-changelogHeader ::= CL_HEADER_TOKEN changelogDate changelogAuthor changelogEmail '-'? changelogVersion {pin=1}
+changelogHeader ::= CL_HEADER_TOKEN changelogDate changelogAuthor changelogEmail? '-'? changelogVersion? {pin=1}
 changelogDate ::= IDENTIFIER IDENTIFIER INTEGER_LITERAL INTEGER_LITERAL
 changelogAuthor ::= anyWord+
 changelogEmail ::= '<' anyWord+ '>' {pin=1}

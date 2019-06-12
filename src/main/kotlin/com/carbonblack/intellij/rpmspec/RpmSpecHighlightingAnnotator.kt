@@ -40,6 +40,7 @@ class RpmSpecHighlightingAnnotator : Annotator {
             is RpmSpecFullMacro -> RpmSpecSyntaxHighligher.BRACES
             is RpmSpecShellCommand -> RpmSpecSyntaxHighligher.BRACES
             is RpmSpecChangelogItem -> RpmSpecSyntaxHighligher.TEXT
+            is RpmSpecChangelogEntry -> RpmSpecSyntaxHighligher.TEXT
             is RpmSpecTagValue -> RpmSpecSyntaxHighligher.VALUE
             is RpmSpecChangelogDate -> RpmSpecSyntaxHighligher.CHANGELOG_DATE
             is RpmSpecChangelogAuthor -> RpmSpecSyntaxHighligher.CHANGELOG_NAME
