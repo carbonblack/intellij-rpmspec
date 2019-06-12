@@ -10,10 +10,6 @@ plugins {
     java
 }
 
-repositories {
-    maven("https://artifactory-pub.bit9.local:443/artifactory/java-all-release-virtual")
-}
-
 group = "com.carbonblack"
 version = "1.0-SNAPSHOT"
 
