@@ -26,6 +26,7 @@
 
         <annotator language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecHighlightingAnnotator"/>
         <lang.braceMatcher language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecBraceMatcher"/>
+        <lang.psiStructureViewFactory language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecStructureViewFactory"/>
     </extensions>
 
     <!-- RPM Macro File -->
