@@ -7,11 +7,7 @@
     Plugin for syntax highlighting of RPM SPEC files.
     ]]></description>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
-    <!-- uncomment to enable plugin in all products
     <depends>com.intellij.modules.lang</depends>
-    -->
 
     <!-- RPM SPEC File -->
     <extensions defaultExtensionNs="com.intellij">
@@ -39,8 +35,4 @@
         <indexedRootsProvider implementation="com.carbonblack.intellij.rpmmacro.RpmMacroIndexableSetContributor"/>
         <annotator language="RpmMacro" implementationClass="com.carbonblack.intellij.rpmmacro.RpmMacroHighlightingAnnotator"/>
     </extensions>
-
-    <actions>
-        <!-- Add your actions here -->
-    </actions>
 </idea-plugin>
