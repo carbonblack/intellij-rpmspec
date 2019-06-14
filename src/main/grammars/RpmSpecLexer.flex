@@ -57,6 +57,7 @@ TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|Bu
   ":"                             { return COLON; }
   "%"                             { return PERCENT; }
   "%%"                            { return ESCAPED_PERCENT; }
+  "!"                             { return EXCLAMATION_MARK; }
   "?"                             { return QUESTION_MARK; }
   "<"                             { return LT; }
   ">"                             { return GT; }

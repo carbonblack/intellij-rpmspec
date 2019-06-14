@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "com.carbonblack"
-version = "0.9.2"
+version = "0.9.3"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -42,7 +42,8 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = "2019.1.2"
+    version = "2018.2"
+    updateSinceUntilBuild = false
 }
 
 val generateSpecParser = tasks.create("generateSpecParser", GenerateParser::class) {

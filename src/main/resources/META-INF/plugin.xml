@@ -4,18 +4,22 @@
     <vendor email="tlusk@carbonblack.com" url="http://www.carbonblack.com">Carbon Black</vendor>
 
     <description><![CDATA[
-    Plugin for syntax highlighting of RPM SPEC files.
+    Plugin for syntax highlighting and basic macro support in RPM SPEC files.
     ]]></description>
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 0.9.2:</b>
+        <b>Changes in version 0.9.3:</b>
         <ul>
-          <li>Code completion was not showing local macro definitions</li>
+          <li>Fix parsing of %{!?macro} conditional macros</li>
+          <li>Set plugin compatibility to allow versions 2018.2+</li>
         </ul><br>
         </html>
             ]]>
     </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="182" until-build="191.*"/>
 
     <depends>com.intellij.modules.lang</depends>
 

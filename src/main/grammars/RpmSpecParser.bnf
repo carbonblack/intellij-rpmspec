@@ -20,6 +20,7 @@
         COLON             =  ':'
         PERCENT           =  '%'
         ESCAPED_PERCENT   =  '%%'
+        EXCLAMATION_MARK  =  '!'
         QUESTION_MARK     =  '?'
         MINUS             =  '-'
         LT                =  '<'
@@ -33,7 +34,7 @@ rpmSpecFile ::= EOL* packageBody section*
 private section ::= (packageSection|descriptionSection|changelogSection|otherSections|filesSection)
 
 private notMacro ::= CODE '{' wordOrMacro+ '}'
-private anything ::= (wordOrMacro|'?'|'('|')'|'<'|'>'|'{'|'}'|'\')
+private anything ::= (wordOrMacro|'?'|'!'|'('|')'|'<'|'>'|'{'|'}'|'\')
 private anyWord ::= (IDENTIFIER|BOOL_LITERAL|FLOAT_LITERAL|INTEGER_LITERAL|CODE|':'|'%%'|'-')
 private wordOrMacro ::= (shellCommand|fullMacro|notMacro|anyWord)
 
@@ -41,7 +42,7 @@ macroDefinition ::= (global|define) IDENTIFIER ('\' EOL|wordOrMacro|'('|')')+ {p
     implements="com.intellij.psi.PsiNameIdentifierOwner"
     mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinitionElementImpl"}
 macroUndefine ::= undefine macro {pin=1}
-fullMacro ::= '%' ('{' '?'? macro (':'? wordOrMacro+)? '}'| macro ('(' anyWord ')')?) {pin=1}
+fullMacro ::= '%' ('{' ('!''?'|'?')? macro (':'? wordOrMacro+)? '}'| macro ('(' anyWord ')')?) {pin=1}
 macro ::= IDENTIFIER {implements="com.intellij.psi.PsiNameIdentifierOwner"
                       mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
 
