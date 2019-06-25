@@ -42,7 +42,6 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
             RpmSpecTypes.DEFINE -> BODY_ITEM_KEYS
             RpmSpecTypes.UNDEFINE -> BODY_ITEM_KEYS
 
-            RpmSpecTypes.PREAMBLE_TAG -> KEY_KEYS
             RpmSpecTypes.FILES_DIRECTIVE_TOKEN -> KEY_KEYS
 
             TokenType.BAD_CHARACTER -> BAD_CHAR_KEYS

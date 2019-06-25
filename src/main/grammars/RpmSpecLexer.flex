@@ -43,9 +43,6 @@ IF_KEYWORDS=%(if|ifarch|ifnarch|ifos|ifnos)
 ELSE_KEYWORDS=%(else|elifarch|elifos|elif)
 FILES_DIRECTIVES=%(doc|config|attr|defattr|dir|docdir|ghost|verify|license|readme|exclude|pubkey|missingok|artifact)
 
-TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|BuildRequires|
-      Recommends|Obsoletes|Conflicts|Source\d*|Patch\d+|BuildRoot|Group|Url|BuildArch)
-
 %%
 
 
@@ -66,7 +63,6 @@ TAGS=(Name|Summary|URL|Version|Release|License|Name|Summary|Requires|Provides|Bu
   "-"                             { return MINUS; }
   "\\"                            { return BACKSLASH; }
 
-  ^{TAGS}                         { return PREAMBLE_TAG; }
   {COMMENT}                       { return COMMENT; }
   {FILES_DIRECTIVES}{NON_ID_CHAR} { yypushback(1); return FILES_DIRECTIVE_TOKEN; }
 

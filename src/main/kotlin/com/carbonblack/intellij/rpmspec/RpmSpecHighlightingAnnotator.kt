@@ -33,6 +33,19 @@ class RpmSpecHighlightingAnnotator : Annotator {
                         it.textRange,
                         null).textAttributes = RpmSpecSyntaxHighligher.MACRO_ITEM
             }
+        } else if (element is RpmSpecTag) {
+            element.node.findChildByType(RpmSpecTypes.IDENTIFIER)?.let {
+                holder.createAnnotation(
+                        HighlightSeverity.INFORMATION,
+                        it.textRange,
+                        null).textAttributes = RpmSpecSyntaxHighligher.KEY
+
+                if (!element.knownTag()) {
+                    holder.createWarningAnnotation(
+                            it.textRange,
+                            "Unknown tag: \"${it.text}\"")
+                }
+            }
         }
 
         val colorType = when (element) {
