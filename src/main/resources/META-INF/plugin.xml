@@ -9,10 +9,10 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 0.9.3:</b>
+        <b>Changes in version 0.9.4:</b>
         <ul>
-          <li>Fix parsing of %{!?macro} conditional macros</li>
-          <li>Set plugin compatibility to allow versions 2018.2+</li>
+          <li>Define additional tags allowed in %package section</li>
+          <li>Gracefully fail and warn if unknown tag is detected</li>
         </ul><br>
         </html>
             ]]>
