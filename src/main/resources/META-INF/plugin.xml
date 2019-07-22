@@ -9,10 +9,10 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 0.9.4:</b>
+        <b>Changes in version 0.9.5:</b>
         <ul>
-          <li>Define additional tags allowed in %package section</li>
-          <li>Gracefully fail and warn if unknown tag is detected</li>
+          <li>Fix a freeze on startup</li>
+          <li>Fix an exception on startup on systems without rpm installed</li>
         </ul><br>
         </html>
             ]]>
