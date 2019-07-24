@@ -9,10 +9,9 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 0.9.5:</b>
+        <b>Changes in version 0.9.6:</b>
         <ul>
-          <li>Fix a freeze on startup</li>
-          <li>Fix an exception on startup on systems without rpm installed</li>
+          <li>Add support for multiline macros</li>
         </ul><br>
         </html>
             ]]>

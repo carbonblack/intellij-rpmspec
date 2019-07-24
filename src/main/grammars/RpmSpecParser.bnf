@@ -36,17 +36,22 @@ private section ::= (packageSection|descriptionSection|changelogSection|otherSec
 private notMacro ::= CODE '{' wordOrMacro+ '}'
 private anything ::= (wordOrMacro|'?'|'!'|'('|')'|'<'|'>'|'{'|'}'|'\')
 private anyWord ::= (IDENTIFIER|BOOL_LITERAL|FLOAT_LITERAL|INTEGER_LITERAL|CODE|':'|'%%'|'-')
-private wordOrMacro ::= (shellCommand|fullMacro|notMacro|anyWord)
+private wordOrMacro ::= (macroParam|shellCommand|fullMacro|notMacro|anyWord)
 
-macroDefinition ::= (global|define) IDENTIFIER ('\' EOL|wordOrMacro|'('|')')+ {pin=1
+macroDefinition ::= (global|define) IDENTIFIER ('\' EOL|wordOrMacro|'('|')'|'<'|'>')+ {pin=1
     implements="com.intellij.psi.PsiNameIdentifierOwner"
     mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinitionElementImpl"}
 macroUndefine ::= undefine macro {pin=1}
-fullMacro ::= '%' ('{' ('!''?'|'?')? macro (':'? wordOrMacro+)? '}'| macro ('(' anyWord ')')?) {pin=1}
+fullMacro ::= '%' ('{' ('!''?'|'?')? macro (':' multilineMacro|wordOrMacro+)? '}'| macro ('(' anyWord ')')?) {pin=1}
 macro ::= IDENTIFIER {implements="com.intellij.psi.PsiNameIdentifierOwner"
                       mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
+macroParam ::= '%' INTEGER_LITERAL {pin=2}
 
-shellCommand ::= '%' '('  wordOrMacro+ ')' {pin=2}
+// This definition is a bit of a mess, it's pretty much everything from all the sections jammed in here
+private multilineMacroPieces ::= (macroParam|<<ifExpr multilineMacro>>|filesDirective|'<'|'>'|'?'|'!'|'('|')'|'\'|wordOrMacro)*
+multilineMacro ::= (multilineMacroPieces EOL+ multilineMacroPieces)+
+
+shellCommand ::= '%' '('  (wordOrMacro|'<'|'>')+ ')' {pin=2}
 
 packageSection ::= package wordOrMacro* EOL packageBody {pin=1}
 packageBody ::= (COMMENT|EOL|<<ifExpr packageBody>>|fullMacro anything*|macroDefinition|macroUndefine|tag)*
