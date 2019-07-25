@@ -6,6 +6,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.tree.TokenSet
 
 class RpmSpecHighlightingAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -44,6 +45,42 @@ class RpmSpecHighlightingAnnotator : Annotator {
                     holder.createWarningAnnotation(
                             it.textRange,
                             "Unknown tag: \"${it.text}\"")
+                }
+            }
+        } else if (element is RpmSpecMultilineMacro) {
+            element.node.getChildren(TokenSet.ANY).forEach {
+                if (it.elementType == RpmSpecTypes.COMMENT) {
+                    holder.createAnnotation(
+                            HighlightSeverity.INFORMATION,
+                            it.textRange,
+                            null).textAttributes = RpmSpecSyntaxHighligher.COMMENT
+                }
+            }
+        } else if (element is RpmSpecIfExpr) {
+            element.node.getChildren(TokenSet.ANY).forEach {
+                if (it.elementType == RpmSpecTypes.IF) {
+                    holder.createAnnotation(
+                            HighlightSeverity.INFORMATION,
+                            it.textRange,
+                            null).textAttributes = RpmSpecSyntaxHighligher.RESERVED
+                }
+            }
+        } else if (element is RpmSpecElseBranch) {
+            element.node.getChildren(TokenSet.ANY).forEach {
+                if (it.elementType == RpmSpecTypes.ELSE) {
+                    holder.createAnnotation(
+                            HighlightSeverity.INFORMATION,
+                            it.textRange,
+                            null).textAttributes = RpmSpecSyntaxHighligher.RESERVED
+                }
+            }
+        } else if (element is RpmSpecEndIfExpr) {
+            element.node.getChildren(TokenSet.ANY).forEach {
+                if (it.elementType == RpmSpecTypes.ENDIF) {
+                    holder.createAnnotation(
+                            HighlightSeverity.INFORMATION,
+                            it.textRange,
+                            null).textAttributes = RpmSpecSyntaxHighligher.RESERVED
                 }
             }
         }

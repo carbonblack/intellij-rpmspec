@@ -1,6 +1,7 @@
 package com.carbonblack.intellij.rpmspec
 
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecIfExpr
+import com.carbonblack.intellij.rpmspec.psi.RpmSpecMultilineMacro
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes
 import com.intellij.lang.ASTNode
 import com.intellij.lang.folding.*
@@ -15,6 +16,7 @@ import java.util.*
 class RpmSpecFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         val descriptors = ArrayList<FoldingDescriptor>()
+
         val ifStatements = PsiTreeUtil.findChildrenOfType(root, RpmSpecIfExpr::class.java)
         for (ifStatement in ifStatements) {
             val startOffset = ifStatement.node.findChildByType(RpmSpecTypes.EOL)?.textRange?.startOffset
@@ -29,6 +31,22 @@ class RpmSpecFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 })
             }
         }
+
+        val multilineMacros = PsiTreeUtil.findChildrenOfType(root, RpmSpecMultilineMacro::class.java)
+        for (multilineMacro in multilineMacros) {
+            val startOffset = multilineMacro.node.findChildByType(RpmSpecTypes.EOL)?.textRange?.startOffset
+            if (startOffset != null) {
+                descriptors.add(object : FoldingDescriptor(multilineMacro.node,
+                        TextRange(startOffset,
+                                multilineMacro.textRange.endOffset),
+                        FoldingGroup.newGroup("rpm-spec-multiline-macro")) {
+                    override fun getPlaceholderText(): String? {
+                        return "..."
+                    }
+                })
+            }
+        }
+
         return descriptors.toTypedArray()
     }
 

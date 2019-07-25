@@ -48,7 +48,7 @@ macro ::= IDENTIFIER {implements="com.intellij.psi.PsiNameIdentifierOwner"
 macroParam ::= '%' INTEGER_LITERAL {pin=2}
 
 // This definition is a bit of a mess, it's pretty much everything from all the sections jammed in here
-private multilineMacroPieces ::= (macroParam|<<ifExpr multilineMacro>>|filesDirective|'<'|'>'|'?'|'!'|'('|')'|'\'|wordOrMacro)*
+private multilineMacroPieces ::= (COMMENT|tag|macroParam|<<ifExpr multilineMacro>>|filesDirective|'<'|'>'|'?'|'!'|'('|')'|'\'|wordOrMacro)*
 multilineMacro ::= (multilineMacroPieces EOL+ multilineMacroPieces)+
 
 shellCommand ::= '%' '('  (wordOrMacro|'<'|'>')+ ')' {pin=2}
