@@ -9,6 +9,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.*
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.util.io.exists
+import com.intellij.util.io.isDirectory
 import com.intellij.util.io.isFile
 import java.io.File
 import java.nio.file.FileSystems
@@ -61,13 +63,16 @@ object RpmMacroUtil {
                 val start : String = path.substringBeforeLast("/")
                 val glob : String = path.substringAfterLast("/")
 
+                val startPath = Paths.get(start)
                 val matcher = FileSystems.getDefault().getPathMatcher("glob:$glob")
 
-                files += Files.walk(Paths.get(start))
-                        .filter { it: Path? -> it?.let { it.isFile() && matcher.matches(it.fileName) } ?: false }
-                        .map { LocalFileSystem.getInstance().findFileByPath(it.toString()) }
-                        .toList()
-                        .filterNotNull()
+                if (startPath.exists() && startPath.isDirectory()) {
+                    files += Files.walk(startPath)
+                            .filter { it: Path? -> it?.let { it.isFile() && matcher.matches(it.fileName) } ?: false }
+                            .map { LocalFileSystem.getInstance().findFileByPath(it.toString()) }
+                            .toList()
+                            .filterNotNull()
+                }
             } else {
                 val file = LocalFileSystem.getInstance().findFileByPath(path)
                 if (file != null) {
