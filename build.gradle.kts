@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "com.carbonblack"
-version = "0.9.7"
+version = "0.9.8"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8

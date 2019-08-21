@@ -9,9 +9,9 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 0.9.7:</b>
+        <b>Changes in version 0.9.8:</b>
         <ul>
-          <li>Add support for IntelliJ 2019.2</li>
+          <li>Fix exception if RPM macro path contains missing directories</li>
         </ul><br>
         </html>
             ]]>
