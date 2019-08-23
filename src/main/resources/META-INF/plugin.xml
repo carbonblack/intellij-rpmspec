@@ -9,9 +9,9 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 0.9.8:</b>
+        <b>Changes in version 0.9.9:</b>
         <ul>
-          <li>Fix exception if RPM macro path contains missing directories</li>
+          <li>Improve parsing of system macro files</li>
         </ul><br>
         </html>
             ]]>
