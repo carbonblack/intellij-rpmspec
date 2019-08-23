@@ -11,6 +11,6 @@ class RpmMacroCodeInsightFixtureTestCase : LightCodeInsightFixtureTestCase() {
     fun testReference() {
         myFixture.configureByFiles("ReferenceTestData.spec", "ParsingTestData.rpmmacros")
         val element = myFixture.file.findElementAt(myFixture.caretOffset)!!.parent.node.findChildByType(RpmSpecTypes.MACRO)!!.psi
-        assertEquals("/usr/bin/bzip2", (element.references[0].resolve() as RpmMacroMacro).macroBody.text)
+        assertEquals("/usr/bin/bzip2", (element.references[0].resolve() as RpmMacroMacro).macroBody?.text)
     }
 }

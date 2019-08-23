@@ -45,7 +45,7 @@ MACRO_ESCAPE  = "\\"{WHITE_SPACE}*{EOL}
 
 
 <YYINITIAL> {
-  "%"                             { yybegin(MACRO); return MACRO_DEFINITION_START; }
+  ^"%"                            { yybegin(MACRO); return MACRO_DEFINITION_START; }
   {WHITE_SPACE}                   { return TokenType.WHITE_SPACE; }
 }
 

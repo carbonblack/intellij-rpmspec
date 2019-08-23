@@ -25,7 +25,7 @@ abstract class RpmMacroMacroElementImpl(node: ASTNode) : ASTWrapperPsiElement(no
 
     override fun getName(): String {
         val valueNode = node.findChildByType(RpmMacroTypes.IDENTIFIER)
-        return valueNode!!.text
+        return valueNode?.text ?: ""
     }
 
     override fun getReference(): PsiReference {

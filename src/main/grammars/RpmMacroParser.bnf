@@ -29,7 +29,10 @@ rpmMacroFile ::= (COMMENT | macro)*
 
 macro ::= MACRO_DEFINITION_START ( '{' IDENTIFIER '}' | IDENTIFIER ) macroBody {
     implements="com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacroElement"
-    mixin="com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacroElementImpl"}
+    mixin="com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacroElementImpl"
+    pin=1
+    recoverWhile=macroRecover}
+private macroRecover ::= !(MACRO_DEFINITION_START)
 
 macroBody ::= anything+ !'\'
 
