@@ -36,7 +36,8 @@ CODE_CHARS      = [^\r\n\ \t\f{}()%:?\\]+
 INT_LITERAL   = {NUMERIC}+
 FLT_LITERAL   = {INT_LITERAL} \. {INT_LITERAL}
 
-COMMENT   =   "#" {INPUT_CHARACTER}*
+COMMENT       = "#" {INPUT_CHARACTER}*
+MACRO_ESCAPE  = "\\"{WHITE_SPACE}*{EOL}
 
 %state MACRO
 
@@ -68,10 +69,11 @@ COMMENT   =   "#" {INPUT_CHARACTER}*
   {IDENTIFIER}                    { return IDENTIFIER; }
 
   {CODE_CHARS}                    { return CODE; }
-  "\\"{WHITE_SPACE}*{EOL}         { return CODE; }
+  {MACRO_ESCAPE}                  { return CODE; }
 }
 
 <MACRO> {
+  ^{COMMENT}{MACRO_ESCAPE}        { return MACRO_COMMENT; }
   {EOL}+                          { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
   {LINE_WS}+                      { return TokenType.WHITE_SPACE; }
 }

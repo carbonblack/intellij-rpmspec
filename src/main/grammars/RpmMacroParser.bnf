@@ -34,4 +34,4 @@ macro ::= MACRO_DEFINITION_START ( '{' IDENTIFIER '}' | IDENTIFIER ) macroBody {
 macroBody ::= anything+ !'\'
 
 anything ::= ( '{' | '}' | '(' | ')' | ':' | '%' | '?' |
-               IDENTIFIER | FLOAT_LITERAL | INTEGER_LITERAL | CODE | '\' | '\\' )
+               IDENTIFIER | FLOAT_LITERAL | INTEGER_LITERAL | CODE | MACRO_COMMENT| '\' | '\\' )

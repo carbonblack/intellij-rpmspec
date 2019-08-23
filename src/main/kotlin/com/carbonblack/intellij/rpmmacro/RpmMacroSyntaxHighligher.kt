@@ -18,6 +18,7 @@ class RpmMacroSyntaxHighligher : SyntaxHighlighterBase() {
         return when (tokenType) {
             RpmMacroTypes.MACRO -> MACRO_KEYS
             RpmMacroTypes.COMMENT -> COMMENT_KEYS
+            RpmMacroTypes.MACRO_COMMENT -> COMMENT_KEYS
             TokenType.BAD_CHARACTER -> BAD_CHAR_KEYS
             else -> EMPTY_KEYS
         }
