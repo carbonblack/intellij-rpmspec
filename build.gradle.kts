@@ -4,9 +4,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Arrays.asList
 
 plugins {
-    id("org.jetbrains.grammarkit") version "2019.1"
-    id("org.jetbrains.intellij") version "0.4.8"
-    kotlin("jvm") version "1.3.31"
+    id("org.jetbrains.grammarkit") version "2019.2"
+    id("org.jetbrains.intellij") version "0.4.10"
+    kotlin("jvm") version "1.3.50"
     java
 }
 
