@@ -1,17 +1,16 @@
 import org.jetbrains.grammarkit.tasks.GenerateLexer
 import org.jetbrains.grammarkit.tasks.GenerateParser
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.util.Arrays.asList
 
 plugins {
     id("org.jetbrains.grammarkit") version "2019.2"
-    id("org.jetbrains.intellij") version "0.4.10"
+    id("org.jetbrains.intellij") version "0.4.12"
     kotlin("jvm") version "1.3.50"
     java
 }
 
 group = "com.carbonblack"
-version = "0.9.9"
+version = "1.0.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -19,7 +18,7 @@ java {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
-    kotlinOptions.freeCompilerArgs = asList("-Xjvm-default=enable")
+    kotlinOptions.freeCompilerArgs = listOf("-Xjvm-default=enable")
 }
 
 sourceSets{
@@ -46,7 +45,7 @@ intellij {
     updateSinceUntilBuild = false
 }
 
-val generateSpecParser = tasks.create("generateSpecParser", GenerateParser::class) {
+val generateSpecParser = tasks.create<GenerateParser>("generateSpecParser") {
     source = "$projectDir/src/main/grammars/RpmSpecParser.bnf"
     targetRoot = "$projectDir/src/main/gen"
     pathToParser = "/com/carbonblack/intellij/rpmspec/parser/RpmSpecParser.java"
@@ -54,14 +53,14 @@ val generateSpecParser = tasks.create("generateSpecParser", GenerateParser::clas
     purgeOldFiles = true
 }
 
-val generateSpecLexer = tasks.create("generateSpecLexer", GenerateLexer::class) {
+val generateSpecLexer = tasks.create<GenerateLexer>("generateSpecLexer") {
     source = "$projectDir/src/main/grammars/RpmSpecLexer.flex"
     targetDir = "$projectDir/src/main/gen/com/carbonblack/intellij/rpmspec"
     targetClass = "_RpmSpecLexer"
     purgeOldFiles = true
 }
 
-val generateMacroParser = tasks.create("generateMacroParser", GenerateParser::class) {
+val generateMacroParser = tasks.create<GenerateParser>("generateMacroParser") {
     source = "$projectDir/src/main/grammars/RpmMacroParser.bnf"
     targetRoot = "$projectDir/src/main/gen"
     pathToParser = "/com/carbonblack/intellij/rpmmacro/parser/RpmMacroParser.java"
@@ -69,7 +68,7 @@ val generateMacroParser = tasks.create("generateMacroParser", GenerateParser::cl
     purgeOldFiles = true
 }
 
-val generateMacroLexer = tasks.create("generateMacroLexer", GenerateLexer::class) {
+val generateMacroLexer = tasks.create<GenerateLexer>("generateMacroLexer") {
     source = "$projectDir/src/main/grammars/RpmMacroLexer.flex"
     targetDir = "$projectDir/src/main/gen/com/carbonblack/intellij/rpmmacro"
     targetClass = "_RpmMacroLexer"
