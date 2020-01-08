@@ -13,6 +13,7 @@
         <ul>
           <li>Add support for IntelliJ 2020.1+</li>
           <li>Upgrade plugin dependencies</li>
+          <li>Use new intellij fileType extension</li>
         </ul><br>
         </html>
             ]]>
@@ -25,7 +26,7 @@
 
     <!-- RPM SPEC File -->
     <extensions defaultExtensionNs="com.intellij">
-        <fileTypeFactory implementation="com.carbonblack.intellij.rpmspec.RpmSpecFileTypeFactory"/>
+        <fileType name="RPM SPEC" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecFileType" language="RpmSpec" extensions="spec"/>
         <lang.parserDefinition language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecParserDefinition"/>
         <lang.syntaxHighlighterFactory language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecSyntaxHighlighterFactory"/>
         <colorSettingsPage implementation="com.carbonblack.intellij.rpmspec.RpmSpecColorSettingsPage"/>
@@ -42,7 +43,7 @@
 
     <!-- RPM Macro File -->
     <extensions defaultExtensionNs="com.intellij">
-        <fileTypeFactory implementation="com.carbonblack.intellij.rpmmacro.RpmMacroFileTypeFactory"/>
+        <fileType name="RPM Macro" implementationClass="com.carbonblack.intellij.rpmmacro.RpmMacroFileType" language="RpmMacro" extensions="rpmmacros"/>
         <lang.syntaxHighlighterFactory language="RpmMacro" implementationClass="com.carbonblack.intellij.rpmmacro.RpmMacroSyntaxHighlighterFactory"/>
         <lang.parserDefinition language="RpmMacro" implementationClass="com.carbonblack.intellij.rpmmacro.RpmMacroParserDefinition"/>
         <lang.findUsagesProvider language="RpmMacro" implementationClass="com.carbonblack.intellij.rpmmacro.RpmMacroFindUsagesProvider"/>
