@@ -2,9 +2,9 @@ package com.carbonblack.intellij.rpmmacro
 
 import com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacro
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
-class RpmMacroCodeInsightFixtureTestCase : LightCodeInsightFixtureTestCase() {
+class RpmMacroCodeInsightFixtureTestCase : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String = "src/test/resources/macros"
 

@@ -26,7 +26,7 @@ abstract class RpmSpecMacroDefinitionElementImpl(node: ASTNode) :
 
     override fun getReference(): PsiReference? {
         node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi?.let {
-            return RpmSpecReference(it, TextRange(0, it.textLength))
+            return RpmSpecReference(this, TextRange(it.startOffsetInParent, it.startOffsetInParent + it.textLength))
         }
         return null
     }

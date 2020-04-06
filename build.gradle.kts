@@ -3,14 +3,14 @@ import org.jetbrains.grammarkit.tasks.GenerateParser
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.grammarkit") version "2019.2"
-    id("org.jetbrains.intellij") version "0.4.12"
-    kotlin("jvm") version "1.3.50"
+    id("org.jetbrains.grammarkit") version "2020.1.2"
+    id("org.jetbrains.intellij") version "0.4.18"
+    kotlin("jvm") version "1.3.71"
     java
 }
 
 group = "com.carbonblack"
-version = "1.0.1"
+version = "1.1.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -41,7 +41,7 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = "2018.2"
+    version = "2019.3"
     updateSinceUntilBuild = false
 }
 

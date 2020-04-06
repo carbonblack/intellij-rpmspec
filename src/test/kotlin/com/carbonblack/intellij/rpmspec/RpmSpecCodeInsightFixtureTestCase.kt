@@ -3,12 +3,10 @@ package com.carbonblack.intellij.rpmspec
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction
-import com.intellij.testFramework.fixtures.LightCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.junit.Assert
 
-import java.util.Arrays
-
-class RpmSpecCodeInsightFixtureTestCase : LightCodeInsightFixtureTestCase() {
+class RpmSpecCodeInsightFixtureTestCase : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String = "src/test/resources/spec"
 
@@ -16,7 +14,7 @@ class RpmSpecCodeInsightFixtureTestCase : LightCodeInsightFixtureTestCase() {
         myFixture.configureByFiles("CompletionTestData.spec")
         myFixture.complete(CompletionType.BASIC, 1)
         val strings = myFixture.lookupElementStrings
-        Assert.assertTrue(strings!!.containsAll(Arrays.asList("pybasever", "pyshortver")))
+        Assert.assertTrue(strings!!.containsAll(listOf("pybasever", "pyshortver")))
     }
 
     fun testAnnotator() {
