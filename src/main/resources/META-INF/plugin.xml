@@ -9,16 +9,16 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 1.0.0:</b>
+        <b>Changes in version 1.0.1:</b>
         <ul>
-          <li>Add support for IntelliJ 2019.3</li>
+          <li>Add support for IntelliJ 2020.1+</li>
         </ul><br>
         </html>
             ]]>
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="182" until-build="193.*"/>
+    <idea-version since-build="182"/>
 
     <depends>com.intellij.modules.lang</depends>
 
