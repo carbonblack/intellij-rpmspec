@@ -9,11 +9,9 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 1.1.0:</b>
+        <b>Changes in version 1.1.1:</b>
         <ul>
-          <li>Add support for IntelliJ 2020.1+</li>
-          <li>Upgrade plugin dependencies</li>
-          <li>Use new intellij fileType extension</li>
+          <li>Fixed an issue with icon scaling on HDPI displays</li>
         </ul><br>
         </html>
             ]]>
