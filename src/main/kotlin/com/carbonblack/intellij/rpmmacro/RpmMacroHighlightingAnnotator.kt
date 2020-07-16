@@ -8,8 +8,7 @@ import com.intellij.psi.PsiElement
 
 class RpmMacroHighlightingAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        val identifier = (element as? RpmMacroMacro)?.nameIdentifier
-        if (identifier != null) {
+        (element as? RpmMacroMacro)?.nameIdentifier?.let { identifier ->
             holder.createAnnotation(
                     HighlightSeverity.INFORMATION,
                     identifier.textRange,

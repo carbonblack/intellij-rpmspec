@@ -11,11 +11,9 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 
-import java.util.*
-
 class RpmSpecFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val descriptors = ArrayList<FoldingDescriptor>()
+        val descriptors = mutableListOf<FoldingDescriptor>()
 
         val ifStatements = PsiTreeUtil.findChildrenOfType(root, RpmSpecIfExpr::class.java)
         for (ifStatement in ifStatements) {
@@ -50,11 +48,6 @@ class RpmSpecFoldingBuilder : FoldingBuilderEx(), DumbAware {
         return descriptors.toTypedArray()
     }
 
-    override fun getPlaceholderText(node: ASTNode): String? {
-        return "..."
-    }
-
-    override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return false
-    }
+    override fun getPlaceholderText(node: ASTNode) = "..."
+    override fun isCollapsedByDefault(node: ASTNode) = false
 }

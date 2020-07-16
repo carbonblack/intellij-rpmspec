@@ -5,5 +5,5 @@ import com.intellij.psi.tree.IElementType
 import org.jetbrains.annotations.*
 
 class RpmSpecTokenType(@NonNls debugName: String) : IElementType(debugName, RpmSpecLanguage) {
-    override fun toString(): String = "RpmSpecTokenType." + super.toString()
+    override fun toString() = "RpmSpecTokenType.${super.toString()}"
 }

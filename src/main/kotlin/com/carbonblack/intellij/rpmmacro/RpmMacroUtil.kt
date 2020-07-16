@@ -15,13 +15,11 @@ import com.intellij.util.io.isFile
 import java.io.File
 import java.nio.file.FileSystems
 import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
 
-import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.streams.toList
 import java.io.BufferedReader
+import kotlin.streams.asSequence
 
 object RpmMacroUtil {
 
@@ -33,74 +31,58 @@ object RpmMacroUtil {
                 .redirectError(ProcessBuilder.Redirect.PIPE)
                 .start()
 
-        val allText = proc.inputStream.bufferedReader().use(BufferedReader::readText)
-        proc.waitFor(5, TimeUnit.SECONDS)
-        return allText
+        return proc.inputStream.bufferedReader().use(BufferedReader::readText).also {
+            proc.waitFor(5, TimeUnit.SECONDS)
+        }
     }
 
     val macroPathFiles: Set<VirtualFile> by lazy {
-        var paths: List<String> = emptyList()
-
         // Parse the rpm macro paths
-        try {
-            val output = "rpm --showrc".runCommand()
-            if (output != null) {
+        val paths = try {
+            "rpm --showrc".runCommand()?.let runCommand@ { output ->
                 val regex = Regex("Macro path: (.*)")
                 for (line in output.split("\n")) {
-                    val match = regex.find(line)?.groups?.get(1)
-                    if (match != null) {
-                        paths = match.value.replace("%{_target}", "x86_64-linux").split(":")
-                        break
+                    regex.find(line)?.groups?.get(1)?.let { match ->
+                        return@runCommand match.value.replace("%{_target}", "x86_64-linux").split(":")
                     }
                 }
+                null
             }
-        } catch (e: Exception) {}
+        } catch (e: Exception) { null } ?: emptyList()
 
         // Find files matching macro paths
-        val files : MutableSet<VirtualFile> = mutableSetOf()
-        for (path in paths) {
+        paths.flatMap { path ->
             if (path.contains("*")) {
-                val start : String = path.substringBeforeLast("/")
-                val glob : String = path.substringAfterLast("/")
+                val start = path.substringBeforeLast("/")
+                val glob = path.substringAfterLast("/")
 
                 val startPath = Paths.get(start)
                 val matcher = FileSystems.getDefault().getPathMatcher("glob:$glob")
 
                 if (startPath.exists() && startPath.isDirectory()) {
-                    files += Files.walk(startPath)
-                            .filter { it: Path? -> it?.let { it.isFile() && matcher.matches(it.fileName) } ?: false }
-                            .map { LocalFileSystem.getInstance().findFileByPath(it.toString()) }
+                    Files.walk(startPath).asSequence()
+                            .filter { it?.isFile() == true && matcher.matches(it.fileName)  }
+                            .mapNotNull { LocalFileSystem.getInstance().findFileByPath(it.toString()) }
                             .toList()
-                            .filterNotNull()
-                }
+                } else emptyList()
             } else {
-                val file = LocalFileSystem.getInstance().findFileByPath(path)
-                if (file != null) {
-                    files += file
-                }
+                LocalFileSystem.getInstance().findFileByPath(path)?.let { listOf(it) } ?: emptyList()
             }
-        }
-
-        files
+        }.toSet()
     }
 
     fun findMacros(project: Project, key: String): List<RpmMacroMacro> {
-        var result = emptyList<RpmMacroMacro>()
         val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(project))
         val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(project).findFile(it) }.filterIsInstance<RpmMacroFile>()
-        for (file in rpmMacroFiles) {
-            val macros = PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java)
-            result = macros.filter { it.name == key }
+
+        return rpmMacroFiles.flatMap { file ->
+            PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java).filter { it.name == key }
         }
-        return result
     }
 
-    fun findMacros(file: PsiFile): List<RpmMacroMacro> {
-        val result = ArrayList<RpmMacroMacro>()
-        if (file is RpmMacroFile) {
-            val macros = PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java)
-            result.addAll(macros)
-        }
-        return result
+    fun findMacros(file: PsiFile): Collection<RpmMacroMacro> {
+        return (file as? RpmMacroFile)?.let { macroFile ->
+            PsiTreeUtil.findChildrenOfType(macroFile, RpmMacroMacro::class.java)
+        } ?: emptyList()
     }
 }

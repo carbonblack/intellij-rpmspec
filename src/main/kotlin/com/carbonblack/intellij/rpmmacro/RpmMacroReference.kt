@@ -4,16 +4,14 @@ import com.intellij.codeInsight.lookup.*
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 
-import kotlin.collections.ArrayList
-
 class RpmMacroReference(element: PsiElement, textRange: TextRange) :
         PsiReferenceBase<PsiElement>(element, textRange), PsiPolyVariantReference {
-    private val key: String = element.text.substring(textRange.startOffset, textRange.endOffset)
+    private val key = element.text.substring(textRange.startOffset, textRange.endOffset)
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
-        val macros = RpmMacroUtil.findMacros(myElement.project, key)
-        val results = macros.map { PsiElementResolveResult(it) }
-        return results.toTypedArray()
+        return RpmMacroUtil.findMacros(myElement.project, key)
+                .map { PsiElementResolveResult(it) }
+                .toTypedArray()
     }
 
     override fun resolve(): PsiElement? {
@@ -28,6 +26,6 @@ class RpmMacroReference(element: PsiElement, textRange: TextRange) :
             it.name to LookupElementBuilder.create(it)
                 .withIcon(RpmMacroIcons.FILE)
                 .withTypeText(it.containingFile.name) }.toMap()
-        return ArrayList(variants.values).toTypedArray()
+        return variants.values.toTypedArray()
     }
 }

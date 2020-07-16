@@ -1,7 +1,6 @@
 package com.carbonblack.intellij.rpmmacro
 
 import com.carbonblack.intellij.rpmmacro.psi.RpmMacroTypes
-import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
@@ -12,16 +11,14 @@ import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributes
 
 class RpmMacroSyntaxHighligher : SyntaxHighlighterBase() {
 
-    override fun getHighlightingLexer(): Lexer = RpmMacroLexerAdapter()
+    override fun getHighlightingLexer() = RpmMacroLexerAdapter()
 
-    override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
-        return when (tokenType) {
-            RpmMacroTypes.MACRO -> MACRO_KEYS
-            RpmMacroTypes.COMMENT -> COMMENT_KEYS
-            RpmMacroTypes.MACRO_COMMENT -> COMMENT_KEYS
-            TokenType.BAD_CHARACTER -> BAD_CHAR_KEYS
-            else -> EMPTY_KEYS
-        }
+    override fun getTokenHighlights(tokenType: IElementType) = when (tokenType) {
+        RpmMacroTypes.MACRO -> MACRO_KEYS
+        RpmMacroTypes.COMMENT -> COMMENT_KEYS
+        RpmMacroTypes.MACRO_COMMENT -> COMMENT_KEYS
+        TokenType.BAD_CHARACTER -> BAD_CHAR_KEYS
+        else -> EMPTY_KEYS
     }
 
     companion object {

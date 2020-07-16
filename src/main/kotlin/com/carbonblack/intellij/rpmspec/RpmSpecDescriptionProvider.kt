@@ -13,19 +13,17 @@ import com.intellij.usageView.UsageViewShortNameLocation
 import com.intellij.usageView.UsageViewTypeLocation
 
 class RpmSpecDescriptionProvider : ElementDescriptionProvider {
-    override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation): String? {
-        return when (element) {
-            is RpmSpecTag,
-            is RpmMacroMacro,
-            is RpmSpecMacroDefinition  -> when (location) {
-                is UsageViewNodeTextLocation -> element.text
-                is UsageViewShortNameLocation -> element.text
-                is UsageViewLongNameLocation -> element.text
-                is UsageViewTypeLocation -> ""
-                is HighlightUsagesDescriptionLocation -> element.text
-                else -> null
-            }
+    override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation) = when (element) {
+        is RpmSpecTag,
+        is RpmMacroMacro,
+        is RpmSpecMacroDefinition  -> when (location) {
+            is UsageViewNodeTextLocation -> element.text
+            is UsageViewShortNameLocation -> element.text
+            is UsageViewLongNameLocation -> element.text
+            is UsageViewTypeLocation -> ""
+            is HighlightUsagesDescriptionLocation -> element.text
             else -> null
         }
+        else -> null
     }
 }

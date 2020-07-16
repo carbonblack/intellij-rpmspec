@@ -5,7 +5,5 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
 class RpmMacroSyntaxHighlighterFactory : SyntaxHighlighterFactory() {
-    override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?): SyntaxHighlighter {
-        return RpmMacroSyntaxHighligher()
-    }
+    override fun getSyntaxHighlighter(project: Project?, virtualFile: VirtualFile?) = RpmMacroSyntaxHighligher()
 }

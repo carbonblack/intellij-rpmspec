@@ -20,7 +20,26 @@ import com.intellij.psi.util.PsiTreeUtil
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-import kotlin.collections.ArrayList
+private val TAGS_WITH_MACROS = listOf("name", "version", "release", "epoch", "summary", "license",
+        "distribution", "disturl", "vendor", "group", "packager", "url", "vcs", "prefixes",
+        "prefix", "disttag", "bugurl", "removepathpostfixes", "modularitylabel")
+
+private val systemMacrosCache: LoadingCache<Pair<String, Project>, Optional<PsiElement>> = CacheBuilder.newBuilder()
+        .maximumSize(1000)
+        .expireAfterWrite(10, TimeUnit.MINUTES)
+        .build(object : CacheLoader<Pair<String, Project>, Optional<PsiElement>>() {
+            override fun load(pair: Pair<String, Project>): Optional<PsiElement> {
+                val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(pair.second))
+                val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(pair.second).findFile(it) }
+                for (file in rpmMacroFiles) {
+                    val macros = PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java).filter { it.name == pair.first }
+                    if (macros.isNotEmpty()) {
+                        return Optional.of(macros.first())
+                    }
+                }
+                return Optional.empty()
+            }
+        })
 
 class RpmSpecReference(element: PsiElement, textRange: TextRange) :
         PsiReferenceBase<PsiElement>(element, textRange), PsiPolyVariantReference {
@@ -28,17 +47,15 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
         val definitions = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacroDefinition::class.java)
-        val result : MutableList<PsiElement?> = definitions.filter { it.name == key }.toMutableList()
+        val result : MutableList<PsiElement> = definitions.filter { it.name == key }.toMutableList()
 
         val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(myElement.project))
-        val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(myElement.project).findFile(it) }
-        for (file in rpmMacroFiles) {
-            val macros = PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java).filter { it.name == key }
-            result += macros
+        result += virtualFiles.flatMap {  virtualFile ->
+            val file = PsiManager.getInstance(myElement.project).findFile(virtualFile)
+            PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java).filter { it.name == key }
         }
 
-        val results = result.filterNotNull().map { PsiElementResolveResult(it) }
-        return results.toTypedArray()
+        return result.map { PsiElementResolveResult(it) }.toTypedArray()
     }
 
     override fun resolve(): PsiElement? {
@@ -62,7 +79,7 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
         }
 
         // We might be a special macro mapped to a tag
-        if (key.toLowerCase() in tagsWithMacros
+        if (key.toLowerCase() in TAGS_WITH_MACROS
                 || key.toLowerCase().startsWith("patch")
                 || key.toLowerCase().startsWith("source")) {
             val tags = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecTag::class.java)
@@ -73,24 +90,24 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
     }
 
     override fun getVariants(): Array<LookupElementBuilder> {
-        val variants : MutableMap<String?, LookupElementBuilder> = mutableMapOf()
+        val variants = mutableMapOf<String?, LookupElementBuilder>()
 
         val macros = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacro::class.java)
-        variants += macros.filter { it.name?.isNotEmpty() ?: false }.map {
+        variants += macros.filter { it.name?.isNotEmpty() == true }.map {
             it.name to LookupElementBuilder.create(it)
                 .withIcon(RpmSpecIcons.FILE)
                 .withTypeText(it.containingFile.name) }
 
         val macroDefinitions = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecMacroDefinition::class.java)
-        variants += macroDefinitions.filter { it.name?.isNotEmpty() ?: false }.map {
+        variants += macroDefinitions.filter { it.name?.isNotEmpty() == true }.map {
             it.name to LookupElementBuilder.create(it)
                     .withIcon(RpmSpecIcons.FILE)
                     .withTypeText(it.containingFile.name) }
 
         val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(myElement.project))
-        val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(myElement.project).findFile(it) }
-        for (file in rpmMacroFiles) {
-            variants += PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java)
+        variants += virtualFiles.flatMap { virtualFile ->
+            val file = PsiManager.getInstance(myElement.project).findFile(virtualFile)
+            PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java)
                     .filter { it.name.isNotEmpty() }
                     .map {
                         it.name to LookupElementBuilder.create(it)
@@ -98,29 +115,6 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
                                 .withTypeText(it.containingFile.name) }
         }
 
-        return ArrayList(variants.values).toTypedArray()
-    }
-
-    companion object {
-        val tagsWithMacros = listOf("name", "version", "release", "epoch", "summary", "license",
-                "distribution", "disturl", "vendor", "group", "packager", "url", "vcs", "prefixes",
-                "prefix", "disttag", "bugurl", "removepathpostfixes", "modularitylabel")
-
-        val systemMacrosCache: LoadingCache<Pair<String, Project>, Optional<PsiElement>> = CacheBuilder.newBuilder()
-                .maximumSize(1000)
-                .expireAfterWrite(10, TimeUnit.MINUTES)
-                .build(object : CacheLoader<Pair<String, Project>, Optional<PsiElement>>() {
-                    override fun load(pair: Pair<String, Project>): Optional<PsiElement> {
-                        val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(pair.second))
-                        val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(pair.second).findFile(it) }
-                        for (file in rpmMacroFiles) {
-                            val macros = PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java).filter { it.name == pair.first }
-                            if (macros.isNotEmpty()) {
-                                return Optional.of(macros.first())
-                            }
-                        }
-                        return Optional.empty()
-                    }
-                })
+        return variants.values.toTypedArray()
     }
 }

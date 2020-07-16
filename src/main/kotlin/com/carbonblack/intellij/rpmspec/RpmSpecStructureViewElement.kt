@@ -12,31 +12,22 @@ import com.intellij.psi.NavigatablePsiElement
 class RpmSpecStructureViewElement(val element: NavigatablePsiElement) : StructureViewTreeElement, Navigatable by element {
 
     override fun getPresentation(): ItemPresentation {
-        val presentation = element.presentation
-        if (presentation != null) {
-            return presentation
+        return element.presentation ?: run {
+            val presentationText = if (element is RpmSpecPackageBody) {
+                "%package"
+            } else {
+                element.text.split("\n").firstOrNull() ?: ""
+            }
+            PresentationData(presentationText, null, RpmMacroIcons.FILE, null)
         }
-
-        val presentationText = if (element is RpmSpecPackageBody) {
-            "%package"
-        } else {
-            element.text.split("\n").firstOrNull() ?: ""
-        }
-        return PresentationData(presentationText, null, RpmMacroIcons.FILE, null)
     }
 
     override fun getChildren(): Array<TreeElement> {
-        val properties = element.children
-        val treeElements = mutableListOf<TreeElement>()
-        for (property in properties) {
-            if (property is NavigatablePsiElement) {
-                treeElements.add(RpmSpecStructureViewElement(property))
-            }
-        }
-        return treeElements.toTypedArray()
+        return element.children
+                .mapNotNull { it as? NavigatablePsiElement }
+                .map { RpmSpecStructureViewElement(it) }
+                .toTypedArray()
     }
 
-    override fun getValue(): Any {
-        return element
-    }
+    override fun getValue() = element
 }

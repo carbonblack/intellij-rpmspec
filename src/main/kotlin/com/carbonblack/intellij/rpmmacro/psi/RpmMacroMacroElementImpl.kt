@@ -8,14 +8,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 
 abstract class RpmMacroMacroElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), RpmMacroMacroElement {
-    override fun getNameIdentifier(): PsiElement? =
+    override fun getNameIdentifier() =
         node.findChildByType(RpmMacroTypes.IDENTIFIER)?.psi
 
 
     override fun setName(name: String): PsiElement {
-        val keyNode = node.findChildByType(RpmMacroTypes.IDENTIFIER)
-
-        if (keyNode != null) {
+        node.findChildByType(RpmMacroTypes.IDENTIFIER)?.let { keyNode ->
             val macro = RpmMacroElementFactory.createMacro(project, name)
             val newKeyNode = macro.firstChild.node
             node.replaceChild(keyNode, newKeyNode)
@@ -28,7 +26,5 @@ abstract class RpmMacroMacroElementImpl(node: ASTNode) : ASTWrapperPsiElement(no
         return valueNode?.text ?: ""
     }
 
-    override fun getReference(): PsiReference {
-        return RpmMacroReference(this, TextRange(0, name.length))
-    }
+    override fun getReference(): PsiReference = RpmMacroReference(this, TextRange(0, name.length))
 }

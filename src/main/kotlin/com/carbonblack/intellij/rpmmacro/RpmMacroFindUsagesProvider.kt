@@ -15,13 +15,8 @@ class RpmMacroFindUsagesProvider : FindUsagesProvider {
                 TokenSet.EMPTY)
     }
 
-    override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
-        return psiElement is PsiNamedElement
-    }
-
-    override fun getHelpId(psiElement: PsiElement): String? {
-        return null
-    }
+    override fun canFindUsagesFor(psiElement: PsiElement) = psiElement is PsiNamedElement
+    override fun getHelpId(psiElement: PsiElement): String? = null
 
     override fun getType(element: PsiElement): String {
         return if (element is RpmMacroMacro) {
@@ -31,19 +26,7 @@ class RpmMacroFindUsagesProvider : FindUsagesProvider {
         }
     }
 
-    override fun getDescriptiveName(element: PsiElement): String {
-        return if (element is RpmMacroMacro) {
-            element.name
-        } else {
-            ""
-        }
-    }
+    override fun getDescriptiveName(element: PsiElement) = (element as? RpmMacroMacro)?.name ?: ""
 
-    override fun getNodeText(element: PsiElement, useFullName: Boolean): String {
-        return if (element is RpmMacroMacro) {
-            element.name
-        } else {
-            ""
-        }
-    }
+    override fun getNodeText(element: PsiElement, useFullName: Boolean) = (element as? RpmMacroMacro)?.name ?: ""
 }

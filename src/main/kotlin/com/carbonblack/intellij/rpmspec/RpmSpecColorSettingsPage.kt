@@ -1,18 +1,29 @@
 package com.carbonblack.intellij.rpmspec
 
 import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.options.colors.*
 
-import javax.swing.*
+private val DESCRIPTORS = arrayOf(
+        AttributesDescriptor("Key", RpmSpecSyntaxHighligher.KEY),
+        AttributesDescriptor("Separator", RpmSpecSyntaxHighligher.SEPARATOR),
+        AttributesDescriptor("Value", RpmSpecSyntaxHighligher.VALUE),
+        AttributesDescriptor("Body Item", RpmSpecSyntaxHighligher.BODY_ITEM),
+        AttributesDescriptor("Macro Braces", RpmSpecSyntaxHighligher.MACRO_ITEM),
+        AttributesDescriptor("Macro", RpmSpecSyntaxHighligher.MACRO_VALUE_ITEM),
+        AttributesDescriptor("Comment", RpmSpecSyntaxHighligher.COMMENT),
+        AttributesDescriptor("Text", RpmSpecSyntaxHighligher.TEXT),
+        AttributesDescriptor("Changelog Date", RpmSpecSyntaxHighligher.CHANGELOG_DATE),
+        AttributesDescriptor("Changelog Name", RpmSpecSyntaxHighligher.CHANGELOG_NAME),
+        AttributesDescriptor("Changelog Email", RpmSpecSyntaxHighligher.CHANGELOG_EMAIL),
+        AttributesDescriptor("Version", RpmSpecSyntaxHighligher.VERSION))
 
 class RpmSpecColorSettingsPage : ColorSettingsPage {
 
-    override fun getIcon(): Icon? = RpmSpecIcons.FILE
+    override fun getIcon() = RpmSpecIcons.FILE
 
-    override fun getHighlighter(): SyntaxHighlighter = RpmSpecSyntaxHighligher()
+    override fun getHighlighter() = RpmSpecSyntaxHighligher()
 
-    override fun getDemoText(): String = """
+    override fun getDemoText() = """
         Name:           cello
         Version:        1.0
         Release:        1%{?dist}
@@ -52,25 +63,9 @@ class RpmSpecColorSettingsPage : ColorSettingsPage {
 
     override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey>? = null
 
-    override fun getAttributeDescriptors(): Array<AttributesDescriptor> = DESCRIPTORS
+    override fun getAttributeDescriptors() = DESCRIPTORS
 
     override fun getColorDescriptors(): Array<ColorDescriptor> = ColorDescriptor.EMPTY_ARRAY
 
-    override fun getDisplayName(): String = "RPM SPEC"
-
-    companion object {
-        private val DESCRIPTORS = arrayOf(
-                AttributesDescriptor("Key", RpmSpecSyntaxHighligher.KEY),
-                AttributesDescriptor("Separator", RpmSpecSyntaxHighligher.SEPARATOR),
-                AttributesDescriptor("Value", RpmSpecSyntaxHighligher.VALUE),
-                AttributesDescriptor("Body Item", RpmSpecSyntaxHighligher.BODY_ITEM),
-                AttributesDescriptor("Macro Braces", RpmSpecSyntaxHighligher.MACRO_ITEM),
-                AttributesDescriptor("Macro", RpmSpecSyntaxHighligher.MACRO_VALUE_ITEM),
-                AttributesDescriptor("Comment", RpmSpecSyntaxHighligher.COMMENT),
-                AttributesDescriptor("Text", RpmSpecSyntaxHighligher.TEXT),
-                AttributesDescriptor("Changelog Date", RpmSpecSyntaxHighligher.CHANGELOG_DATE),
-                AttributesDescriptor("Changelog Name", RpmSpecSyntaxHighligher.CHANGELOG_NAME),
-                AttributesDescriptor("Changelog Email", RpmSpecSyntaxHighligher.CHANGELOG_EMAIL),
-                AttributesDescriptor("Version", RpmSpecSyntaxHighligher.VERSION))
-    }
+    override fun getDisplayName() = "RPM SPEC"
 }

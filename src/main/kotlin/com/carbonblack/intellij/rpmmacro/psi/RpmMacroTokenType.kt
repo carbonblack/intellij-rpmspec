@@ -5,5 +5,5 @@ import com.intellij.psi.tree.IElementType
 import org.jetbrains.annotations.*
 
 class RpmMacroTokenType(@NonNls debugName: String) : IElementType(debugName, RpmMacroLanguage) {
-    override fun toString(): String = "RpmMacroTokenType." + super.toString()
+    override fun toString() = "RpmMacroTokenType.${super.toString()}"
 }

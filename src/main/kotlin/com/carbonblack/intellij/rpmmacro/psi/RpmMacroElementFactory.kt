@@ -11,7 +11,6 @@ object RpmMacroElementFactory {
     }
 
     private fun createFile(project: Project, text: String): RpmMacroFile {
-        val name = "dummy.macros"
-        return PsiFileFactory.getInstance(project).createFileFromText(name, RpmSpecFileType, text) as RpmMacroFile
+        return PsiFileFactory.getInstance(project).createFileFromText("dummy.macros", RpmSpecFileType, text) as RpmMacroFile
     }
 }

@@ -7,11 +7,13 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.TokenType.WHITE_SPACE
 import com.intellij.psi.tree.IElementType
 
+private val PAIRS = arrayOf(
+        BracePair(RpmSpecTypes.LBRACE, RpmSpecTypes.RBRACE, true),
+        BracePair(RpmSpecTypes.LPAREN, RpmSpecTypes.RPAREN, true))
+
 class RpmSpecBraceMatcher : PairedBraceMatcher {
 
-    override fun getPairs(): Array<BracePair> {
-        return PAIRS
-    }
+    override fun getPairs() = PAIRS
 
     override fun isPairedBracesAllowedBeforeType(lbraceType: IElementType, tokenType: IElementType?): Boolean {
         return (WHITE_SPACE === tokenType
@@ -21,13 +23,5 @@ class RpmSpecBraceMatcher : PairedBraceMatcher {
                 || null == tokenType)
     }
 
-    override fun getCodeConstructStart(file: PsiFile, openingBraceOffset: Int): Int {
-        return openingBraceOffset
-    }
-
-    companion object {
-        private val PAIRS = arrayOf(
-                BracePair(RpmSpecTypes.LBRACE, RpmSpecTypes.RBRACE, true),
-                BracePair(RpmSpecTypes.LPAREN, RpmSpecTypes.RPAREN, true))
-    }
+    override fun getCodeConstructStart(file: PsiFile, openingBraceOffset: Int) = openingBraceOffset
 }

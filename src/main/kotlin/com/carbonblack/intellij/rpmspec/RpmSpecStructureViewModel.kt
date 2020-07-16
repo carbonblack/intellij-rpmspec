@@ -8,12 +8,6 @@ class RpmSpecStructureViewModel(psiFile: PsiFile) :
         StructureViewModelBase(psiFile, RpmSpecStructureViewElement(psiFile)),
         StructureViewModel.ElementInfoProvider {
 
-
-    override fun isAlwaysShowsPlus(element: StructureViewTreeElement): Boolean {
-        return element.value is RpmSpecFile
-    }
-
-    override fun isAlwaysLeaf(element: StructureViewTreeElement): Boolean {
-        return element.value !is RpmSpecFile
-    }
+    override fun isAlwaysShowsPlus(element: StructureViewTreeElement) = element.value is RpmSpecFile
+    override fun isAlwaysLeaf(element: StructureViewTreeElement) = element.value !is RpmSpecFile
 }

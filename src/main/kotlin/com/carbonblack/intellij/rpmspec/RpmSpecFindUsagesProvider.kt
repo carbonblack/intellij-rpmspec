@@ -17,38 +17,28 @@ class RpmSpecFindUsagesProvider : FindUsagesProvider {
                 TokenSet.EMPTY)
     }
 
-    override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
-        return psiElement is PsiNamedElement
+    override fun canFindUsagesFor(psiElement: PsiElement) = psiElement is PsiNamedElement
+
+    override fun getHelpId(psiElement: PsiElement): String? = null
+
+    override fun getType(element: PsiElement) = when (element) {
+        is RpmSpecMacro -> "macro"
+        is RpmSpecMacroDefinition -> "macro definition"
+        is RpmSpecTag -> "tag"
+        else -> ""
     }
 
-    override fun getHelpId(psiElement: PsiElement): String? {
-        return null
+    override fun getDescriptiveName(element: PsiElement) = when (element) {
+        is RpmSpecMacro -> element.name ?: ""
+        is RpmSpecMacroDefinition -> element.name ?: ""
+        is RpmSpecTag -> element.name ?: ""
+        else -> ""
     }
 
-    override fun getType(element: PsiElement): String {
-        return when (element) {
-            is RpmSpecMacro -> "macro"
-            is RpmSpecMacroDefinition -> "macro definition"
-            is RpmSpecTag -> "tag"
-            else -> ""
-        }
-    }
-
-    override fun getDescriptiveName(element: PsiElement): String {
-        return when (element) {
-            is RpmSpecMacro -> element.name ?: ""
-            is RpmSpecMacroDefinition -> element.name ?: ""
-            is RpmSpecTag -> element.name ?: ""
-            else -> ""
-        }
-    }
-
-    override fun getNodeText(element: PsiElement, useFullName: Boolean): String {
-        return when (element) {
-            is RpmSpecMacro -> element.name ?: ""
-            is RpmSpecMacroDefinition -> element.name ?: ""
-            is RpmSpecTag -> element.name ?: ""
-            else -> ""
-        }
+    override fun getNodeText(element: PsiElement, useFullName: Boolean) = when (element) {
+        is RpmSpecMacro -> element.name ?: ""
+        is RpmSpecMacroDefinition -> element.name ?: ""
+        is RpmSpecTag -> element.name ?: ""
+        else -> ""
     }
 }

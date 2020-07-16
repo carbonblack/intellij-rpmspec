@@ -1,7 +1,6 @@
 package com.carbonblack.intellij.rpmspec
 
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes
-import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
@@ -12,41 +11,39 @@ import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributes
 
 class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
 
-    override fun getHighlightingLexer(): Lexer = RpmSpecLexerAdapter()
+    override fun getHighlightingLexer() = RpmSpecLexerAdapter()
 
-    override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
-        return when (tokenType) {
-            RpmSpecTypes.MACRO -> MACRO_KEYS
-            RpmSpecTypes.COMMENT -> COMMENT_KEYS
-            RpmSpecTypes.IF -> RESERVED_KEYS
-            RpmSpecTypes.ELSE -> RESERVED_KEYS
-            RpmSpecTypes.ENDIF -> RESERVED_KEYS
-            RpmSpecTypes.SETUP -> RESERVED_KEYS
+    override fun getTokenHighlights(tokenType: IElementType) = when (tokenType) {
+        RpmSpecTypes.MACRO -> MACRO_KEYS
+        RpmSpecTypes.COMMENT -> COMMENT_KEYS
+        RpmSpecTypes.IF -> RESERVED_KEYS
+        RpmSpecTypes.ELSE -> RESERVED_KEYS
+        RpmSpecTypes.ENDIF -> RESERVED_KEYS
+        RpmSpecTypes.SETUP -> RESERVED_KEYS
 
-            RpmSpecTypes.PREP -> BODY_ITEM_KEYS
-            RpmSpecTypes.BUILD -> BODY_ITEM_KEYS
-            RpmSpecTypes.INSTALL -> BODY_ITEM_KEYS
-            RpmSpecTypes.CHECK -> BODY_ITEM_KEYS
-            RpmSpecTypes.FILES -> BODY_ITEM_KEYS
-            RpmSpecTypes.POST -> BODY_ITEM_KEYS
-            RpmSpecTypes.POSTUN -> BODY_ITEM_KEYS
-            RpmSpecTypes.POSTTRANS -> BODY_ITEM_KEYS
-            RpmSpecTypes.PRE -> BODY_ITEM_KEYS
-            RpmSpecTypes.PREUN -> BODY_ITEM_KEYS
-            RpmSpecTypes.PRETRANS -> BODY_ITEM_KEYS
-            RpmSpecTypes.CLEAN -> BODY_ITEM_KEYS
-            RpmSpecTypes.DESCRIPTION -> BODY_ITEM_KEYS
-            RpmSpecTypes.CHANGELOG -> BODY_ITEM_KEYS
-            RpmSpecTypes.PACKAGE -> BODY_ITEM_KEYS
-            RpmSpecTypes.GLOBAL -> BODY_ITEM_KEYS
-            RpmSpecTypes.DEFINE -> BODY_ITEM_KEYS
-            RpmSpecTypes.UNDEFINE -> BODY_ITEM_KEYS
+        RpmSpecTypes.PREP -> BODY_ITEM_KEYS
+        RpmSpecTypes.BUILD -> BODY_ITEM_KEYS
+        RpmSpecTypes.INSTALL -> BODY_ITEM_KEYS
+        RpmSpecTypes.CHECK -> BODY_ITEM_KEYS
+        RpmSpecTypes.FILES -> BODY_ITEM_KEYS
+        RpmSpecTypes.POST -> BODY_ITEM_KEYS
+        RpmSpecTypes.POSTUN -> BODY_ITEM_KEYS
+        RpmSpecTypes.POSTTRANS -> BODY_ITEM_KEYS
+        RpmSpecTypes.PRE -> BODY_ITEM_KEYS
+        RpmSpecTypes.PREUN -> BODY_ITEM_KEYS
+        RpmSpecTypes.PRETRANS -> BODY_ITEM_KEYS
+        RpmSpecTypes.CLEAN -> BODY_ITEM_KEYS
+        RpmSpecTypes.DESCRIPTION -> BODY_ITEM_KEYS
+        RpmSpecTypes.CHANGELOG -> BODY_ITEM_KEYS
+        RpmSpecTypes.PACKAGE -> BODY_ITEM_KEYS
+        RpmSpecTypes.GLOBAL -> BODY_ITEM_KEYS
+        RpmSpecTypes.DEFINE -> BODY_ITEM_KEYS
+        RpmSpecTypes.UNDEFINE -> BODY_ITEM_KEYS
 
-            RpmSpecTypes.FILES_DIRECTIVE_TOKEN -> KEY_KEYS
+        RpmSpecTypes.FILES_DIRECTIVE_TOKEN -> KEY_KEYS
 
-            TokenType.BAD_CHARACTER -> BAD_CHAR_KEYS
-            else -> EMPTY_KEYS
-        }
+        TokenType.BAD_CHARACTER -> BAD_CHAR_KEYS
+        else -> EMPTY_KEYS
     }
 
     companion object {

@@ -9,8 +9,7 @@ import com.intellij.psi.*
 abstract class RpmSpecMacroElementImpl(node: ASTNode) :
         ASTWrapperPsiElement(node), PsiNameIdentifierOwner {
 
-    override fun getNameIdentifier(): PsiElement? =
-        node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi
+    override fun getNameIdentifier() = node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi
 
     override fun setName(name: String): PsiElement {
         node.findChildByType(RpmSpecTypes.IDENTIFIER)?.let {
@@ -21,11 +20,7 @@ abstract class RpmSpecMacroElementImpl(node: ASTNode) :
         return this
     }
 
-    override fun getName(): String? {
-        return node.findChildByType(RpmSpecTypes.IDENTIFIER)?.text
-    }
+    override fun getName() = node.findChildByType(RpmSpecTypes.IDENTIFIER)?.text
 
-    override fun getReference(): PsiReference {
-        return RpmSpecReference(this, TextRange(0, name?.length ?: 0))
-    }
+    override fun getReference() = RpmSpecReference(this, TextRange(0, name?.length ?: 0))
 }
