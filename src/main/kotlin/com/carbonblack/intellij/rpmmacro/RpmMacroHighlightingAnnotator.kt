@@ -9,10 +9,10 @@ import com.intellij.psi.PsiElement
 class RpmMacroHighlightingAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         (element as? RpmMacroMacro)?.nameIdentifier?.let { identifier ->
-            holder.createAnnotation(
-                    HighlightSeverity.INFORMATION,
-                    identifier.textRange,
-                    null).textAttributes = RpmMacroSyntaxHighligher.MACRO_ITEM
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                    .textAttributes(RpmMacroSyntaxHighligher.MACRO_ITEM)
+                    .range(identifier.textRange)
+                    .create()
         }
     }
 }

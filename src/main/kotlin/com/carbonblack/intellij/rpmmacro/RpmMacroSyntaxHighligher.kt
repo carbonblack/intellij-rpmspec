@@ -24,7 +24,7 @@ class RpmMacroSyntaxHighligher : SyntaxHighlighterBase() {
     companion object {
         val MACRO_ITEM = createTextAttributesKey("RPM_MACRO_MACRO_ITEM", DefaultLanguageHighlighterColors.CONSTANT)
         val COMMENT = createTextAttributesKey("RPM_MACRO_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT)
-        val BAD_CHARACTER = createTextAttributesKey("RPM_SPEC_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER)
+        private val BAD_CHARACTER = createTextAttributesKey("RPM_SPEC_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER)
 
         private val BAD_CHAR_KEYS = arrayOf(BAD_CHARACTER)
         private val MACRO_KEYS = arrayOf(MACRO_ITEM)

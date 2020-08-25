@@ -61,22 +61,14 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
         val CHANGELOG_NAME = createTextAttributesKey("RPM_SPEC_CHANGELOG_NAME", DefaultLanguageHighlighterColors.DOC_COMMENT_TAG_VALUE)
         val CHANGELOG_EMAIL = createTextAttributesKey("RPM_SPEC_CHANGELOG_EMAIL", DefaultLanguageHighlighterColors.DOC_COMMENT_TAG)
         val VERSION = createTextAttributesKey("RPM_VERSION", DefaultLanguageHighlighterColors.NUMBER)
-        val BAD_CHARACTER = createTextAttributesKey("RPM_SPEC_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER)
+        private val BAD_CHARACTER = createTextAttributesKey("RPM_SPEC_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER)
 
         private val BAD_CHAR_KEYS = arrayOf(BAD_CHARACTER)
-        private val SEPARATOR_KEYS = arrayOf(SEPARATOR)
         private val KEY_KEYS = arrayOf(KEY)
-        private val VALUE_KEYS = arrayOf(VALUE)
         private val RESERVED_KEYS = arrayOf(RESERVED)
         private val BODY_ITEM_KEYS = arrayOf(BODY_ITEM)
         private val MACRO_KEYS = arrayOf(MACRO_ITEM)
-        private val MACRO_VALUE_KEYS = arrayOf(MACRO_VALUE_ITEM)
         private val COMMENT_KEYS = arrayOf(COMMENT)
-        private val TEXT_KEYS = arrayOf(TEXT)
-        private val CHANGELOG_DATE_KEYS = arrayOf(CHANGELOG_DATE)
-        private val CHANGELOG_NAME_KEYS = arrayOf(CHANGELOG_NAME)
-        private val CHANGELOG_EMAIL_KEYS = arrayOf(CHANGELOG_EMAIL)
-        private val VERSION_KEYS = arrayOf(VERSION)
         private val EMPTY_KEYS = arrayOf<TextAttributesKey>()
     }
 }
