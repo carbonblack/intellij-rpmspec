@@ -9,7 +9,7 @@ import com.intellij.psi.tree.IElementType
 
 import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
 
-class RpmMacroSyntaxHighligher : SyntaxHighlighterBase() {
+class RpmMacroSyntaxHighlighter : SyntaxHighlighterBase() {
 
     override fun getHighlightingLexer() = RpmMacroLexerAdapter()
 

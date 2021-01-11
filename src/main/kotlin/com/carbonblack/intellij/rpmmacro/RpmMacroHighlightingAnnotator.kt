@@ -10,7 +10,7 @@ class RpmMacroHighlightingAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         (element as? RpmMacroMacro)?.nameIdentifier?.let { identifier ->
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                    .textAttributes(RpmMacroSyntaxHighligher.MACRO_ITEM)
+                    .textAttributes(RpmMacroSyntaxHighlighter.MACRO_ITEM)
                     .range(identifier.textRange)
                     .create()
         }

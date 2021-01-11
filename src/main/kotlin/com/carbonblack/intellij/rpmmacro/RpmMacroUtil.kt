@@ -23,7 +23,7 @@ import kotlin.streams.asSequence
 
 object RpmMacroUtil {
 
-    private fun String.runCommand(workingDir: File? = null): String? {
+    private fun String.runCommand(workingDir: File? = null): String {
         val parts = this.split("\\s".toRegex())
         val proc = ProcessBuilder(*parts.toTypedArray())
                 .directory(workingDir)
@@ -39,7 +39,7 @@ object RpmMacroUtil {
     val macroPathFiles: Set<VirtualFile> by lazy {
         // Parse the rpm macro paths
         val paths = try {
-            "rpm --showrc".runCommand()?.let runCommand@ { output ->
+            "rpm --showrc".runCommand().let runCommand@ { output ->
                 val regex = Regex("Macro path: (.*)")
                 for (line in output.split("\n")) {
                     regex.find(line)?.groups?.get(1)?.let { match ->

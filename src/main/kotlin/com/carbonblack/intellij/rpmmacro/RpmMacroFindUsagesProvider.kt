@@ -8,7 +8,7 @@ import com.intellij.psi.*
 import com.intellij.psi.tree.TokenSet
 
 class RpmMacroFindUsagesProvider : FindUsagesProvider {
-    override fun getWordsScanner(): WordsScanner? {
+    override fun getWordsScanner(): WordsScanner {
         return DefaultWordsScanner(RpmMacroLexerAdapter(),
                 TokenSet.create(RpmMacroTypes.IDENTIFIER),
                 TokenSet.create(RpmMacroTypes.COMMENT),

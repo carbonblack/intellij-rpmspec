@@ -83,7 +83,7 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
                 || key.toLowerCase().startsWith("patch")
                 || key.toLowerCase().startsWith("source")) {
             val tags = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecTag::class.java)
-            val filteredTags = tags.filter { it.firstChild.text.toLowerCase() == key.toLowerCase() }
+            val filteredTags = tags.filter { it.firstChild.text.equals(key, ignoreCase = true) }
             return filteredTags.firstOrNull()
         }
         return null

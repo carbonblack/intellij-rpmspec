@@ -23,7 +23,7 @@ class RpmSpecFoldingBuilder : FoldingBuilderEx(), DumbAware {
                         TextRange(startOffset,
                                 ifStatement.textRange.endOffset),
                         FoldingGroup.newGroup("rpm-spec-if-statement")) {
-                    override fun getPlaceholderText(): String? {
+                    override fun getPlaceholderText(): String {
                         return "...${ifStatement.endIfExpr?.text ?: ""}"
                     }
                 })
@@ -38,7 +38,7 @@ class RpmSpecFoldingBuilder : FoldingBuilderEx(), DumbAware {
                         TextRange(startOffset,
                                 multilineMacro.textRange.endOffset),
                         FoldingGroup.newGroup("rpm-spec-multiline-macro")) {
-                    override fun getPlaceholderText(): String? {
+                    override fun getPlaceholderText(): String {
                         return "..."
                     }
                 })

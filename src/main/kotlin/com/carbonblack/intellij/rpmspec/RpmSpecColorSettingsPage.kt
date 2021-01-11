@@ -7,14 +7,14 @@ private val DESCRIPTORS = arrayOf(
         AttributesDescriptor("Key", RpmSpecSyntaxHighligher.KEY),
         AttributesDescriptor("Separator", RpmSpecSyntaxHighligher.SEPARATOR),
         AttributesDescriptor("Value", RpmSpecSyntaxHighligher.VALUE),
-        AttributesDescriptor("Body Item", RpmSpecSyntaxHighligher.BODY_ITEM),
-        AttributesDescriptor("Macro Braces", RpmSpecSyntaxHighligher.MACRO_ITEM),
+        AttributesDescriptor("Body item", RpmSpecSyntaxHighligher.BODY_ITEM),
+        AttributesDescriptor("Macro braces", RpmSpecSyntaxHighligher.MACRO_ITEM),
         AttributesDescriptor("Macro", RpmSpecSyntaxHighligher.MACRO_VALUE_ITEM),
         AttributesDescriptor("Comment", RpmSpecSyntaxHighligher.COMMENT),
         AttributesDescriptor("Text", RpmSpecSyntaxHighligher.TEXT),
-        AttributesDescriptor("Changelog Date", RpmSpecSyntaxHighligher.CHANGELOG_DATE),
-        AttributesDescriptor("Changelog Name", RpmSpecSyntaxHighligher.CHANGELOG_NAME),
-        AttributesDescriptor("Changelog Email", RpmSpecSyntaxHighligher.CHANGELOG_EMAIL),
+        AttributesDescriptor("Changelog date", RpmSpecSyntaxHighligher.CHANGELOG_DATE),
+        AttributesDescriptor("Changelog name", RpmSpecSyntaxHighligher.CHANGELOG_NAME),
+        AttributesDescriptor("Changelog email", RpmSpecSyntaxHighligher.CHANGELOG_EMAIL),
         AttributesDescriptor("Version", RpmSpecSyntaxHighligher.VERSION))
 
 class RpmSpecColorSettingsPage : ColorSettingsPage {

@@ -10,7 +10,7 @@ import com.intellij.psi.*
 import com.intellij.psi.tree.TokenSet
 
 class RpmSpecFindUsagesProvider : FindUsagesProvider {
-    override fun getWordsScanner(): WordsScanner? {
+    override fun getWordsScanner(): WordsScanner {
         return DefaultWordsScanner(RpmSpecLexerAdapter(),
                 TokenSet.create(RpmSpecTypes.IDENTIFIER),
                 TokenSet.create(RpmSpecTypes.COMMENT),
