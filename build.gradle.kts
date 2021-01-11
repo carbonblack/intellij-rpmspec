@@ -3,9 +3,9 @@ import org.jetbrains.grammarkit.tasks.GenerateParser
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.grammarkit") version "2020.2.1"
-    id("org.jetbrains.intellij") version "0.4.21"
-    kotlin("jvm") version "1.4.0"
+    id("org.jetbrains.grammarkit") version "2020.3.2"
+    id("org.jetbrains.intellij") version "0.6.5"
+    kotlin("jvm") version "1.4.21"
     java
 }
 
@@ -39,7 +39,8 @@ repositories {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = "2020.2"
+    type = "IC"
+    version = "2020.3"
     updateSinceUntilBuild = false
 }
 

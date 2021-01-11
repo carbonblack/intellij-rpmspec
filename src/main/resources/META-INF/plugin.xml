@@ -18,7 +18,7 @@
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="201.3803.71"/>
+    <idea-version since-build="203"/>
 
     <depends>com.intellij.modules.lang</depends>
 
