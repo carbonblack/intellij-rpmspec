@@ -12,13 +12,13 @@ plugins {
 group = "com.carbonblack"
 version = "1.1.1"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+tasks.compileJava {
+    @Suppress("UnstableApiUsage")
+    options.release.set(11)
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
     kotlinOptions.apiVersion = "1.4"
     kotlinOptions.freeCompilerArgs = listOf("-Xjvm-default=enable")
 }
@@ -34,7 +34,12 @@ tasks.withType<Test> {
 }
 
 repositories {
-    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    testImplementation("io.mockk", "mockk", "1.10.4")
+    testImplementation("io.strikt", "strikt-core", "0.28.1")
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/

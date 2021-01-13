@@ -1,0 +1,93 @@
+ARCHITECTURE AND OS:
+build arch            : x86_64
+compatible build archs: x86_64 noarch
+build os              : Linux
+compatible build os's : Linux
+install arch          : x86_64
+install os            : Linux
+compatible archs      : x86_64 amd64 em64t athlon noarch i686 i586 i486 i386 fat
+compatible os's       : Linux
+
+RPMRC VALUES:
+archcolor             : 2
+optflags              : -O2 -g -m64 -fmessage-length=0 -D_FORTIFY_SOURCE=2 -fstack-protector -funwind-tables -fasynchronous-unwind-tables
+
+Features supported by rpmlib:
+    rpmlib(BuiltinLuaScripts) = 4.2.2-1
+    rpmlib(CompressedFileNames) = 3.0.4-1
+    rpmlib(ConcurrentAccess) = 4.1-1
+    rpmlib(ExplicitPackageProvide) = 4.0-1
+    rpmlib(FileCaps) = 4.6.1-1
+    rpmlib(FileDigests) = 4.6.0-1
+    rpmlib(HeaderLoadSortsTags) = 4.0.1-1
+    rpmlib(LargeFiles) = 4.12.0-1
+    rpmlib(PartialHardlinkSets) = 4.0.4-1
+    rpmlib(PayloadFilesHavePrefix) = 4.0-1
+    rpmlib(PayloadIsBzip2) = 3.0.5-1
+    rpmlib(PayloadIsLzma) = 4.4.2-1
+    rpmlib(PayloadIsXz) = 5.2-1
+    rpmlib(PayloadIsZstd) = 5.4.18-1
+    rpmlib(RichDependencies) = 4.12.0-1
+    rpmlib(ScriptletExpansion) = 4.9.0-1
+    rpmlib(ScriptletInterpreterArgs) = 4.0.3-1
+    rpmlib(TildeInVersions) = 4.10.0-1
+    rpmlib(VersionedDependencies) = 3.0.3-1
+
+Macro path: /usr/lib/rpm/macros:/usr/lib/rpm/macros.d/macros.*:/usr/lib/rpm/platform/%{_target}/macros:/usr/lib/rpm/fileattrs/*.attr:/usr/lib/rpm/suse/macros:/etc/rpm/macros.*:/etc/rpm/macros:/etc/rpm/%{_target}/macros:~/.rpmmacros
+
+========================
+-13: __7zip     /usr/bin/7za
+-13: ___build_args      -e
+-13: ___build_cmd       %{?_sudo:%{_sudo} }%{?_remsh:%{_remsh} %{_remhost} }%{?_remsudo:%{_remsudo} }%{?_remchroot:%{_remchroot} %{_remroot} }%{___build_shell} %{___build_args}
+-13: ___build_post      exit $?
+-13: ___build_pre
+  RPM_SOURCE_DIR="%{u2p:%{_sourcedir}}"
+  RPM_BUILD_DIR="%{u2p:%{_builddir}}"
+  RPM_OPT_FLAGS="%{optflags}"
+  RPM_ARCH="%{_arch}"
+  RPM_OS="%{_os}"
+  export RPM_SOURCE_DIR RPM_BUILD_DIR RPM_OPT_FLAGS RPM_ARCH RPM_OS
+  RPM_DOC_DIR="%{_docdir}"
+  export RPM_DOC_DIR
+  RPM_PACKAGE_NAME="%{NAME}"
+  RPM_PACKAGE_VERSION="%{VERSION}"
+  RPM_PACKAGE_RELEASE="%{RELEASE}"
+  export RPM_PACKAGE_NAME RPM_PACKAGE_VERSION RPM_PACKAGE_RELEASE
+  LANG=C
+  export LANG
+  unset CDPATH DISPLAY ||:
+  %{?buildroot:RPM_BUILD_ROOT="%{u2p:%{buildroot}}"
+  export RPM_BUILD_ROOT}
+  %{?_javaclasspath:CLASSPATH="%{_javaclasspath}"
+  export CLASSPATH}
+  PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:%{_libdir}/pkgconfig:%{_datadir}/pkgconfig"
+  export PKG_CONFIG_PATH
+
+  %{verbose:set -x}%{!verbose:exec > /dev/null}
+  umask 022
+  cd "%{u2p:%{_builddir}}"
+-13: ___build_shell     %{?_buildshell:%{_buildshell}}%{!?_buildshell:/bin/sh}
+-13: ___build_template  #!%{___build_shell}
+-13: _source_filedigest_algorithm       8
+-13: _sourcedir %{_topdir}/SOURCES
+-13: _specdir   %{_topdir}/SPECS
+-13: _srcrpmdir %{_topdir}/SRPMS
+-13: _sysconfdir        /etc
+-11: _target    x86_64-linux
+-13: _target_alias      %{_host_alias}
+-11= _target_cpu        x86_64
+-11= _target_os linux
+-13: _target_platform   %{_target_cpu}-%{_vendor}-%{_target_os}
+-13: _target_vendor     %{_host_vendor}
+-13: _tmppath   %{_var}/tmp
+-13: _topdir    %{expand:%%global _topdir %{lua:if posix.access(rpm.expand("%{_usrsrc}/packages"), "w") then print "%{_usrsrc}/packages" else print "%{getenv:HOME}/rpmbuild" end}
+}%_topdir
+-13: _transaction_color 0
+-13: _unique_build_ids  1
+-13: _unique_debug_names        1
+-13: _unique_debug_srcs 1
+-13: _unpackaged_files_terminate_build  1
+-13: _unzipbin  %{__unzip}
+-13: _urlhelper %{__urlhelpercmd} %{?__urlhelper_localopts} %{?__urlhelper_proxyopts} %{__urlhelperopts}
+-13: _use_internal_dependency_generator 1
+======================== active 725 empty 0

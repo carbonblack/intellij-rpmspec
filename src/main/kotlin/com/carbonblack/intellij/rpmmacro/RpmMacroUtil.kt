@@ -2,6 +2,7 @@ package com.carbonblack.intellij.rpmmacro
 
 import com.carbonblack.intellij.rpmmacro.psi.RpmMacroFile
 import com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacro
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
@@ -12,43 +13,55 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.io.exists
 import com.intellij.util.io.isDirectory
 import com.intellij.util.io.isFile
+import kotlinx.coroutines.*
+import org.jetbrains.annotations.TestOnly
 import java.io.File
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Paths
 
 import java.util.concurrent.TimeUnit
-import java.io.BufferedReader
 import kotlin.streams.asSequence
 
-object RpmMacroUtil {
+private val log = Logger.getInstance(RpmMacroUtil::class.java)
 
-    private fun String.runCommand(workingDir: File? = null): String {
-        val parts = this.split("\\s".toRegex())
-        val proc = ProcessBuilder(*parts.toTypedArray())
-                .directory(workingDir)
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .redirectError(ProcessBuilder.Redirect.PIPE)
-                .start()
+private fun String.runCommand(workingDir: File? = null, action: (String) -> Unit) {
+    val parts = this.split("\\s".toRegex())
+    val proc = ProcessBuilder()
+        .command(parts)
+        .directory(workingDir)
+        .redirectErrorStream(true)
+        .start()
 
-        return proc.inputStream.bufferedReader().use(BufferedReader::readText).also {
-            proc.waitFor(5, TimeUnit.SECONDS)
+    runBlocking {
+        val child = launch(Dispatchers.IO) {
+            if (!proc.waitFor(5, TimeUnit.SECONDS)) {
+                proc.destroy()
+                cancel()
+            }
+        }
+
+        proc.inputStream.bufferedReader().forEachLine {
+            action(it)
+        }
+
+        child.join()
+        if (child.isCancelled) {
+            cancel()
+        } else if (proc.exitValue() != 0) {
+            throw Exception("RPM process exited with non-zero return code.")
         }
     }
+}
 
+object RpmMacroUtil {
     val macroPathFiles: Set<VirtualFile> by lazy {
-        // Parse the rpm macro paths
         val paths = try {
-            "rpm --showrc".runCommand().let runCommand@ { output ->
-                val regex = Regex("Macro path: (.*)")
-                for (line in output.split("\n")) {
-                    regex.find(line)?.groups?.get(1)?.let { match ->
-                        return@runCommand match.value.replace("%{_target}", "x86_64-linux").split(":")
-                    }
-                }
-                null
-            }
-        } catch (e: Exception) { null } ?: emptyList()
+            getRpmMacroPaths()
+        } catch (e: Exception) {
+            log.warn("Error finding system macro paths.", e)
+            emptyList()
+        }
 
         // Find files matching macro paths
         paths.flatMap { path ->
@@ -61,9 +74,9 @@ object RpmMacroUtil {
 
                 if (startPath.exists() && startPath.isDirectory()) {
                     Files.walk(startPath).asSequence()
-                            .filter { it?.isFile() == true && matcher.matches(it.fileName)  }
-                            .mapNotNull { LocalFileSystem.getInstance().findFileByPath(it.toString()) }
-                            .toList()
+                        .filter { it?.isFile() == true && matcher.matches(it.fileName) }
+                        .mapNotNull { LocalFileSystem.getInstance().findFileByPath(it.toString()) }
+                        .toList()
                 } else emptyList()
             } else {
                 LocalFileSystem.getInstance().findFileByPath(path)?.let { listOf(it) } ?: emptyList()
@@ -71,9 +84,37 @@ object RpmMacroUtil {
         }.toSet()
     }
 
+    @TestOnly
+    fun getRpmMacroPaths(): List<String> {
+        // Parse the rpm macro paths
+        val paths = mutableListOf<String>()
+        var target: String? = null
+
+        val pathsRegex = Regex("^Macro path: (.*)$")
+        val targetRegex = Regex("^\\S+:\\s+_target\\s+(.*)$")
+        "rpm --showrc".runCommand { line ->
+            if (paths.isEmpty()) {
+                pathsRegex.find(line)?.groups?.get(1)?.let { match ->
+                    paths += match.value.split(":")
+                }
+            }
+            if (target == null) {
+                targetRegex.find(line)?.groups?.get(1)?.let { match ->
+                    target = match.value
+                }
+            }
+        }
+
+        return paths.map {
+            it.replace("%{_target}", target ?: "x86_64-linux")
+        }
+    }
+
     fun findMacros(project: Project, key: String): List<RpmMacroMacro> {
         val virtualFiles = FileTypeIndex.getFiles(RpmMacroFileType, GlobalSearchScope.everythingScope(project))
-        val rpmMacroFiles  = virtualFiles.map { PsiManager.getInstance(project).findFile(it) }.filterIsInstance<RpmMacroFile>()
+        val rpmMacroFiles = virtualFiles.map {
+            PsiManager.getInstance(project).findFile(it)
+        }.filterIsInstance<RpmMacroFile>()
 
         return rpmMacroFiles.flatMap { file ->
             PsiTreeUtil.findChildrenOfType(file, RpmMacroMacro::class.java).filter { it.name == key }

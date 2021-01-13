@@ -1,0 +1,51 @@
+ARCHITECTURE AND OS:
+build arch            : x86_64
+compatible build archs: x86_64 noarch
+build os              : darwin
+compatible build os's : Darwin
+install arch          : x86_64
+install os            : Darwin
+compatible archs      : x86_64 amd64 em64t athlon noarch i686 i586 i486 i386 fat
+compatible os's       : Darwin MacOSX
+
+RPMRC VALUES:
+archcolor             : 2
+optflags              : -O2 -g
+
+Features supported by rpmlib:
+    rpmlib(BuiltinLuaScripts) = 4.2.2-1
+    rpmlib(CaretInVersions) = 4.15.0-1
+    rpmlib(CompressedFileNames) = 3.0.4-1
+    rpmlib(ConcurrentAccess) = 4.1-1
+    rpmlib(DynamicBuildRequires) = 4.15.0-1
+    rpmlib(ExplicitPackageProvide) = 4.0-1
+    rpmlib(FileDigests) = 4.6.0-1
+    rpmlib(HeaderLoadSortsTags) = 4.0.1-1
+    rpmlib(LargeFiles) = 4.12.0-1
+    rpmlib(PartialHardlinkSets) = 4.0.4-1
+    rpmlib(PayloadFilesHavePrefix) = 4.0-1
+    rpmlib(PayloadIsBzip2) = 3.0.5-1
+    rpmlib(PayloadIsLzma) = 4.4.2-1
+    rpmlib(PayloadIsXz) = 5.2-1
+    rpmlib(PayloadIsZstd) = 5.4.18-1
+    rpmlib(RichDependencies) = 4.12.0-1
+    rpmlib(ScriptletExpansion) = 4.9.0-1
+    rpmlib(ScriptletInterpreterArgs) = 4.0.3-1
+    rpmlib(TildeInVersions) = 4.10.0-1
+    rpmlib(VersionedDependencies) = 3.0.3-1
+
+Macro path: /usr/local/Cellar/rpm/4.16.1.2/lib/rpm/macros:/usr/local/Cellar/rpm/4.16.1.2/lib/rpm/macros.d/macros.*:/usr/local/Cellar/rpm/4.16.1.2/lib/rpm/platform/%{_target}/macros:/usr/local/Cellar/rpm/4.16.1.2/lib/rpm/fileattrs/*.attr:/usr/local/Cellar/rpm/4.16.1.2/lib/rpm/homebrew/macros:/usr/local/etc/rpm/macros.*:/usr/local/etc/rpm/macros:/usr/local/etc/rpm/%{_target}/macros:~/.rpmmacros
+
+========================
+-13: _sourcedir %{_topdir}/SOURCES
+-13: _specdir   %{_topdir}/SPECS
+-13: _srcrpmdir %{_topdir}/SRPMS
+-13: _sysconfdir        /etc
+-11: _target    x86_64-darwin
+-13: _target_alias      %{_host_alias}
+-11= _target_cpu        x86_64
+-11= _target_os darwin
+-13: _target_platform   %{_target_cpu}-%{_vendor}-%{_target_os}
+-13: _target_vendor     %{_host_vendor}
+-13: _tmppath   %{_var}/tmp
+======================== active 725 empty 0
