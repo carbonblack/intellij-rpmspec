@@ -1,5 +1,6 @@
 package com.carbonblack.intellij.rpmmacro
 
+import com.carbonblack.intellij.rpmspec.RpmSpecSettingsState
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -70,7 +71,9 @@ class RpmMacroUtilTest : BasePlatformTestCase() {
         clearAllMocks()
 
         mockkConstructor(ProcessBuilder::class)
-        every { anyConstructed<ProcessBuilder>().command(listOf("rpm", "--showrc")) } answers {
+        every {
+            anyConstructed<ProcessBuilder>().command(listOf(RpmSpecSettingsState.instance.rpmCommandPath, "--showrc"))
+        } answers {
             (callOriginal()).command("unknown-command")
         }
 

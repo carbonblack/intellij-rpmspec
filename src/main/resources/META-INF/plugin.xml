@@ -37,6 +37,10 @@
         <annotator language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecHighlightingAnnotator"/>
         <lang.braceMatcher language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecBraceMatcher"/>
         <lang.psiStructureViewFactory language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecStructureViewFactory"/>
+        <applicationService serviceImplementation="com.carbonblack.intellij.rpmspec.RpmSpecSettingsState"/>
+        <applicationConfigurable parentId="tools" instance="com.carbonblack.intellij.rpmspec.RpmSpecSettingsConfigurable"
+                                 id="com.carbonblack.intellij.rpmspec.RpmSpecSettingsConfigurable"
+                                 displayName="RPM SPEC File"/>
     </extensions>
 
     <!-- RPM Macro File -->

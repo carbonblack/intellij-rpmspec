@@ -2,6 +2,7 @@ package com.carbonblack.intellij.rpmmacro
 
 import com.carbonblack.intellij.rpmmacro.psi.RpmMacroFile
 import com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacro
+import com.carbonblack.intellij.rpmspec.RpmSpecSettingsState
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
@@ -25,10 +26,9 @@ import kotlin.streams.asSequence
 
 private val log = Logger.getInstance(RpmMacroUtil::class.java)
 
-private fun String.runCommand(workingDir: File? = null, action: (String) -> Unit) {
-    val parts = this.split("\\s".toRegex())
+private fun List<String>.runCommand(workingDir: File? = null, action: (String) -> Unit) {
     val proc = ProcessBuilder()
-        .command(parts)
+        .command(this)
         .directory(workingDir)
         .redirectErrorStream(true)
         .start()
@@ -92,7 +92,7 @@ object RpmMacroUtil {
 
         val pathsRegex = Regex("^Macro path: (.*)$")
         val targetRegex = Regex("^\\S+:\\s+_target\\s+(.*)$")
-        "rpm --showrc".runCommand { line ->
+        listOf(RpmSpecSettingsState.instance.rpmCommandPath, "--showrc").runCommand { line ->
             if (paths.isEmpty()) {
                 pathsRegex.find(line)?.groups?.get(1)?.let { match ->
                     paths += match.value.split(":")
