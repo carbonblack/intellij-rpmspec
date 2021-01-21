@@ -9,9 +9,13 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 1.1.1:</b>
+        <b>Changes in version 1.2.0:</b>
         <ul>
-          <li>Fixed an issue with icon scaling on HDPI displays</li>
+          <li>Allow configuration of the rpm executable path</li>
+          <li>Fixed an issue where the target architecture was not detected</li>
+          <li>Added logging around rpm macro detection failures</li>
+          <li>Added an icon to show on the plugin page</li>
+          <li>Updated plugin to use Kotlin 1.4.x and IntelliJ 2020.3+</li>
         </ul><br>
         </html>
             ]]>

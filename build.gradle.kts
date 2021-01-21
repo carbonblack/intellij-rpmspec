@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.carbonblack"
-version = "1.1.1"
+version = "1.2.0"
 
 tasks.compileJava {
     @Suppress("UnstableApiUsage")
