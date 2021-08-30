@@ -3,9 +3,10 @@ import org.jetbrains.grammarkit.tasks.GenerateParser
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.grammarkit") version "2020.3.2"
-    id("org.jetbrains.intellij") version "0.6.5"
-    kotlin("jvm") version "1.4.21"
+    id("org.jetbrains.grammarkit") version "2021.1.3"
+    id("org.jetbrains.intellij") version "1.1.4"
+    // See: https://plugins.jetbrains.com/docs/intellij/kotlin.html#kotlin-standard-library
+    kotlin("jvm") version "1.5.10"
     java
 }
 
@@ -13,7 +14,6 @@ group = "com.carbonblack"
 version = "1.2.0"
 
 tasks.compileJava {
-    @Suppress("UnstableApiUsage")
     options.release.set(11)
 }
 
@@ -34,19 +34,19 @@ tasks.withType<Test> {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
-    testImplementation("io.mockk", "mockk", "1.10.4")
-    testImplementation("io.strikt", "strikt-core", "0.28.1")
+    testImplementation("io.mockk", "mockk", "1.12.0")
+    testImplementation("io.strikt", "strikt-core", "0.32.0")
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    type = "IC"
-    version = "2020.3"
-    updateSinceUntilBuild = false
+    type.set("IC")
+    version.set("2021.2") // IntelliJ version and Kotlin version must match
+    updateSinceUntilBuild.set(false)
 }
 
 val generateSpecParser = tasks.create<GenerateParser>("generateSpecParser") {

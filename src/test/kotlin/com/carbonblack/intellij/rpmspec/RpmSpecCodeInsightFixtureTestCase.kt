@@ -32,7 +32,7 @@ class RpmSpecCodeInsightFixtureTestCase : BasePlatformTestCase() {
     }
 
     fun testCommenter() {
-        myFixture.configureByText(RpmSpecFileType, "<caret>%global my_macro 3")
+        myFixture.configureByText("TempSpecFile.spec", "<caret>%global my_macro 3")
         val commentAction = CommentByLineCommentAction()
         commentAction.actionPerformedImpl(project, myFixture.editor)
         myFixture.checkResult("#%global my_macro 3")

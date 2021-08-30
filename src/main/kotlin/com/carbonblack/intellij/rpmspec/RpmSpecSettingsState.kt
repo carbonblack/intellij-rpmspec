@@ -1,6 +1,7 @@
 package com.carbonblack.intellij.rpmspec
 
 import com.carbonblack.intellij.rpmmacro.RpmMacroUtil
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.*
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.util.io.exists
@@ -21,7 +22,7 @@ class RpmSpecSettingsState : PersistentStateComponent<RpmSpecSettingsState> {
 
     companion object {
         val instance: RpmSpecSettingsState
-            get() = ServiceManager.getService(RpmSpecSettingsState::class.java)
+            get() = ApplicationManager.getApplication().getService(RpmSpecSettingsState::class.java)
 
         private fun findRpmPath(): String? {
             return try {
