@@ -47,6 +47,8 @@ intellij {
     type.set("IC")
     version.set("2021.2") // IntelliJ version and Kotlin version must match
     updateSinceUntilBuild.set(false)
+
+    plugins.set(listOf("com.jetbrains.sh"))
 }
 
 val generateSpecParser = tasks.create<GenerateParser>("generateSpecParser") {
@@ -79,8 +81,15 @@ val generateMacroLexer = tasks.create<GenerateLexer>("generateMacroLexer") {
     purgeOldFiles = true
 }
 
+val generateShellLexer = tasks.create<GenerateLexer>("generateShellLexer") {
+    source = "$projectDir/src/main/grammars/RpmSpecShellLexer.flex"
+    targetDir = "$projectDir/src/main/gen/com/carbonblack/intellij/rpmspec/shell"
+    targetClass = "_RpmSpecShellLexer"
+    purgeOldFiles = true
+}
+
 val generateGrammars = tasks.register("generateGrammars") {
-    dependsOn(generateSpecParser, generateSpecLexer, generateMacroParser, generateMacroLexer)
+    dependsOn(generateSpecParser, generateSpecLexer, generateMacroParser, generateMacroLexer, generateShellLexer)
 }
 
 tasks.withType<KotlinCompile> {

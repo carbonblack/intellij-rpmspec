@@ -18,14 +18,15 @@ class RpmSpecHighlightingAnnotator : Annotator {
                 }
             }
             is RpmSpecDescriptionSection -> {
-                val body = element.genericSection.genericBody
-                val bodyTextRange = element.genericSection.genericBody?.textRange
-                if(body != null && bodyTextRange != null) {
-                    val startOffset = bodyTextRange.startOffset
-                    val endOffset = body.ifExprList.firstOrNull()?.textRange?.startOffset ?: bodyTextRange.endOffset
-                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                element.genericSection.children.filterIsInstance<RpmSpecGenericBody>().forEach { body ->
+                    val bodyTextRange = body.textRange
+                    if (bodyTextRange != null) {
+                        val startOffset = bodyTextRange.startOffset
+                        val endOffset = body.ifExprList.firstOrNull()?.textRange?.startOffset ?: bodyTextRange.endOffset
+                        holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                             .textAttributes(RpmSpecSyntaxHighligher.TEXT)
                             .range(TextRange(startOffset, endOffset)).create()
+                    }
                 }
             }
             is RpmSpecMacroDefinition -> element.node.findChildByType(RpmSpecTypes.IDENTIFIER)?.let {
