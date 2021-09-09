@@ -1,0 +1,5 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <lang.fileViewProviderFactory language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.shell.RpmSpecFileViewProviderFactory"/>
+    </extensions>
+</idea-plugin>

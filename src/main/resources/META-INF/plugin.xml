@@ -25,7 +25,7 @@
     <idea-version since-build="203"/>
 
     <depends>com.intellij.modules.lang</depends>
-    <depends>com.jetbrains.sh</depends>
+    <depends optional="true" config-file="rpmSpecFile-withSh.xml">com.jetbrains.sh</depends>
 
     <!-- RPM SPEC File -->
     <extensions defaultExtensionNs="com.intellij">
@@ -46,7 +46,6 @@
         <applicationConfigurable parentId="tools" instance="com.carbonblack.intellij.rpmspec.RpmSpecSettingsConfigurable"
                                  id="com.carbonblack.intellij.rpmspec.RpmSpecSettingsConfigurable"
                                  displayName="RPM SPEC File"/>
-        <lang.fileViewProviderFactory language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.shell.RpmSpecFileViewProviderFactory"/>
     </extensions>
 
     <!-- RPM Macro File -->

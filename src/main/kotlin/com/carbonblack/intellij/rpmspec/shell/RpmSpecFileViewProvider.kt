@@ -6,13 +6,13 @@ import com.carbonblack.intellij.rpmspec.shell.psi.RpmSpecShellTypes
 import com.carbonblack.intellij.rpmspec.shell.psi.RpmSpecTemplateDataElementType
 import com.intellij.lang.Language
 import com.intellij.lang.LanguageParserDefinitions
+import com.intellij.openapi.fileTypes.PlainTextLanguage
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.MultiplePsiFilesPerDocumentFileViewProvider
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.impl.source.PsiFileImpl
 import com.intellij.psi.templateLanguages.TemplateLanguageFileViewProvider
-import com.intellij.sh.ShLanguage
 
 private val OUTER_SPEC = RpmSpecOuterElementType("RPM Spec Element")
 
@@ -32,7 +32,7 @@ class RpmSpecFileViewProvider(
         )
 
     override fun getBaseLanguage(): Language = RpmSpecLanguage
-    override fun getTemplateDataLanguage(): Language = ShLanguage.INSTANCE
+    override fun getTemplateDataLanguage(): Language = Language.findLanguageByID("Shell Script") ?: PlainTextLanguage.INSTANCE
     override fun getLanguages(): MutableSet<Language> = mutableSetOf(RpmSpecLanguage, templateDataLanguage)
 
     override fun cloneInner(fileCopy: VirtualFile): MultiplePsiFilesPerDocumentFileViewProvider =

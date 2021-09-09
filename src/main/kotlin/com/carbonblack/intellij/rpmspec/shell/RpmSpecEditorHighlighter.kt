@@ -2,6 +2,7 @@ package com.carbonblack.intellij.rpmspec.shell
 
 import com.carbonblack.intellij.rpmspec.RpmSpecSyntaxHighligher
 import com.carbonblack.intellij.rpmspec.shell.psi.RpmSpecShellTypes
+import com.intellij.lang.Language
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.colors.EditorColorsScheme
 import com.intellij.openapi.editor.colors.TextAttributesKey
@@ -12,7 +13,6 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.tree.IElementType
-import com.intellij.sh.ShFileType
 
 class RpmSpecEditorHighlighter(project: Project?, virtualFile: VirtualFile?, colors: EditorColorsScheme) :
     LayeredLexerEditorHighlighter(RpmSpecTemplateSyntaxHighligher(), colors) {
@@ -27,13 +27,15 @@ class RpmSpecEditorHighlighter(project: Project?, virtualFile: VirtualFile?, col
             }
         }, "\n"))
 
-        val shellHighlighter =
-            SyntaxHighlighterFactory.getSyntaxHighlighter(ShFileType.INSTANCE, project, virtualFile)!!
-        registerLayer(RpmSpecShellTypes.SHELL_TEXT, LayerDescriptor(object : SyntaxHighlighter {
-            override fun getHighlightingLexer(): Lexer = shellHighlighter.highlightingLexer
+        Language.findLanguageByID("Shell Script")?.let { shLanguage ->
+            val shellHighlighter =
+                SyntaxHighlighterFactory.getSyntaxHighlighter(shLanguage, project, virtualFile)
+            registerLayer(RpmSpecShellTypes.SHELL_TEXT, LayerDescriptor(object : SyntaxHighlighter {
+                override fun getHighlightingLexer(): Lexer = shellHighlighter.highlightingLexer
 
-            override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> =
-                shellHighlighter.getTokenHighlights(tokenType)
-        }, ""))
+                override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> =
+                    shellHighlighter.getTokenHighlights(tokenType)
+            }, ""))
+        }
     }
 }
