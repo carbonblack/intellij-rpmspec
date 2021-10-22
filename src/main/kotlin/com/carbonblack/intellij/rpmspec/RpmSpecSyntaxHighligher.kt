@@ -32,6 +32,15 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
         RpmSpecTypes.PRE -> BODY_ITEM_KEYS
         RpmSpecTypes.PREUN -> BODY_ITEM_KEYS
         RpmSpecTypes.PRETRANS -> BODY_ITEM_KEYS
+        RpmSpecTypes.TRIGGERIN -> BODY_ITEM_KEYS
+        RpmSpecTypes.TRIGGERUN -> BODY_ITEM_KEYS
+        RpmSpecTypes.TRIGGERPOSTUN -> BODY_ITEM_KEYS
+        RpmSpecTypes.FILETRIGGERIN -> BODY_ITEM_KEYS
+        RpmSpecTypes.FILETRIGGERUN -> BODY_ITEM_KEYS
+        RpmSpecTypes.FILETRIGGERPOSTUN -> BODY_ITEM_KEYS
+        RpmSpecTypes.TRANSFILETRIGGERIN -> BODY_ITEM_KEYS
+        RpmSpecTypes.TRANSFILETRIGGERUN -> BODY_ITEM_KEYS
+        RpmSpecTypes.TRANSFILETRIGGERPOSTUN -> BODY_ITEM_KEYS
         RpmSpecTypes.CLEAN -> BODY_ITEM_KEYS
         RpmSpecTypes.DESCRIPTION -> BODY_ITEM_KEYS
         RpmSpecTypes.CHANGELOG -> BODY_ITEM_KEYS

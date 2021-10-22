@@ -83,6 +83,15 @@ FILES_DIRECTIVES=%(doc|config|attr|defattr|dir|docdir|ghost|verify|license|readm
   ^"%pre"                         { return PRE; }
   ^"%preun"                       { return PREUN; }
   ^"%pretrans"                    { return PRETRANS; }
+  ^"%triggerin"                   { return TRIGGERIN; }
+  ^"%triggerun"                   { return TRIGGERUN; }
+  ^"%triggerpostun"               { return TRIGGERPOSTUN; }
+  ^"%filetriggerin"               { return FILETRIGGERIN; }
+  ^"%filetriggerun"               { return FILETRIGGERUN; }
+  ^"%filetriggerpostun"           { return FILETRIGGERPOSTUN; }
+  ^"%transfiletriggerin"          { return TRANSFILETRIGGERIN; }
+  ^"%transfiletriggerun"          { return TRANSFILETRIGGERUN; }
+  ^"%transfiletriggerpostun"      { return TRANSFILETRIGGERPOSTUN; }
   ^"%clean"                       { return CLEAN; }
   ^"%description"                 { return DESCRIPTION; }
   ^"%changelog"                   { return CHANGELOG; }
