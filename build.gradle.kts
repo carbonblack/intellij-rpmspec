@@ -1,5 +1,6 @@
 import org.jetbrains.grammarkit.tasks.GenerateLexer
 import org.jetbrains.grammarkit.tasks.GenerateParser
+import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -31,6 +32,10 @@ sourceSets{
 
 tasks.withType<Test> {
     environment("NO_FS_ROOTS_ACCESS_CHECK", "true")
+}
+
+tasks.withType<RunIdeTask> {
+    jvmArgs("-Xmx2048m")
 }
 
 repositories {
