@@ -1,10 +1,10 @@
-import org.jetbrains.grammarkit.tasks.GenerateLexer
-import org.jetbrains.grammarkit.tasks.GenerateParser
+import org.jetbrains.grammarkit.tasks.GenerateLexerTask
+import org.jetbrains.grammarkit.tasks.GenerateParserTask
 import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.grammarkit") version "2021.1.3"
+    id("org.jetbrains.grammarkit") version "2021.2.1"
     id("org.jetbrains.intellij") version "1.1.4"
     // See: https://plugins.jetbrains.com/docs/intellij/kotlin.html#kotlin-standard-library
     kotlin("jvm") version "1.5.10"
@@ -56,41 +56,44 @@ intellij {
     plugins.set(listOf("com.jetbrains.sh"))
 }
 
-val generateSpecParser = tasks.create<GenerateParser>("generateSpecParser") {
-    source = "$projectDir/src/main/grammars/RpmSpecParser.bnf"
-    targetRoot = "$projectDir/src/main/gen"
-    pathToParser = "/com/carbonblack/intellij/rpmspec/parser/RpmSpecParser.java"
-    pathToPsiRoot = "/com/carbonblack/intellij/rpmspec/psi"
-    purgeOldFiles = true
+val generateSpecParser = tasks.create<GenerateParserTask>("generateSpecParser") {
+    source.set("$projectDir/src/main/grammars/RpmSpecParser.bnf")
+    targetRoot.set("$projectDir/src/main/gen")
+    pathToParser.set("/com/carbonblack/intellij/rpmspec/parser/RpmSpecParser.java")
+    pathToPsiRoot.set("/com/carbonblack/intellij/rpmspec/psi")
+    purgeOldFiles.set(true)
 }
 
-val generateSpecLexer = tasks.create<GenerateLexer>("generateSpecLexer") {
-    source = "$projectDir/src/main/grammars/RpmSpecLexer.flex"
-    targetDir = "$projectDir/src/main/gen/com/carbonblack/intellij/rpmspec"
-    targetClass = "_RpmSpecLexer"
-    purgeOldFiles = true
+val generateSpecLexer = tasks.create<GenerateLexerTask>("generateSpecLexer") {
+    source.set("$projectDir/src/main/grammars/RpmSpecLexer.flex")
+    skeleton.set(file("$projectDir/src/main/grammars/idea-flex.skeleton"))
+    targetDir.set("$projectDir/src/main/gen/com/carbonblack/intellij/rpmspec")
+    targetClass.set("_RpmSpecLexer")
+    purgeOldFiles.set(true)
 }
 
-val generateMacroParser = tasks.create<GenerateParser>("generateMacroParser") {
-    source = "$projectDir/src/main/grammars/RpmMacroParser.bnf"
-    targetRoot = "$projectDir/src/main/gen"
-    pathToParser = "/com/carbonblack/intellij/rpmmacro/parser/RpmMacroParser.java"
-    pathToPsiRoot = "/com/carbonblack/intellij/rpmmacro/psi"
-    purgeOldFiles = true
+val generateMacroParser = tasks.create<GenerateParserTask>("generateMacroParser") {
+    source.set("$projectDir/src/main/grammars/RpmMacroParser.bnf")
+    targetRoot.set("$projectDir/src/main/gen")
+    pathToParser.set("/com/carbonblack/intellij/rpmmacro/parser/RpmMacroParser.java")
+    pathToPsiRoot.set("/com/carbonblack/intellij/rpmmacro/psi")
+    purgeOldFiles.set(true)
 }
 
-val generateMacroLexer = tasks.create<GenerateLexer>("generateMacroLexer") {
-    source = "$projectDir/src/main/grammars/RpmMacroLexer.flex"
-    targetDir = "$projectDir/src/main/gen/com/carbonblack/intellij/rpmmacro"
-    targetClass = "_RpmMacroLexer"
-    purgeOldFiles = true
+val generateMacroLexer = tasks.create<GenerateLexerTask>("generateMacroLexer") {
+    source.set("$projectDir/src/main/grammars/RpmMacroLexer.flex")
+    skeleton.set(file("$projectDir/src/main/grammars/idea-flex.skeleton"))
+    targetDir.set("$projectDir/src/main/gen/com/carbonblack/intellij/rpmmacro")
+    targetClass.set("_RpmMacroLexer")
+    purgeOldFiles.set(true)
 }
 
-val generateShellLexer = tasks.create<GenerateLexer>("generateShellLexer") {
-    source = "$projectDir/src/main/grammars/RpmSpecShellLexer.flex"
-    targetDir = "$projectDir/src/main/gen/com/carbonblack/intellij/rpmspec/shell"
-    targetClass = "_RpmSpecShellLexer"
-    purgeOldFiles = true
+val generateShellLexer = tasks.create<GenerateLexerTask>("generateShellLexer") {
+    source.set("$projectDir/src/main/grammars/RpmSpecShellLexer.flex")
+    skeleton.set(file("$projectDir/src/main/grammars/idea-flex.skeleton"))
+    targetDir.set("$projectDir/src/main/gen/com/carbonblack/intellij/rpmspec/shell")
+    targetClass.set("_RpmSpecShellLexer")
+    purgeOldFiles.set(true)
 }
 
 val generateGrammars = tasks.register("generateGrammars") {

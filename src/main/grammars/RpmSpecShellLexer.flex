@@ -14,11 +14,13 @@ import static com.carbonblack.intellij.rpmspec.shell.psi.RpmSpecShellTypes.*;
 %unicode
 %function advance
 %type IElementType
-%eof{  return;
+%eof{
+    eofReached = true;
 %eof}
 
 %{
     private Stack<Integer> stack = new Stack<>();
+    private boolean eofReached = false;
 
     private void yypushState(int newState) {
       stack.push(yystate());
@@ -29,15 +31,6 @@ import static com.carbonblack.intellij.rpmspec.shell.psi.RpmSpecShellTypes.*;
       yybegin(stack.pop());
     }
 %}
-
-STRING = \'(\\.|[^\'\\])*\'|\"(\\.|[^\"\\])*\"
-CRLF = \n | \r | \r\n
-WHITE_SPACE_CHAR = [\ \n\r\t\f]
-OPENING = "%{"
-CLOSING = "}"
-MACRO_NAME = [^\'\"{} ]+
-
-
 
 // Whitespace
 EOL              = \n | \r | \r\n
@@ -54,16 +47,9 @@ IDENTIFIER_CHAR = {ALPHA}|{NUMERIC}|"_"
 NON_ID_CHAR     = [^a-zA-Z0-9_\r\n]
 
 IDENTIFIER      = {IDENTIFIER_CHAR}+
-CODE_CHARS      = [^\r\n\ \t\f{}()%:?\\]+
-
-INT_LITERAL   = {NUMERIC}+
-FLT_LITERAL   = {INT_LITERAL} \. {INT_LITERAL}
-
-COMMENT       = "#" {INPUT_CHARACTER}*
-MACRO_ESCAPE  = "\\"{WHITE_SPACE}*{EOL}
 
 // The remainder of a line after a reserved word
-RESERVED_LINE = ([^a-zA-Z0-9_\r\n] {INPUT_CHARACTER}*)?
+RESERVED_LINE = ({NON_ID_CHAR} {INPUT_CHARACTER}*)?
 // Reserved Words
 IF_KEYWORDS=%(if|ifarch|ifnarch|ifos|ifnos)
 ELSE_KEYWORDS=%(else|elifarch|elifos|elif)
@@ -72,44 +58,37 @@ ALL_IF_KEYWORDS={IF_KEYWORDS}|{ELSE_KEYWORDS}|%endif
 SHELL_SECTIONS=%(prep|build|install|check|post|postun|posttrans|pre|preun|pretrans|clean)
 SPEC_SECTIONS=%(description|files|changelog|package)
 
-%state MACRO
 %state SHELL_SECTION
 %state MACRO_EXPANSION
 
 %%
 
 ^{SHELL_SECTIONS} {RESERVED_LINE}         { yybegin(SHELL_SECTION); return SPEC_FILE; }
-^{SPEC_SECTIONS} {RESERVED_LINE}          { yybegin(YYINITIAL); return SPEC_FILE; }
-^{ALL_IF_KEYWORDS} {RESERVED_LINE}        { return SPEC_FILE; }
+^{SPEC_SECTIONS} {RESERVED_LINE}          { yybegin(YYINITIAL); }
+^{ALL_IF_KEYWORDS} {RESERVED_LINE}        { if( yystate() == SHELL_SECTION ) return SPEC_FILE; }
 
 
 <MACRO_EXPANSION> {
-  [^}%]+                          {} //{ return SPEC_FILE; }
-  "%"                             {} //{ return SPEC_FILE; }
+  [^}%]+                          { } // { return SPEC_FILE; }
+  "%"                             { } // { return SPEC_FILE; }
   %\{                             { yypushState(MACRO_EXPANSION); } // return SPEC_FILE; }
   \}                              { yypopState(); return SPEC_FILE; }
 }
 
 <SHELL_SECTION> {
-  [^%]+                           { return SHELL_TEXT; }
-  "%"                             { return SPEC_FILE; }
+  ([^%]|%%)+                      { return SHELL_TEXT; }
   "%" {IDENTIFIER}                { return SPEC_FILE; }
   %\{                             { yypushState(MACRO_EXPANSION); } // return SPEC_FILE; }
   "%%"                            { return SHELL_TEXT; }
 }
 
 <YYINITIAL> {
-  "%"                             { } //{ return SPEC_FILE; }
-  [^%]+                           { return SPEC_FILE; }
+  "%"                             { } // { return SPEC_FILE; }
+  [^%]+                           { } // { return SPEC_FILE; }
 }
 
-<MACRO> {
-    [^\}]+                        { return SPEC_FILE; }
-    "}"                           { yybegin(YYINITIAL); return SPEC_FILE; }
-}
-
-
-%define {WHITE_SPACE} {IDENTIFIER} \(({IDENTIFIER_CHAR}|:)*\) {WHITE_SPACE} \{[^\}]*\}    { return SPEC_FILE; }
-%global {WHITE_SPACE} {IDENTIFIER} {WHITE_SPACE} {INPUT_CHARACTER}*                       { return SPEC_FILE; }
+%define {WHITE_SPACE} {IDENTIFIER} \(({IDENTIFIER_CHAR}|:)*\) {WHITE_SPACE} \{[^\}]*\}    { if( yystate() == SHELL_SECTION ) return SPEC_FILE; }
+%global {WHITE_SPACE} {IDENTIFIER} {WHITE_SPACE} {INPUT_CHARACTER}*                       { if( yystate() == SHELL_SECTION ) return SPEC_FILE; }
 
 [^]                               { return TokenType.BAD_CHARACTER; }
+<<EOF>>                           { if (eofReached) { eofReached = false; return SPEC_FILE; } else { return null; } }
