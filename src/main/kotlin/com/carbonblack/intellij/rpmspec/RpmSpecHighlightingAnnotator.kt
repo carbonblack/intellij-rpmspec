@@ -14,7 +14,7 @@ class RpmSpecHighlightingAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
             is RpmSpecMacro -> {
-                if (element.reference?.resolve() == null) {
+                if (!element.isBuiltInMacro && element.reference?.resolve() == null) {
                     if (element.parent.text.take(4).contains('?')) {
                         holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                             .textAttributes(RpmSpecSyntaxHighligher.COMMENT)

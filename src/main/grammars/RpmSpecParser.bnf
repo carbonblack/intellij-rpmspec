@@ -45,7 +45,7 @@ macroDefinition ::= (global|define) IDENTIFIER ('\' EOL|wordOrMacro|'('|')'|'<'|
     mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinitionElementImpl"}
 macroUndefine ::= undefine macro {pin=1}
 fullMacro ::= '%' ('{' ('!''?'|'?')? macro (':' macroDefinition|multilineMacro|wordOrMacro+)? '}'| macro ('(' anyWord ')')?) {pin=1}
-macro ::= IDENTIFIER {implements="com.intellij.psi.PsiNameIdentifierOwner"
+macro ::= IDENTIFIER {implements=["com.intellij.psi.PsiNameIdentifierOwner" "com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElement"]
                       mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
 macroParam ::= '%' INTEGER_LITERAL {pin=2}
 
