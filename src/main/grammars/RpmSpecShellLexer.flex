@@ -59,7 +59,11 @@ SHELL_SECTIONS=%(prep|build|install|check|post|postun|posttrans|pre|preun|pretra
 SPEC_SECTIONS=%(description|files|changelog|package)
 
 %state SHELL_SECTION
+%state GLOBAL_SECTION
+%state DEFINE_SECTION
+
 %state MACRO_EXPANSION
+%state SHELL_EXPANSION
 
 %%
 
@@ -67,12 +71,25 @@ SPEC_SECTIONS=%(description|files|changelog|package)
 ^{SPEC_SECTIONS} {RESERVED_LINE}          { yybegin(YYINITIAL); }
 ^{ALL_IF_KEYWORDS} {RESERVED_LINE}        { if( yystate() == SHELL_SECTION ) return SPEC_FILE; }
 
+// TODO: There's a bug where starting without a whitespace character will color everything before this in orange.
+// This is not a great workaround but until we figure out how to resolve it, it's better than the alternative.
+"%(" [^\ \t\f\r\n]* {WHITE_SPACE_CHAR}    { yypushback(1); yypushState(SHELL_EXPANSION); return SPEC_FILE; }
+// "%("                                   { yypushState(SHELL_EXPANSION); return SPEC_FILE; }
 
 <MACRO_EXPANSION> {
   [^}%]+                          { } // { return SPEC_FILE; }
   "%"                             { } // { return SPEC_FILE; }
   %\{                             { yypushState(MACRO_EXPANSION); } // return SPEC_FILE; }
   \}                              { yypopState(); return SPEC_FILE; }
+}
+
+<SHELL_EXPANSION> {
+  [^)%\"']+                       { } // { return SHELL_TEXT; }
+  "%"                             { } // { return SHELL_TEXT; }
+  \' [^\r\n\']+ \'                { } // { return SHELL_TEXT; }
+  \" [^\r\n\"]+ \"                { } // { return SHELL_TEXT; }
+  \" | \'                         { } // { return SHELL_TEXT; }
+  \)                              { yypushback(1); yypopState(); return SHELL_TEXT; }
 }
 
 <SHELL_SECTION> {
@@ -87,8 +104,20 @@ SPEC_SECTIONS=%(description|files|changelog|package)
   [^%]+                           { } // { return SPEC_FILE; }
 }
 
-%define {WHITE_SPACE} {IDENTIFIER} \(({IDENTIFIER_CHAR}|:)*\) {WHITE_SPACE} \{[^\}]*\}    { if( yystate() == SHELL_SECTION ) return SPEC_FILE; }
-%global {WHITE_SPACE} {IDENTIFIER} {WHITE_SPACE} {INPUT_CHARACTER}*                       { if( yystate() == SHELL_SECTION ) return SPEC_FILE; }
+<GLOBAL_SECTION> {
+  ([^%\r\n]|%%)+                  { } // { return SPEC_FILE; }
+  "%"                             { } // { return SPEC_FILE; }
+  {EOL}                           { yypushback(1); yypopState(); if( yystate() == SHELL_SECTION ) return SPEC_FILE; }
+}
+
+<DEFINE_SECTION> {
+  ([^\}%]|%%)+                    { } // { return SPEC_FILE; }
+  "%"                             { } // { return SPEC_FILE; }
+  \}                              { yypopState(); if( yystate() == SHELL_SECTION ) return SPEC_FILE; }
+}
+
+%define {WHITE_SPACE} {IDENTIFIER} "(" ({IDENTIFIER_CHAR}|:)* ")" {WHITE_SPACE} "{"   { yypushState(DEFINE_SECTION); }
+%global {WHITE_SPACE} {IDENTIFIER} {WHITE_SPACE}                                      { yypushState(GLOBAL_SECTION); }
 
 [^]                               { return TokenType.BAD_CHARACTER; }
 <<EOF>>                           { if (eofReached) { eofReached = false; return SPEC_FILE; } else { return null; } }

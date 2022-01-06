@@ -7,6 +7,8 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.TokenSet
+import com.intellij.refactoring.suggested.endOffset
+import com.intellij.refactoring.suggested.startOffset
 
 class RpmSpecHighlightingAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -71,12 +73,36 @@ class RpmSpecHighlightingAnnotator : Annotator {
                             .range(it.textRange).create()
                 }
             }
+            is RpmSpecFullMacro -> {
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                    .textAttributes(RpmSpecSyntaxHighligher.BRACES)
+                    .range(
+                        TextRange(
+                            element.textRange.startOffset,
+                            element.textRange.startOffset + (element.macro?.startOffsetInParent ?: 1)
+                        )
+                    ).create()
+
+                if (element.text.last() == '}') {
+                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .textAttributes(RpmSpecSyntaxHighligher.BRACES)
+                        .range(TextRange(element.textRange.endOffset - 1, element.textRange.endOffset)).create()
+                }
+            }
+            is RpmSpecShellCommand -> {
+                listOf(
+                    TextRange(element.startOffset, (element.startOffset + 2).coerceAtMost(element.endOffset)),
+                    TextRange((element.endOffset - 1).coerceAtLeast(element.startOffset), element.endOffset)
+                ).forEach { range ->
+                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .textAttributes(RpmSpecSyntaxHighligher.BRACES)
+                        .range(range).create()
+                }
+            }
         }
 
         val colorType = when (element) {
             is RpmSpecMacro -> RpmSpecSyntaxHighligher.MACRO_ITEM
-            is RpmSpecFullMacro -> RpmSpecSyntaxHighligher.BRACES
-            is RpmSpecShellCommand -> RpmSpecSyntaxHighligher.BRACES
             is RpmSpecChangelogItem -> RpmSpecSyntaxHighligher.TEXT
             is RpmSpecChangelogEntry -> RpmSpecSyntaxHighligher.TEXT
             is RpmSpecTagValue -> RpmSpecSyntaxHighligher.VALUE

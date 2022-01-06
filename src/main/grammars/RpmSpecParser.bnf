@@ -53,7 +53,7 @@ macroParam ::= '%' INTEGER_LITERAL {pin=2}
 private multilineMacroPieces ::= (COMMENT|tag|macroParam|<<ifExpr multilineMacro>>|filesDirective|'<'|'>'|'?'|'!'|'('|')'|'\'|wordOrMacro)*
 multilineMacro ::= (multilineMacroPieces EOL+ multilineMacroPieces)+
 
-shellCommand ::= '%' '('  (wordOrMacro|'<'|'>')+ ')' {pin=2}
+shellCommand ::= '%' '('  (('\'|'\\') EOL|wordOrMacro|'<'|'>'|'('|'?'|'!'|'\')* ')' {pin=2}
 
 packageSection ::= package wordOrMacro* EOL packageBody {pin=1}
 packageBody ::= (COMMENT|EOL|<<ifExpr packageBody>>|fullMacro anything*|macroDefinition|macroUndefine|tag)*
