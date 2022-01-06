@@ -13,6 +13,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.impl.source.PsiFileImpl
 import com.intellij.psi.templateLanguages.TemplateLanguageFileViewProvider
+import com.intellij.psi.tree.TokenSet
 
 private val OUTER_SPEC = RpmSpecOuterElementType("RPM Spec Element")
 
@@ -27,7 +28,7 @@ class RpmSpecFileViewProvider(
         RpmSpecTemplateDataElementType(
             "RPM Spec Shell Template",
             RpmSpecLanguage,
-            RpmSpecShellTypes.SHELL_TEXT,
+            TokenSet.create(RpmSpecShellTypes.SHELL_TEXT, RpmSpecShellTypes.SPEC_FILE_MACRO_IDENTIFIER, RpmSpecShellTypes.SHELL_WHITE_SPACE, RpmSpecShellTypes.SPEC_WHITE_SPACE),
             OUTER_SPEC
         )
 

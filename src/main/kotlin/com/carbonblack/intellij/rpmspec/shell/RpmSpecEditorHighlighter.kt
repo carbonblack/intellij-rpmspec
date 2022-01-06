@@ -19,23 +19,31 @@ class RpmSpecEditorHighlighter(project: Project?, virtualFile: VirtualFile?, col
 
     init {
         val rpmSpecHighlighter = RpmSpecSyntaxHighligher()
-        registerLayer(RpmSpecShellTypes.SPEC_FILE, LayerDescriptor(object : SyntaxHighlighter {
+        val rpmSpecLayerDescriptor = LayerDescriptor(object : SyntaxHighlighter {
             override fun getHighlightingLexer(): Lexer = rpmSpecHighlighter.highlightingLexer
 
             override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
                 return rpmSpecHighlighter.getTokenHighlights(tokenType)
             }
-        }, "\n"))
+        }, "")
+
+        registerLayer(RpmSpecShellTypes.SPEC_FILE, rpmSpecLayerDescriptor)
+        registerLayer(RpmSpecShellTypes.SPEC_FILE_MACRO, rpmSpecLayerDescriptor)
+        registerLayer(RpmSpecShellTypes.SPEC_FILE_MACRO_IDENTIFIER, rpmSpecLayerDescriptor)
+        registerLayer(RpmSpecShellTypes.SPEC_WHITE_SPACE, rpmSpecLayerDescriptor)
 
         Language.findLanguageByID("Shell Script")?.let { shLanguage ->
             val shellHighlighter =
                 SyntaxHighlighterFactory.getSyntaxHighlighter(shLanguage, project, virtualFile)
-            registerLayer(RpmSpecShellTypes.SHELL_TEXT, LayerDescriptor(object : SyntaxHighlighter {
+            val shellLayerDescriptor = LayerDescriptor(object : SyntaxHighlighter {
                 override fun getHighlightingLexer(): Lexer = shellHighlighter.highlightingLexer
 
                 override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> =
                     shellHighlighter.getTokenHighlights(tokenType)
-            }, ""))
+            }, "")
+
+            registerLayer(RpmSpecShellTypes.SHELL_TEXT, shellLayerDescriptor)
+            registerLayer(RpmSpecShellTypes.SHELL_WHITE_SPACE, shellLayerDescriptor)
         }
     }
 }

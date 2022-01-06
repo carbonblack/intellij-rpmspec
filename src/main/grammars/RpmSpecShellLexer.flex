@@ -15,12 +15,12 @@ import static com.carbonblack.intellij.rpmspec.shell.psi.RpmSpecShellTypes.*;
 %function advance
 %type IElementType
 %eof{
-    eofReached = true;
+    // do nothing
 %eof}
 
 %{
     private Stack<Integer> stack = new Stack<>();
-    private boolean eofReached = false;
+    private boolean firstIdentifierFound = false;
 
     private void yypushState(int newState) {
       stack.push(yystate());
@@ -68,56 +68,55 @@ SPEC_SECTIONS=%(description|files|changelog|package)
 %%
 
 ^{SHELL_SECTIONS} {RESERVED_LINE}         { yybegin(SHELL_SECTION); return SPEC_FILE; }
-^{SPEC_SECTIONS} {RESERVED_LINE}          { yybegin(YYINITIAL); }
-^{ALL_IF_KEYWORDS} {RESERVED_LINE}        { if( yystate() == SHELL_SECTION ) return SPEC_FILE; }
+^{SPEC_SECTIONS} {RESERVED_LINE}          { yybegin(YYINITIAL); return SPEC_FILE; }
+^{ALL_IF_KEYWORDS} {RESERVED_LINE}        { return SPEC_FILE; }
 
-// TODO: There's a bug where starting without a whitespace character will color everything before this in orange.
-// This is not a great workaround but until we figure out how to resolve it, it's better than the alternative.
-"%(" [^\ \t\f\r\n]* {WHITE_SPACE_CHAR}    { yypushback(1); yypushState(SHELL_EXPANSION); return SPEC_FILE; }
-// "%("                                   { yypushState(SHELL_EXPANSION); return SPEC_FILE; }
+"%("                              { yypushState(SHELL_EXPANSION); return SPEC_FILE; }
 
 <MACRO_EXPANSION> {
-  [^}%]+                          { } // { return SPEC_FILE; }
-  "%"                             { } // { return SPEC_FILE; }
-  %\{                             { yypushState(MACRO_EXPANSION); } // return SPEC_FILE; }
+  [^a-zA-Z0-9_\ \t\f\r\n}%]+      { return SPEC_FILE; }
+  {IDENTIFIER}                    { if (!firstIdentifierFound) { firstIdentifierFound = true; return SPEC_FILE_MACRO_IDENTIFIER; } else return SPEC_FILE; }
+  "%"                             { return SPEC_FILE; }
+  %\{                             { yypushState(MACRO_EXPANSION); firstIdentifierFound = false; return SPEC_FILE; }
   \}                              { yypopState(); return SPEC_FILE; }
 }
 
 <SHELL_EXPANSION> {
-  [^)%\"']+                       { } // { return SHELL_TEXT; }
-  "%"                             { } // { return SHELL_TEXT; }
-  \' [^\r\n\']+ \'                { } // { return SHELL_TEXT; }
-  \" [^\r\n\"]+ \"                { } // { return SHELL_TEXT; }
-  \" | \'                         { } // { return SHELL_TEXT; }
-  \)                              { yypushback(1); yypopState(); return SHELL_TEXT; }
+  [^)%\"\ \t\f\r\n']+             { return SHELL_TEXT; }
+  "%"                             { return SHELL_TEXT; }
+  \' [^\r\n\']+ \'                { return SHELL_TEXT; }
+  \" [^\r\n\"]+ \"                { return SHELL_TEXT; }
+  \" | \'                         { return SHELL_TEXT; }
+  \)                              { yypopState(); return SPEC_FILE; }
 }
 
 <SHELL_SECTION> {
-  ([^%]|%%)+                      { return SHELL_TEXT; }
-  "%" {IDENTIFIER}                { return SPEC_FILE; }
-  %\{                             { yypushState(MACRO_EXPANSION); } // return SPEC_FILE; }
+  ([^\ \t\f\r\n%]|%%)+            { return SHELL_TEXT; }
+  "%" {IDENTIFIER}                { return SPEC_FILE_MACRO; }
+  %\{                             { yypushState(MACRO_EXPANSION); firstIdentifierFound = false; return SPEC_FILE; }
   "%%"                            { return SHELL_TEXT; }
 }
 
 <YYINITIAL> {
-  "%"                             { } // { return SPEC_FILE; }
-  [^%]+                           { } // { return SPEC_FILE; }
+  "%"                             { return SPEC_FILE; }
+  [^\ \t\f\r\n%]+                 { return SPEC_FILE; }
 }
 
 <GLOBAL_SECTION> {
-  ([^%\r\n]|%%)+                  { } // { return SPEC_FILE; }
-  "%"                             { } // { return SPEC_FILE; }
-  {EOL}                           { yypushback(1); yypopState(); if( yystate() == SHELL_SECTION ) return SPEC_FILE; }
+  ([^\ \t\f\r\n%]|%%)+            { return SPEC_FILE; }
+  "%"                             { return SPEC_FILE; }
+  {EOL}                           { yypushback(1); yypopState(); return SPEC_FILE; }
 }
 
 <DEFINE_SECTION> {
-  ([^\}%]|%%)+                    { } // { return SPEC_FILE; }
-  "%"                             { } // { return SPEC_FILE; }
-  \}                              { yypopState(); if( yystate() == SHELL_SECTION ) return SPEC_FILE; }
+  ([^\ \t\f\r\n}%]|%%)+           { return SPEC_FILE; }
+  "%"                             { return SPEC_FILE; }
+  \}                              { yypopState(); return SPEC_FILE; }
 }
 
-%define {WHITE_SPACE} {IDENTIFIER} "(" ({IDENTIFIER_CHAR}|:)* ")" {WHITE_SPACE} "{"   { yypushState(DEFINE_SECTION); }
-%global {WHITE_SPACE} {IDENTIFIER} {WHITE_SPACE}                                      { yypushState(GLOBAL_SECTION); }
+%define {WHITE_SPACE} {IDENTIFIER} "(" ({IDENTIFIER_CHAR}|:)* ")" {WHITE_SPACE} "{"   { yypushState(DEFINE_SECTION); return SPEC_FILE; }
+%global {WHITE_SPACE} {IDENTIFIER} {WHITE_SPACE}                                      { yypushState(GLOBAL_SECTION); return SPEC_FILE; }
 
+{LINE_WS}+                        { if (yystate() == SHELL_EXPANSION || yystate() == SHELL_SECTION) return SHELL_WHITE_SPACE; else return SPEC_WHITE_SPACE; }
+{EOL}                             { if (yystate() == SHELL_EXPANSION || yystate() == SHELL_SECTION) return SHELL_WHITE_SPACE; else return SPEC_WHITE_SPACE; }
 [^]                               { return TokenType.BAD_CHARACTER; }
-<<EOF>>                           { if (eofReached) { eofReached = false; return SPEC_FILE; } else { return null; } }
