@@ -7,6 +7,8 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.TokenSet
+import com.intellij.psi.util.parentOfType
+import com.intellij.psi.util.parentsOfType
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
 
@@ -14,8 +16,14 @@ class RpmSpecHighlightingAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
             is RpmSpecMacro -> {
-                if (!element.isBuiltInMacro && element.reference?.resolve() == null) {
-                    if (element.parent.text.take(4).contains('?')) {
+                if (element.parentsOfType<RpmSpecFullMacro>().any { it.isFalseCondition }) {
+                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .textAttributes(RpmSpecSyntaxHighligher.COMMENT)
+                        .range(element.textRange).create()
+                } else if (!element.isBuiltInMacro && element.reference?.resolve() == null) {
+                    if (element.parentOfType<RpmSpecMacroUndefine>() != null ||
+                        (element.parent as? RpmSpecFullMacro)?.isConditionalMacro == true
+                    ) {
                         holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                             .textAttributes(RpmSpecSyntaxHighligher.COMMENT)
                             .range(element.textRange).create()
@@ -46,60 +54,80 @@ class RpmSpecHighlightingAnnotator : Annotator {
             }
             is RpmSpecMacroDefinition -> element.node.findChildByType(RpmSpecTypes.IDENTIFIER)?.let {
                 holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                        .textAttributes(RpmSpecSyntaxHighligher.MACRO_ITEM)
-                        .range(it.textRange).create()
+                    .textAttributes(RpmSpecSyntaxHighligher.MACRO_ITEM)
+                    .range(it.textRange).create()
             }
             is RpmSpecTag -> element.node.findChildByType(RpmSpecTypes.IDENTIFIER)?.let {
                 holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                        .textAttributes(RpmSpecSyntaxHighligher.KEY)
-                        .range(it.textRange).create()
+                    .textAttributes(RpmSpecSyntaxHighligher.KEY)
+                    .range(it.textRange).create()
                 if (!element.knownTag()) {
                     holder.newAnnotation(HighlightSeverity.WARNING, "Unknown tag: \"${it.text}\"")
-                            .range(it.textRange).create()
+                        .range(it.textRange).create()
                 }
             }
             is RpmSpecMultilineMacro -> element.node.getChildren(TokenSet.ANY).forEach {
                 if (it.elementType == RpmSpecTypes.COMMENT) {
                     holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                            .textAttributes(RpmSpecSyntaxHighligher.COMMENT)
-                            .range(it.textRange).create()
+                        .textAttributes(RpmSpecSyntaxHighligher.COMMENT)
+                        .range(it.textRange).create()
                 }
             }
             is RpmSpecIfExpr -> element.node.getChildren(TokenSet.ANY).forEach {
                 if (it.elementType == RpmSpecTypes.IF) {
                     holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                            .textAttributes(RpmSpecSyntaxHighligher.RESERVED)
-                            .range(it.textRange).create()
+                        .textAttributes(RpmSpecSyntaxHighligher.RESERVED)
+                        .range(it.textRange).create()
                 }
             }
             is RpmSpecElseBranch -> element.node.getChildren(TokenSet.ANY).forEach {
                 if (it.elementType == RpmSpecTypes.ELSE) {
                     holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                            .textAttributes(RpmSpecSyntaxHighligher.RESERVED)
-                            .range(it.textRange).create()
+                        .textAttributes(RpmSpecSyntaxHighligher.RESERVED)
+                        .range(it.textRange).create()
                 }
             }
             is RpmSpecEndIfExpr -> element.node.getChildren(TokenSet.ANY).forEach {
                 if (it.elementType == RpmSpecTypes.ENDIF) {
                     holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                            .textAttributes(RpmSpecSyntaxHighligher.RESERVED)
-                            .range(it.textRange).create()
+                        .textAttributes(RpmSpecSyntaxHighligher.RESERVED)
+                        .range(it.textRange).create()
                 }
             }
             is RpmSpecFullMacro -> {
-                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                    .textAttributes(RpmSpecSyntaxHighligher.BRACES)
-                    .range(
-                        TextRange(
-                            element.textRange.startOffset,
-                            element.textRange.startOffset + (element.macro?.startOffsetInParent ?: 1)
-                        )
-                    ).create()
-
-                if (element.text.last() == '}') {
+                if (element.parentsOfType<RpmSpecFullMacro>(false).any { it.isFalseCondition }) {
+                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .textAttributes(RpmSpecSyntaxHighligher.COMMENT)
+                        .range(element.textRange).create()
+                } else {
                     holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                         .textAttributes(RpmSpecSyntaxHighligher.BRACES)
-                        .range(TextRange(element.textRange.endOffset - 1, element.textRange.endOffset)).create()
+                        .range(
+                            TextRange(
+                                element.textRange.startOffset,
+                                element.textRange.startOffset + (element.macro?.startOffsetInParent ?: 1)
+                            )
+                        ).create()
+
+                    element.macroBodySeparator?.let { separator ->
+                        holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                            .textAttributes(RpmSpecSyntaxHighligher.BRACES)
+                            .range(separator.textRange).create()
+                    }
+
+                    if (element.text.last() == '}') {
+                        holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                            .textAttributes(RpmSpecSyntaxHighligher.BRACES)
+                            .range(TextRange(element.textRange.endOffset - 1, element.textRange.endOffset)).create()
+                    }
+                }
+
+                element.macroBody?.let { body ->
+                    if (element.isFalseCondition) {
+                        holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                            .textAttributes(RpmSpecSyntaxHighligher.COMMENT)
+                            .range(body.textRange).create()
+                    }
                 }
             }
             is RpmSpecShellCommand -> {
@@ -127,8 +155,8 @@ class RpmSpecHighlightingAnnotator : Annotator {
 
         colorType?.let {
             holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                    .textAttributes(it)
-                    .range(element.textRange).create()
+                .textAttributes(it)
+                .range(element.textRange).create()
         }
     }
 }
