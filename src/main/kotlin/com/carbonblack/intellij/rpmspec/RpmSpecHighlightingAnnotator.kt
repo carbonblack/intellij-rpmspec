@@ -15,8 +15,21 @@ class RpmSpecHighlightingAnnotator : Annotator {
         when (element) {
             is RpmSpecMacro -> {
                 if (element.reference?.resolve() == null) {
-                    holder.newAnnotation(HighlightSeverity.WEAK_WARNING, "Macro could not be resolved")
+                    if (element.parent.text.take(4).contains('?')) {
+                        holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                            .textAttributes(RpmSpecSyntaxHighligher.COMMENT)
                             .range(element.textRange).create()
+                    } else {
+                        holder.newAnnotation(HighlightSeverity.WEAK_WARNING, "Macro could not be resolved")
+                            .range(element.textRange).create()
+                        holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                            .textAttributes(RpmSpecSyntaxHighligher.MACRO_ITEM)
+                            .range(element.textRange).create()
+                    }
+                } else {
+                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .textAttributes(RpmSpecSyntaxHighligher.MACRO_ITEM)
+                        .range(element.textRange).create()
                 }
             }
             is RpmSpecDescriptionSection -> {
@@ -102,7 +115,6 @@ class RpmSpecHighlightingAnnotator : Annotator {
         }
 
         val colorType = when (element) {
-            is RpmSpecMacro -> RpmSpecSyntaxHighligher.MACRO_ITEM
             is RpmSpecChangelogItem -> RpmSpecSyntaxHighligher.TEXT
             is RpmSpecChangelogEntry -> RpmSpecSyntaxHighligher.TEXT
             is RpmSpecTagValue -> RpmSpecSyntaxHighligher.VALUE
