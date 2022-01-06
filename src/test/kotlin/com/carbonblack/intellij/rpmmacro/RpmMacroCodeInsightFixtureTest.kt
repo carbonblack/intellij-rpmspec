@@ -4,7 +4,7 @@ import com.carbonblack.intellij.rpmmacro.psi.RpmMacroMacro
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
-class RpmMacroCodeInsightFixtureTestCase : BasePlatformTestCase() {
+class RpmMacroCodeInsightFixtureTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String = "src/test/resources/macros"
 

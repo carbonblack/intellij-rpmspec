@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.jetbrains.grammarkit") version "2021.2.1"
-    id("org.jetbrains.intellij") version "1.1.4"
+    id("org.jetbrains.intellij") version "1.3.0"
     // See: https://plugins.jetbrains.com/docs/intellij/kotlin.html#kotlin-standard-library
     kotlin("jvm") version "1.5.10"
     java
@@ -32,6 +32,12 @@ sourceSets{
 
 tasks.withType<Test> {
     environment("NO_FS_ROOTS_ACCESS_CHECK", "true")
+
+    // Workaround for IDEA-278926
+    // See https://youtrack.jetbrains.com/issue/IDEA-278926#focus=Comments-27-5561012.0-0
+    isScanForTestClasses = false
+    // Only run tests from classes that end with "Test"
+    include("**/*Test.class")
 }
 
 tasks.withType<RunIdeTask> {
@@ -43,14 +49,14 @@ repositories {
 }
 
 dependencies {
-    testImplementation("io.mockk", "mockk", "1.12.0")
-    testImplementation("io.strikt", "strikt-core", "0.32.0")
+    testImplementation("io.mockk", "mockk", "1.12.2")
+    testImplementation("io.strikt", "strikt-core", "0.33.0")
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     type.set("IC")
-    version.set("2021.2") // IntelliJ version and Kotlin version must match
+    version.set("2021.3") // IntelliJ version and Kotlin version must match
     updateSinceUntilBuild.set(false)
 
     plugins.set(listOf("com.jetbrains.sh"))
