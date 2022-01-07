@@ -47,5 +47,19 @@ class RpmSpecEditorHighlighter(project: Project?, virtualFile: VirtualFile?, col
             registerLayer(RpmSpecShellTypes.SHELL_TEXT, shellLayerDescriptor)
             registerLayer(RpmSpecShellTypes.SHELL_WHITE_SPACE, shellLayerDescriptor)
         }
+
+        Language.findLanguageByID("Lua")?.let { luaLanguage ->
+            val luaHighlighter =
+                SyntaxHighlighterFactory.getSyntaxHighlighter(luaLanguage, project, virtualFile)
+            val luaLayerDescriptor = LayerDescriptor(object : SyntaxHighlighter {
+                override fun getHighlightingLexer(): Lexer = luaHighlighter.highlightingLexer
+
+                override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> =
+                    luaHighlighter.getTokenHighlights(tokenType)
+            }, "")
+
+            registerLayer(RpmSpecShellTypes.LUA_TEXT, luaLayerDescriptor)
+            registerLayer(RpmSpecShellTypes.LUA_WHITE_SPACE, luaLayerDescriptor)
+        }
     }
 }
