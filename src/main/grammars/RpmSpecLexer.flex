@@ -87,9 +87,9 @@ FILES_DIRECTIVES=%(doc|config|attr|defattr|dir|docdir|ghost|verify|license|readm
   ^"%description"                 { return DESCRIPTION; }
   ^"%changelog"                   { return CHANGELOG; }
   ^"%package"                     { return PACKAGE; }
-  ^"%global"                      { return GLOBAL; }
-  ^"%define"                      { return DEFINE; }
-  ^"%undefine"                    { return UNDEFINE; }
+  "%global"{NON_ID_CHAR}          { yypushback(1); return GLOBAL; }
+  "%define"{NON_ID_CHAR}          { yypushback(1); return DEFINE; }
+  "%undefine"{NON_ID_CHAR}        { yypushback(1); return UNDEFINE; }
   ^"%setup"                       { return SETUP; }
 
   /* LITERALS */

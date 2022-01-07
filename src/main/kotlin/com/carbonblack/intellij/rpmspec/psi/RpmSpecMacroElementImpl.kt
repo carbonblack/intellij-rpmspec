@@ -7,7 +7,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 
 abstract class RpmSpecMacroElementImpl(node: ASTNode) :
-        ASTWrapperPsiElement(node), PsiNameIdentifierOwner {
+        ASTWrapperPsiElement(node), PsiNameIdentifierOwner, RpmSpecMacroElement {
 
     override fun getNameIdentifier() = node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi
 
@@ -23,4 +23,6 @@ abstract class RpmSpecMacroElementImpl(node: ASTNode) :
     override fun getName() = node.findChildByType(RpmSpecTypes.IDENTIFIER)?.text
 
     override fun getReference() = RpmSpecReference(this, TextRange(0, name?.length ?: 0))
+
+    override val isBuiltInMacro = (name?.toLowerCase() ?: "") in RpmSpecMacroElement.builtInMacros
 }

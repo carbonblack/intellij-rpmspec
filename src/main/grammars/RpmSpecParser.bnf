@@ -13,6 +13,8 @@
   tokenTypeClass="com.carbonblack.intellij.rpmspec.psi.RpmSpecTokenType"
 
     tokens = [
+        space             = 'regexp:\s+'
+
         LBRACE            =  '{'
         RBRACE            =  '}'
         LPAREN            =  '('
@@ -42,8 +44,13 @@ macroDefinition ::= (global|define) IDENTIFIER ('\' EOL|wordOrMacro|'('|')'|'<'|
     implements="com.intellij.psi.PsiNameIdentifierOwner"
     mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinitionElementImpl"}
 macroUndefine ::= undefine macro {pin=1}
-fullMacro ::= '%' ('{' ('!''?'|'?')? macro (':' multilineMacro|wordOrMacro+)? '}'| macro ('(' anyWord ')')?) {pin=1}
-macro ::= IDENTIFIER {implements="com.intellij.psi.PsiNameIdentifierOwner"
+macroConditional ::= ('!''?'|'?')
+macroBody ::= macroDefinition|multilineMacro|wordOrMacro+
+macroBodySeparator ::= ':'
+fullMacro ::= '%' ('{' macroConditional? macro (macroBodySeparator? macroBody)? '}'| macro ('(' anyWord ')')?) {pin=1
+    implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecFullMacroElement"
+    mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecFullMacroElementImpl"}
+macro ::= IDENTIFIER {implements=["com.intellij.psi.PsiNameIdentifierOwner" "com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElement"]
                       mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroElementImpl"}
 macroParam ::= '%' INTEGER_LITERAL {pin=2}
 
@@ -51,7 +58,7 @@ macroParam ::= '%' INTEGER_LITERAL {pin=2}
 private multilineMacroPieces ::= (COMMENT|tag|macroParam|<<ifExpr multilineMacro>>|filesDirective|'<'|'>'|'?'|'!'|'('|')'|'\'|wordOrMacro)*
 multilineMacro ::= (multilineMacroPieces EOL+ multilineMacroPieces)+
 
-shellCommand ::= '%' '('  (wordOrMacro|'<'|'>')+ ')' {pin=2}
+shellCommand ::= '%' '('  (('\'|'\\') EOL|wordOrMacro|'<'|'>'|'('|'?'|'!'|'\')* ')' {pin=2}
 
 packageSection ::= package wordOrMacro* EOL packageBody {pin=1}
 packageBody ::= (COMMENT|EOL|<<ifExpr packageBody>>|fullMacro anything*|macroDefinition|macroUndefine|tag)*

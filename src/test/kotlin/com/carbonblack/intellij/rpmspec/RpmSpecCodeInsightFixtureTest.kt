@@ -6,7 +6,7 @@ import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.junit.Assert
 
-class RpmSpecCodeInsightFixtureTestCase : BasePlatformTestCase() {
+class RpmSpecCodeInsightFixtureTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String = "src/test/resources/spec"
 

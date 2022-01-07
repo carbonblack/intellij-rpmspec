@@ -25,12 +25,13 @@
     <idea-version since-build="203"/>
 
     <depends>com.intellij.modules.lang</depends>
+    <depends optional="true" config-file="rpmSpecFile-withSh.xml">com.jetbrains.sh</depends>
 
     <!-- RPM SPEC File -->
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="RPM SPEC" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecFileType" language="RpmSpec" extensions="spec"/>
         <lang.parserDefinition language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecSyntaxHighlighterFactory"/>
+        <!-- <lang.syntaxHighlighterFactory language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecSyntaxHighlighterFactory"/> -->
         <colorSettingsPage implementation="com.carbonblack.intellij.rpmspec.RpmSpecColorSettingsPage"/>
         <lang.foldingBuilder language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecFoldingBuilder"/>
         <lang.refactoringSupport language="RpmSpec" implementationClass="com.carbonblack.intellij.rpmspec.RpmSpecRefactoringSupportProvider"/>
