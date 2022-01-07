@@ -45,7 +45,7 @@ macroDefinition ::= (global|define) IDENTIFIER ('\' EOL|wordOrMacro|'('|')'|'<'|
     mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinitionElementImpl"}
 macroUndefine ::= undefine macro {pin=1}
 macroConditional ::= ('!''?'|'?')
-macroBody ::= macroDefinition|multilineMacro|wordOrMacro+
+macroBody ::= macroDefinition|multilineMacro|(wordOrMacro|'('|')')+
 macroBodySeparator ::= ':'
 fullMacro ::= '%' ('{' macroConditional? macro (macroBodySeparator? macroBody)? '}'| macro ('(' anyWord ')')?) {pin=1
     implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecFullMacroElement"

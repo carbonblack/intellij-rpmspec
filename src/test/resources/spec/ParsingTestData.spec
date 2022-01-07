@@ -7,6 +7,8 @@
 # pybasever without the dot:
 %global pyshortver 37
 
+%{warn:Doing a main_python build with wrong %%__default_python3_pkgversion (0%{?__default_python3_pkgversion}, but this is %pyshortver)}
+
 Name: python3
 Summary: Interpreter of the Python programming language
 URL: https://www.python.org/
