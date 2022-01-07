@@ -53,7 +53,13 @@ C.
 %patch0
 
 %build
-make %{?_smp_mflags}
+make %{?_smp_mflags} \
+%if %{with rhel8_compat_shims}
+  --some-argument \
+%else
+  --some-other-argument \
+%endif
+  --some-final-argument
 
 %install
 %make_install
