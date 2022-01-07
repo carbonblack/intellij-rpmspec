@@ -39,10 +39,10 @@ private anything ::= (wordOrMacro|'?'|'!'|'('|')'|'<'|'>'|'{'|'}'|'\')
 private anyWord ::= (IDENTIFIER|BOOL_LITERAL|FLOAT_LITERAL|INTEGER_LITERAL|CODE|':'|'%%'|'-')
 private wordOrMacro ::= (macroParam|shellCommand|fullMacro|notMacro|anyWord)
 
-private meta optionalBrackets ::= <<param>> |  <<nestedBrackets <<param>>>>
-private meta nestedBrackets ::= '{' (<<param>> | <<nestedBrackets <<param>>>>) '}'
-private macroDefinitionBody ::= ('\' EOL|'%' CODE|wordOrMacro|'('|')'|'<'|'>')+
-macroDefinition ::= (global|define) IDENTIFIER ('(' anyWord* ')')? <<optionalBrackets macroDefinitionBody>> {pin=1
+private meta optionalBrackets ::= <<nestedBrackets <<param>>>> | <<param>>
+private meta nestedBrackets ::= '{' (<<nestedBrackets <<param>>>> | <<param>>) '}'
+private macroDefinitionBody ::= ('\' EOL|'%' CODE|wordOrMacro|'('|')'|'<'|'>')
+macroDefinition ::= (global|define) IDENTIFIER ('(' anyWord* ')')? <<optionalBrackets macroDefinitionBody+>>+ {pin=1
     implements="com.intellij.psi.PsiNameIdentifierOwner"
     mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinitionElementImpl"}
 macroUndefine ::= undefine macro {pin=1}
