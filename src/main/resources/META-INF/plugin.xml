@@ -14,6 +14,9 @@
           <li>Add language injection for shell scripting sections</li>
           <li>Better support for conditional macros</li>
           <li>Added missing script sections such as triggers</li>
+          <li>Basic support for lua sections if Luanalysis or EmmyLua is installed</li>
+          <li>Fixes for parsing some macro definitions</li>
+          <li>Fixes for parsing some macros containing parentheses</li>
           <li>Updated plugin to use Kotlin 1.5.x and IntelliJ 2021.3+</li>
         </ul><br>
         </html>
