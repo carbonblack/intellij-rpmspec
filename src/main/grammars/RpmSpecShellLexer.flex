@@ -75,7 +75,7 @@ SPEC_SECTIONS=%(description|files|changelog|package)
 
 ^{SHELL_SECTIONS} {RESERVED_LINE}           { yybegin(SHELL_SECTION); return SPEC_FILE; }
 ^{SPEC_SECTIONS} {RESERVED_LINE}            { yybegin(YYINITIAL); nextEolSpec = true; return SPEC_FILE; }
-^{ALL_IF_KEYWORDS} {RESERVED_LINE} {EOL}?   { return SPEC_FILE; }
+{ALL_IF_KEYWORDS} {RESERVED_LINE} {EOL}?    { return SPEC_FILE; }
 
 "%("                              { yypushState(SHELL_EXPANSION); return SPEC_FILE; }
 
