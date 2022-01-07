@@ -43,6 +43,12 @@ IF_KEYWORDS=%(if|ifarch|ifnarch|ifos|ifnos)
 ELSE_KEYWORDS=%(else|elifarch|elifos|elif)
 FILES_DIRECTIVES=%(doc|config|attr|defattr|dir|docdir|ghost|verify|license|readme|exclude|pubkey|missingok|artifact)
 
+// See: https://github.com/rpm-software-management/rpm/blob/rpm-4.17.0-release/build/parseSpec.c#L46-L80
+// and: https://github.com/rpm-software-management/rpm/blob/rpm-4.17.0-release/build/parseSpec.c#L915
+SHELL_SECTIONS=%(generate_buildrequires|prep|build|install|check|post|postun|posttrans|pre|preun|
+                 pretrans|clean|verifyscript|triggerpostun|triggerprein|triggerun|triggerin|trigger|
+                 filetriggerin|filetrigger|filetriggerun|filetriggerpostun|transfiletriggerin|transfiletrigger|
+                 transfiletriggerun|transfiletriggerun|transfiletriggerpostun)
 %%
 
 
@@ -72,18 +78,8 @@ FILES_DIRECTIVES=%(doc|config|attr|defattr|dir|docdir|ghost|verify|license|readm
 
   "true"|"false"                  { return BOOL_LITERAL; }
 
-  ^"%prep"                        { return PREP; }
-  ^"%build"                       { return BUILD; }
-  ^"%install"                     { return INSTALL; }
-  ^"%check"                       { return CHECK; }
+  ^ {SHELL_SECTIONS}              { return SHELL_SECTION; }
   ^"%files"                       { return FILES; }
-  ^"%post"                        { return POST; }
-  ^"%postun"                      { return POSTUN; }
-  ^"%posttrans"                   { return POSTTRANS; }
-  ^"%pre"                         { return PRE; }
-  ^"%preun"                       { return PREUN; }
-  ^"%pretrans"                    { return PRETRANS; }
-  ^"%clean"                       { return CLEAN; }
   ^"%description"                 { return DESCRIPTION; }
   ^"%changelog"                   { return CHANGELOG; }
   ^"%package"                     { return PACKAGE; }

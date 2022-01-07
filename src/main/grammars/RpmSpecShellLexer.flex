@@ -56,7 +56,12 @@ IF_KEYWORDS=%(if|ifarch|ifnarch|ifos|ifnos)
 ELSE_KEYWORDS=%(else|elifarch|elifos|elif)
 ALL_IF_KEYWORDS={IF_KEYWORDS}|{ELSE_KEYWORDS}|%endif
 
-SHELL_SECTIONS=%(prep|build|install|check|post|postun|posttrans|pre|preun|pretrans|clean)
+// See: https://github.com/rpm-software-management/rpm/blob/rpm-4.17.0-release/build/parseSpec.c#L46-L80
+// and: https://github.com/rpm-software-management/rpm/blob/rpm-4.17.0-release/build/parseSpec.c#L915
+SHELL_SECTIONS=%(generate_buildrequires|prep|build|install|check|post|postun|posttrans|pre|preun|
+                 pretrans|clean|verifyscript|triggerpostun|triggerprein|triggerun|triggerin|trigger|
+                 filetriggerin|filetrigger|filetriggerun|filetriggerpostun|transfiletriggerin|transfiletrigger|
+                 transfiletriggerun|transfiletriggerun|transfiletriggerpostun)
 SPEC_SECTIONS=%(description|files|changelog|package)
 
 %state SHELL_SECTION

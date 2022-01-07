@@ -21,18 +21,8 @@ class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
         RpmSpecTypes.ENDIF -> RESERVED_KEYS
         RpmSpecTypes.SETUP -> RESERVED_KEYS
 
-        RpmSpecTypes.PREP -> BODY_ITEM_KEYS
-        RpmSpecTypes.BUILD -> BODY_ITEM_KEYS
-        RpmSpecTypes.INSTALL -> BODY_ITEM_KEYS
-        RpmSpecTypes.CHECK -> BODY_ITEM_KEYS
+        RpmSpecTypes.SHELL_SECTION -> BODY_ITEM_KEYS
         RpmSpecTypes.FILES -> BODY_ITEM_KEYS
-        RpmSpecTypes.POST -> BODY_ITEM_KEYS
-        RpmSpecTypes.POSTUN -> BODY_ITEM_KEYS
-        RpmSpecTypes.POSTTRANS -> BODY_ITEM_KEYS
-        RpmSpecTypes.PRE -> BODY_ITEM_KEYS
-        RpmSpecTypes.PREUN -> BODY_ITEM_KEYS
-        RpmSpecTypes.PRETRANS -> BODY_ITEM_KEYS
-        RpmSpecTypes.CLEAN -> BODY_ITEM_KEYS
         RpmSpecTypes.DESCRIPTION -> BODY_ITEM_KEYS
         RpmSpecTypes.CHANGELOG -> BODY_ITEM_KEYS
         RpmSpecTypes.PACKAGE -> BODY_ITEM_KEYS
