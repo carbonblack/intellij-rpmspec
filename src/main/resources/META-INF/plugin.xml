@@ -17,6 +17,7 @@
           <li>Basic support for lua sections if Luanalysis or EmmyLua is installed</li>
           <li>Fixes for parsing some macro definitions</li>
           <li>Fixes for parsing some macros containing parentheses</li>
+          <li>Additional minor fixes</li>
           <li>Updated plugin to use Kotlin 1.5.x and IntelliJ 2021.3+</li>
         </ul><br>
         </html>

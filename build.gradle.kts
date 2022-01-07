@@ -59,7 +59,7 @@ intellij {
     version.set("2021.3") // IntelliJ version and Kotlin version must match
     updateSinceUntilBuild.set(false)
 
-    plugins.set(listOf("com.jetbrains.sh", "au.com.glassechidna.luanalysis:1.2.2-IDEA203"))
+    plugins.set(listOf("com.jetbrains.sh")) //, "au.com.glassechidna.luanalysis:1.2.2-IDEA203"))
 }
 
 val generateSpecParser = tasks.create<GenerateParserTask>("generateSpecParser") {
