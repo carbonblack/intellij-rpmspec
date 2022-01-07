@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.carbonblack.intellij.rpmspec</id>
     <name>RPM SPEC File</name>
-    <vendor email="tlusk@carbonblack.com" url="http://www.carbonblack.com">Carbon Black</vendor>
+    <vendor email="tlusk@carbonblack.com" url="https://www.carbonblack.com">Carbon Black</vendor>
 
     <description><![CDATA[
     Plugin for syntax highlighting and basic macro support in RPM SPEC files.
@@ -9,20 +9,19 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 1.2.0:</b>
+        <b>Changes in version 2.0.0:</b>
         <ul>
-          <li>Allow configuration of the rpm executable path</li>
-          <li>Fixed an issue where the target architecture was not detected</li>
-          <li>Added logging around rpm macro detection failures</li>
-          <li>Added an icon to show on the plugin page</li>
-          <li>Updated plugin to use Kotlin 1.4.x and IntelliJ 2020.3+</li>
+          <li>Add language injection for shell scripting sections</li>
+          <li>Better support for conditional macros</li>
+          <li>Added missing script sections such as triggers</li>
+          <li>Updated plugin to use Kotlin 1.5.x and IntelliJ 2021.3+</li>
         </ul><br>
         </html>
             ]]>
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="203"/>
+    <idea-version since-build="213"/>
 
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true" config-file="rpmSpecFile-withSh.xml">com.jetbrains.sh</depends>
