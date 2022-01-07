@@ -70,8 +70,10 @@ make %{?_smp_mflags} \
 path = "/usr/share/hello/world"
 st = posix.stat(path)
 if st and st.type == "link" then
-  os.remove(path)
+  os.remove(%{some_path})
 end
+
+echo %complete_message
 
 %files
 %license LICENSE

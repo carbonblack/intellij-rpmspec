@@ -28,8 +28,10 @@ class RpmSpecEditorHighlighter(project: Project?, virtualFile: VirtualFile?, col
         }, "")
 
         registerLayer(RpmSpecShellTypes.SPEC_FILE, rpmSpecLayerDescriptor)
-        registerLayer(RpmSpecShellTypes.SPEC_FILE_MACRO, rpmSpecLayerDescriptor)
-        registerLayer(RpmSpecShellTypes.SPEC_FILE_MACRO_IDENTIFIER, rpmSpecLayerDescriptor)
+        registerLayer(RpmSpecShellTypes.SPEC_FILE_MACRO_LUA, rpmSpecLayerDescriptor)
+        registerLayer(RpmSpecShellTypes.SPEC_FILE_MACRO_SHELL, rpmSpecLayerDescriptor)
+        registerLayer(RpmSpecShellTypes.SPEC_FILE_MACRO_IDENTIFIER_LUA, rpmSpecLayerDescriptor)
+        registerLayer(RpmSpecShellTypes.SPEC_FILE_MACRO_IDENTIFIER_SHELL, rpmSpecLayerDescriptor)
         registerLayer(RpmSpecShellTypes.SPEC_WHITE_SPACE, rpmSpecLayerDescriptor)
 
         Language.findLanguageByID("Shell Script")?.let { shLanguage ->

@@ -28,7 +28,7 @@ class RpmSpecFileViewProvider(
         RpmSpecTemplateDataElementType(
             "RPM Spec Shell Template",
             RpmSpecLanguage,
-            TokenSet.create(RpmSpecShellTypes.SHELL_TEXT, RpmSpecShellTypes.SPEC_FILE_MACRO_IDENTIFIER, RpmSpecShellTypes.SHELL_WHITE_SPACE, RpmSpecShellTypes.SPEC_WHITE_SPACE, RpmSpecShellTypes.LUA_WHITE_SPACE),
+            TokenSet.create(RpmSpecShellTypes.SHELL_TEXT, RpmSpecShellTypes.SPEC_FILE_MACRO_IDENTIFIER_SHELL, RpmSpecShellTypes.SHELL_WHITE_SPACE, RpmSpecShellTypes.SPEC_WHITE_SPACE, RpmSpecShellTypes.LUA_WHITE_SPACE),
             OUTER_SPEC
         )
 

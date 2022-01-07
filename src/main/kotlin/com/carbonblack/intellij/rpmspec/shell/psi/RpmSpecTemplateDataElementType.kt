@@ -40,7 +40,7 @@ class RpmSpecTemplateDataElementType(
             currentRange = newRange
             if (templateElementTypes.contains(baseLexer.tokenType)) {
                 result.append(sourceCode, baseLexer.tokenStart, baseLexer.tokenEnd)
-            } else if (baseLexer.tokenType == RpmSpecShellTypes.SPEC_FILE_MACRO && baseLexer.tokenText.length > 1) {
+            } else if (baseLexer.tokenType == RpmSpecShellTypes.SPEC_FILE_MACRO_SHELL && baseLexer.tokenText.length > 1) {
                 rangeCollector.addOuterRange(TextRange.create(baseLexer.tokenStart, baseLexer.tokenStart + 1))
                 result.append(sourceCode, baseLexer.tokenStart + 1, baseLexer.tokenEnd)
             } else {

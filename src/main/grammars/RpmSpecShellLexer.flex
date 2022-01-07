@@ -3,7 +3,8 @@ package com.carbonblack.intellij.rpmspec.shell;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.TokenType;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import static com.carbonblack.intellij.rpmspec.shell.psi.RpmSpecShellTypes.*;
 
@@ -19,7 +20,7 @@ import static com.carbonblack.intellij.rpmspec.shell.psi.RpmSpecShellTypes.*;
 %eof}
 
 %{
-    private Stack<Integer> stack = new Stack<>();
+    private final Deque<Integer> stack = new ArrayDeque<>();
     private boolean firstIdentifierFound = false;
 
     private void yypushState(int newState) {
@@ -29,6 +30,15 @@ import static com.carbonblack.intellij.rpmspec.shell.psi.RpmSpecShellTypes.*;
 
     private void yypopState() {
       yybegin(stack.pop());
+    }
+
+    private int getFirstScriptingParentState() {
+        for(Integer state : stack) {
+            if(state == SHELL_SECTION || state == LUA_SECTION) {
+                return state;
+            }
+        }
+        return 0;
     }
 
     private IElementType getWhiteSpace() {
@@ -47,8 +57,6 @@ EOL                   = \n | \r | \r\n
 LINE_WS               = [\ \t\f]
 WHITE_SPACE_CHAR      = {EOL} | {LINE_WS}
 WHITE_SPACE           = {WHITE_SPACE_CHAR}+
-NON_WHITE_SPACE_CHAR  = [^\ \t\f\r\n]
-NON_WHITE_SPACE       = {NON_WHITE_SPACE_CHAR}+
 
 // Literals
 INPUT_CHARACTER =  [^\r\n]
@@ -102,7 +110,14 @@ SPEC_SECTIONS=%(description|files|changelog|package)
 
 <MACRO_EXPANSION> {
   [^a-zA-Z0-9_\ \t\f\r\n}%]+      { return SPEC_FILE; }
-  {IDENTIFIER}                    { if (!firstIdentifierFound) { firstIdentifierFound = true; return SPEC_FILE_MACRO_IDENTIFIER; } else return SPEC_FILE; }
+  {IDENTIFIER}                    { if (!firstIdentifierFound) {
+                                        firstIdentifierFound = true;
+                                        if (getFirstScriptingParentState() == SHELL_SECTION) {
+                                            return SPEC_FILE_MACRO_IDENTIFIER_SHELL;
+                                        } else {
+                                            return SPEC_FILE_MACRO_IDENTIFIER_LUA;
+                                        }
+                                    } else return SPEC_FILE; }
   "%"                             { return SPEC_FILE; }
   %\{                             { yypushState(MACRO_EXPANSION); firstIdentifierFound = false; return SPEC_FILE; }
   \}                              { yypopState(); return SPEC_FILE; }
@@ -119,7 +134,7 @@ SPEC_SECTIONS=%(description|files|changelog|package)
 
 <SHELL_SECTION, LUA_SECTION> {
   ([^\ \t\f\r\n%]|%%)+            { if (yystate() == SHELL_SECTION) return SHELL_TEXT; else return LUA_TEXT; }
-  "%" {IDENTIFIER}                { return SPEC_FILE_MACRO; }
+  "%" {IDENTIFIER}                { if (yystate() == SHELL_SECTION) return SPEC_FILE_MACRO_SHELL; else return SPEC_FILE_MACRO_LUA; }
   %\{                             { yypushState(MACRO_EXPANSION); firstIdentifierFound = false; return SPEC_FILE; }
   "%%"                            { if (yystate() == SHELL_SECTION) return SHELL_TEXT; else return LUA_TEXT; }
 }

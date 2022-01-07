@@ -11,9 +11,13 @@ interface RpmSpecShellTypes {
         @JvmField
         val SPEC_FILE: IElementType = RpmSpecShellElementType("SPEC_FILE")
         @JvmField
-        val SPEC_FILE_MACRO: IElementType = RpmSpecShellElementType("SPEC_FILE_MACRO")
+        val SPEC_FILE_MACRO_SHELL: IElementType = RpmSpecShellElementType("SPEC_FILE_MACRO_SHELL")
         @JvmField
-        val SPEC_FILE_MACRO_IDENTIFIER: IElementType = RpmSpecShellElementType("SPEC_FILE_MACRO_IDENTIFIER")
+        val SPEC_FILE_MACRO_LUA: IElementType = RpmSpecShellElementType("SPEC_FILE_MACRO_LUA")
+        @JvmField
+        val SPEC_FILE_MACRO_IDENTIFIER_SHELL: IElementType = RpmSpecShellElementType("SPEC_FILE_MACRO_IDENTIFIER_SHELL")
+        @JvmField
+        val SPEC_FILE_MACRO_IDENTIFIER_LUA: IElementType = RpmSpecShellElementType("SPEC_FILE_MACRO_IDENTIFIER_LUA")
         @JvmField
         val SHELL_WHITE_SPACE: IElementType = RpmSpecShellElementType("SHELL_WHITE_SPACE")
         @JvmField
