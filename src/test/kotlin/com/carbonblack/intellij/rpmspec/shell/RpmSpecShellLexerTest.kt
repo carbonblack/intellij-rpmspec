@@ -9,6 +9,10 @@ class RpmSpecShellLexerTest : LexerTestCase() {
         doFileTest("spec")
     }
 
+    fun testParsingTestData() {
+        doFileTest("spec")
+    }
+
     override fun createLexer(): Lexer = RpmSpecShellLexerAdapter()
     override fun getDirPath(): String = "src/test/resources/macros/shell"
 

@@ -21,7 +21,6 @@ import static com.carbonblack.intellij.rpmspec.shell.psi.RpmSpecShellTypes.*;
 %{
     private Stack<Integer> stack = new Stack<>();
     private boolean firstIdentifierFound = false;
-    private boolean nextEolSpec = false;
 
     private void yypushState(int newState) {
       stack.push(yystate());
@@ -31,13 +30,25 @@ import static com.carbonblack.intellij.rpmspec.shell.psi.RpmSpecShellTypes.*;
     private void yypopState() {
       yybegin(stack.pop());
     }
+
+    private IElementType getWhiteSpace() {
+        if (yystate() == SHELL_EXPANSION || yystate() == SHELL_SECTION) {
+            return SHELL_WHITE_SPACE;
+        } else if (yystate() == LUA_SECTION) {
+            return LUA_WHITE_SPACE;
+        } else {
+            return SPEC_WHITE_SPACE;
+        }
+    }
 %}
 
 // Whitespace
-EOL              = \n | \r | \r\n
-LINE_WS          = [\ \t\f]
-WHITE_SPACE_CHAR = {EOL} | {LINE_WS}
-WHITE_SPACE      = {WHITE_SPACE_CHAR}+
+EOL                   = \n | \r | \r\n
+LINE_WS               = [\ \t\f]
+WHITE_SPACE_CHAR      = {EOL} | {LINE_WS}
+WHITE_SPACE           = {WHITE_SPACE_CHAR}+
+NON_WHITE_SPACE_CHAR  = [^\ \t\f\r\n]
+NON_WHITE_SPACE       = {NON_WHITE_SPACE_CHAR}+
 
 // Literals
 INPUT_CHARACTER =  [^\r\n]
@@ -45,12 +56,13 @@ INPUT_CHARACTER =  [^\r\n]
 ALPHA           = [a-zA-Z]
 NUMERIC         = [0-9]
 IDENTIFIER_CHAR = {ALPHA}|{NUMERIC}|"_"
-NON_ID_CHAR     = [^a-zA-Z0-9_\r\n]
+NON_ID_CHAR     = [^a-zA-Z0-9_]
+NON_ID_OR_EOL   = [^a-zA-Z0-9_\r\n]
 
 IDENTIFIER      = {IDENTIFIER_CHAR}+
 
 // The remainder of a line after a reserved word
-RESERVED_LINE = ({NON_ID_CHAR} {INPUT_CHARACTER}*)?
+RESERVED_LINE = ({NON_ID_OR_EOL} {INPUT_CHARACTER}*)?
 // Reserved Words
 IF_KEYWORDS=%(if|ifarch|ifnarch|ifos|ifnos)
 ELSE_KEYWORDS=%(else|elifarch|elifos|elif)
@@ -67,17 +79,26 @@ SPEC_SECTIONS=%(description|files|changelog|package)
 %state SHELL_SECTION
 %state GLOBAL_SECTION
 %state DEFINE_SECTION
+%state LUA_SECTION
+
+%state SHELL_SECTION_HEADER
 
 %state MACRO_EXPANSION
 %state SHELL_EXPANSION
 
 %%
 
-^{SHELL_SECTIONS} {RESERVED_LINE}           { yybegin(SHELL_SECTION); return SPEC_FILE; }
-^{SPEC_SECTIONS} {RESERVED_LINE}            { yybegin(YYINITIAL); nextEolSpec = true; return SPEC_FILE; }
+^{SHELL_SECTIONS} {NON_ID_CHAR}             { yypushback(1); yybegin(SHELL_SECTION_HEADER); return SPEC_FILE; }
+^{SPEC_SECTIONS} {RESERVED_LINE}            { yybegin(YYINITIAL); return SPEC_FILE; }
 {ALL_IF_KEYWORDS} {RESERVED_LINE} {EOL}?    { return SPEC_FILE; }
 
 "%("                              { yypushState(SHELL_EXPANSION); return SPEC_FILE; }
+
+<SHELL_SECTION_HEADER> {
+    [^\ \t\f\r\n<]+               { return SPEC_FILE; }
+    "<lua>" {INPUT_CHARACTER}*    { yybegin(LUA_SECTION); return SPEC_FILE; }
+    {EOL}                         { yypushback(1); yybegin(SHELL_SECTION); }
+}
 
 <MACRO_EXPANSION> {
   [^a-zA-Z0-9_\ \t\f\r\n}%]+      { return SPEC_FILE; }
@@ -96,11 +117,11 @@ SPEC_SECTIONS=%(description|files|changelog|package)
   \)                              { yypopState(); return SPEC_FILE; }
 }
 
-<SHELL_SECTION> {
-  ([^\ \t\f\r\n%]|%%)+            { return SHELL_TEXT; }
+<SHELL_SECTION, LUA_SECTION> {
+  ([^\ \t\f\r\n%]|%%)+            { if (yystate() == SHELL_SECTION) return SHELL_TEXT; else return LUA_TEXT; }
   "%" {IDENTIFIER}                { return SPEC_FILE_MACRO; }
   %\{                             { yypushState(MACRO_EXPANSION); firstIdentifierFound = false; return SPEC_FILE; }
-  "%%"                            { return SHELL_TEXT; }
+  "%%"                            { if (yystate() == SHELL_SECTION) return SHELL_TEXT; else return LUA_TEXT; }
 }
 
 <YYINITIAL> {
@@ -123,6 +144,6 @@ SPEC_SECTIONS=%(description|files|changelog|package)
 %define {WHITE_SPACE} {IDENTIFIER} "(" ({IDENTIFIER_CHAR}|:)* ")"   { yypushState(DEFINE_SECTION); return SPEC_FILE; }
 %global {WHITE_SPACE} {IDENTIFIER}                                  { yypushState(GLOBAL_SECTION); return SPEC_FILE; }
 
-{LINE_WS}+                        { if (!nextEolSpec && (yystate() == SHELL_EXPANSION || yystate() == SHELL_SECTION)) return SHELL_WHITE_SPACE; else { nextEolSpec = false; return SPEC_WHITE_SPACE; } }
-{EOL}                             { if (!nextEolSpec && (yystate() == SHELL_EXPANSION || yystate() == SHELL_SECTION)) return SHELL_WHITE_SPACE; else { nextEolSpec = false; return SPEC_WHITE_SPACE; } }
+{LINE_WS}+                        { return getWhiteSpace(); }
+{EOL}                             { return getWhiteSpace(); }
 [^]                               { return TokenType.BAD_CHARACTER; }
