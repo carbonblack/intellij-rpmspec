@@ -31,7 +31,7 @@ IDENTIFIER_CHAR = {ALPHA}|{NUMERIC}|"_"
 NON_ID_CHAR     = [^a-zA-Z0-9_]
 
 IDENTIFIER      = {IDENTIFIER_CHAR}+
-CODE_CHARS      = [^\r\n\ \t\f{}()%:?<>0-9]+
+CODE_CHARS      = [^\r\n\ \t\f{}()%:?!<>0-9]+
 
 INT_LITERAL   = {NUMERIC}+
 FLT_LITERAL   = {INT_LITERAL} \. {INT_LITERAL}

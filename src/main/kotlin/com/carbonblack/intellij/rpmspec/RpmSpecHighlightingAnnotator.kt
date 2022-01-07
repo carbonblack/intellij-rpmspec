@@ -52,10 +52,12 @@ class RpmSpecHighlightingAnnotator : Annotator {
                     }
                 }
             }
-            is RpmSpecMacroDefinition -> element.node.findChildByType(RpmSpecTypes.IDENTIFIER)?.let {
-                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
-                    .textAttributes(RpmSpecSyntaxHighligher.MACRO_ITEM)
-                    .range(it.textRange).create()
+            is RpmSpecMacroDefinition -> element.node.findChildByType(RpmSpecTypes.IDENTIFIER)?.let { macroDefinitionElement ->
+                if (element.parentsOfType<RpmSpecFullMacro>(false).none { it.isFalseCondition }) {
+                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .textAttributes(RpmSpecSyntaxHighligher.MACRO_ITEM)
+                        .range(macroDefinitionElement.textRange).create()
+                }
             }
             is RpmSpecTag -> element.node.findChildByType(RpmSpecTypes.IDENTIFIER)?.let {
                 holder.newSilentAnnotation(HighlightSeverity.INFORMATION)

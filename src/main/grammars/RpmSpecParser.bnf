@@ -34,17 +34,19 @@
 rpmSpecFile ::= EOL* packageBody section*
 
 private section ::= (packageSection|descriptionSection|changelogSection|otherSections|filesSection)
-
 private notMacro ::= CODE '{' wordOrMacro+ '}'
 private anything ::= (wordOrMacro|'?'|'!'|'('|')'|'<'|'>'|'{'|'}'|'\')
 private anyWord ::= (IDENTIFIER|BOOL_LITERAL|FLOAT_LITERAL|INTEGER_LITERAL|CODE|':'|'%%'|'-')
 private wordOrMacro ::= (macroParam|shellCommand|fullMacro|notMacro|anyWord)
 
-macroDefinition ::= (global|define) IDENTIFIER ('\' EOL|wordOrMacro|'('|')'|'<'|'>')+ {pin=1
+private meta optionalBrackets ::= <<param>> |  <<nestedBrackets <<param>>>>
+private meta nestedBrackets ::= '{' (<<param>> | <<nestedBrackets <<param>>>>) '}'
+private macroDefinitionBody ::= ('\' EOL|'%' CODE|wordOrMacro|'('|')'|'<'|'>')+
+macroDefinition ::= (global|define) IDENTIFIER ('(' anyWord* ')')? <<optionalBrackets macroDefinitionBody>> {pin=1
     implements="com.intellij.psi.PsiNameIdentifierOwner"
     mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinitionElementImpl"}
 macroUndefine ::= undefine macro {pin=1}
-macroConditional ::= ('!''?'|'?')
+macroConditional ::= ('!''?'|'?''!'|'?')
 macroBody ::= macroDefinition|multilineMacro|(wordOrMacro|'('|')')+
 macroBodySeparator ::= ':'
 fullMacro ::= '%' ('{' macroConditional? macro (macroBodySeparator? macroBody)? '}'| macro ('(' anyWord ')')?) {pin=1
