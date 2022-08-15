@@ -35,7 +35,7 @@ rpmSpecFile ::= EOL* packageBody section*
 
 private section ::= (packageSection|descriptionSection|changelogSection|otherSections|filesSection)
 private notMacro ::= CODE '{' wordOrMacro+ '}'
-private anything ::= (wordOrMacro|'?'|'!'|'('|')'|'<'|'>'|'{'|'}'|'\')
+private anything ::= (wordOrMacro|'?'|'!'|'('|')'|'<'|'>'|'{'|'}'|'\'|'\\')
 private anyWord ::= (IDENTIFIER|BOOL_LITERAL|FLOAT_LITERAL|INTEGER_LITERAL|CODE|':'|'%%'|'-')
 private wordOrMacro ::= (macroParam|shellCommand|fullMacro|notMacro|anyWord)
 
@@ -47,7 +47,7 @@ macroDefinition ::= (global|define) IDENTIFIER ('(' anyWord* ')')? <<optionalBra
     mixin="com.carbonblack.intellij.rpmspec.psi.RpmSpecMacroDefinitionElementImpl"}
 macroUndefine ::= undefine macro {pin=1}
 macroConditional ::= ('!''?'|'?''!'|'?')
-macroBody ::= macroDefinition|multilineMacro|(wordOrMacro|'('|')')+
+macroBody ::= macroDefinition|multilineMacro|(wordOrMacro|'?'|'!'|'('|')'|'<'|'>'|'\'|'\\')+
 macroBodySeparator ::= ':'
 fullMacro ::= '%' ('{' macroConditional? macro (macroBodySeparator? macroBody)? '}'| macro ('(' anyWord ')')?) {pin=1
     implements="com.carbonblack.intellij.rpmspec.psi.RpmSpecFullMacroElement"
@@ -57,10 +57,10 @@ macro ::= IDENTIFIER {implements=["com.intellij.psi.PsiNameIdentifierOwner" "com
 macroParam ::= '%' INTEGER_LITERAL {pin=2}
 
 // This definition is a bit of a mess, it's pretty much everything from all the sections jammed in here
-private multilineMacroPieces ::= (COMMENT|tag|macroParam|<<ifExpr multilineMacro>>|filesDirective|'<'|'>'|'?'|'!'|'('|')'|'\'|wordOrMacro)*
+private multilineMacroPieces ::= (COMMENT|tag|macroParam|<<ifExpr multilineMacro>>|filesDirective|'<'|'>'|'?'|'!'|'('|')'|'\'|'\\'|wordOrMacro)*
 multilineMacro ::= (multilineMacroPieces EOL+ multilineMacroPieces)+
 
-shellCommand ::= '%' '('  (('\'|'\\') EOL|wordOrMacro|'<'|'>'|'('|'?'|'!'|'\')* ')' {pin=2}
+shellCommand ::= '%' '('  (('\'|'\\') EOL|wordOrMacro|'<'|'>'|'('|'?'|'!'|'\'|'\\')* ')' {pin=2}
 
 packageSection ::= package wordOrMacro* EOL packageBody {pin=1}
 packageBody ::= (COMMENT|EOL|<<ifExpr packageBody>>|fullMacro anything*|macroDefinition|macroUndefine|tag)*
