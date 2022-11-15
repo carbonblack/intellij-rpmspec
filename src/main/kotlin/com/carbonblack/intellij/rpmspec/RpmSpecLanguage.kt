@@ -2,4 +2,4 @@ package com.carbonblack.intellij.rpmspec
 
 import com.intellij.lang.Language
 
-object RpmSpecLanguage  : Language("RpmSpec")
+object RpmSpecLanguage : Language("RpmSpec")

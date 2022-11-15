@@ -6,9 +6,39 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.jetbrains.grammarkit") version "2021.2.1"
     id("org.jetbrains.intellij") version "1.3.0"
+    id("com.diffplug.spotless") version "6.11.0"
+    id("io.gitlab.arturbosch.detekt") version "1.21.0"
     // See: https://plugins.jetbrains.com/docs/intellij/kotlin.html#kotlin-standard-library
     kotlin("jvm") version "1.5.10"
     java
+}
+
+spotless {
+    val ktlintVersion = "0.46.1"
+
+    val ktlintOverrides = mapOf(
+        "disabled_rules" to "filename,no-wildcard-imports,string-template",
+        "ij_kotlin_allow_trailing_comma" to "true",
+        "ij_kotlin_allow_trailing_comma_on_call_site" to "true",
+    )
+
+    kotlin {
+        ktlint(ktlintVersion)
+            .setUseExperimental(true)
+            .editorConfigOverride(ktlintOverrides)
+    }
+
+    kotlinGradle {
+        target("*.gradle.kts")
+        ktlint(ktlintVersion)
+            .setUseExperimental(true)
+            .editorConfigOverride(ktlintOverrides)
+    }
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    config = files("$projectDir/detekt.yml")
 }
 
 group = "com.carbonblack"
@@ -24,7 +54,7 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.freeCompilerArgs = listOf("-Xjvm-default=enable")
 }
 
-sourceSets{
+sourceSets {
     main {
         java.srcDir("$projectDir/src/main/gen")
     }
@@ -59,7 +89,7 @@ intellij {
     version.set("2021.3") // IntelliJ version and Kotlin version must match
     updateSinceUntilBuild.set(false)
 
-    plugins.set(listOf("com.jetbrains.sh")) //, "au.com.glassechidna.luanalysis:1.2.2-IDEA203"))
+    plugins.set(listOf("com.jetbrains.sh")) // , "au.com.glassechidna.luanalysis:1.2.2-IDEA203"))
 }
 
 val generateSpecParser = tasks.create<GenerateParserTask>("generateSpecParser") {

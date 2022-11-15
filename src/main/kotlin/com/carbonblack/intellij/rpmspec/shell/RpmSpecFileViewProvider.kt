@@ -20,7 +20,7 @@ private val OUTER_SPEC = RpmSpecOuterElementType("RPM Spec Element")
 class RpmSpecFileViewProvider(
     manager: PsiManager,
     virtualFile: VirtualFile,
-    eventSystemEnabled: Boolean
+    eventSystemEnabled: Boolean,
 ) : MultiplePsiFilesPerDocumentFileViewProvider(manager, virtualFile, eventSystemEnabled),
     TemplateLanguageFileViewProvider {
 
@@ -29,7 +29,7 @@ class RpmSpecFileViewProvider(
             "RPM Spec Shell Template",
             RpmSpecLanguage,
             TokenSet.create(RpmSpecShellTypes.SHELL_TEXT, RpmSpecShellTypes.SPEC_FILE_MACRO_IDENTIFIER_SHELL, RpmSpecShellTypes.SHELL_WHITE_SPACE, RpmSpecShellTypes.SPEC_WHITE_SPACE, RpmSpecShellTypes.LUA_WHITE_SPACE),
-            OUTER_SPEC
+            OUTER_SPEC,
         )
 
     override fun getBaseLanguage(): Language = RpmSpecLanguage

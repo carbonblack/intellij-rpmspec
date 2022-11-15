@@ -1,0 +1,17 @@
+exceptions:
+  TooGenericExceptionCaught:
+    active: false
+style:
+  MagicNumber:
+    active: false
+  WildcardImport:
+    active: false
+  MaxLineLength:
+    active: false
+  ReturnCount:
+    active: false
+complexity:
+  LongMethod:
+    active: false
+  ComplexMethod:
+    active: false

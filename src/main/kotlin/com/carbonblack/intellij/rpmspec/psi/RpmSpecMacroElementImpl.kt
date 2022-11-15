@@ -7,7 +7,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 
 abstract class RpmSpecMacroElementImpl(node: ASTNode) :
-        ASTWrapperPsiElement(node), PsiNameIdentifierOwner, RpmSpecMacroElement {
+    ASTWrapperPsiElement(node), PsiNameIdentifierOwner, RpmSpecMacroElement {
 
     override fun getNameIdentifier() = node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi
 

@@ -19,14 +19,20 @@ class RpmSpecFoldingBuilder : FoldingBuilderEx(), DumbAware {
         for (ifStatement in ifStatements) {
             val startOffset = ifStatement.node.findChildByType(RpmSpecTypes.EOL)?.textRange?.startOffset
             if (startOffset != null) {
-                descriptors.add(object : FoldingDescriptor(ifStatement.node,
-                        TextRange(startOffset,
-                                ifStatement.textRange.endOffset),
-                        FoldingGroup.newGroup("rpm-spec-if-statement")) {
-                    override fun getPlaceholderText(): String {
-                        return "...${ifStatement.endIfExpr?.text ?: ""}"
-                    }
-                })
+                descriptors.add(
+                    object : FoldingDescriptor(
+                        ifStatement.node,
+                        TextRange(
+                            startOffset,
+                            ifStatement.textRange.endOffset,
+                        ),
+                        FoldingGroup.newGroup("rpm-spec-if-statement"),
+                    ) {
+                        override fun getPlaceholderText(): String {
+                            return "...${ifStatement.endIfExpr?.text ?: ""}"
+                        }
+                    },
+                )
             }
         }
 
@@ -34,14 +40,20 @@ class RpmSpecFoldingBuilder : FoldingBuilderEx(), DumbAware {
         for (multilineMacro in multilineMacros) {
             val startOffset = multilineMacro.node.findChildByType(RpmSpecTypes.EOL)?.textRange?.startOffset
             if (startOffset != null) {
-                descriptors.add(object : FoldingDescriptor(multilineMacro.node,
-                        TextRange(startOffset,
-                                multilineMacro.textRange.endOffset),
-                        FoldingGroup.newGroup("rpm-spec-multiline-macro")) {
-                    override fun getPlaceholderText(): String {
-                        return "..."
-                    }
-                })
+                descriptors.add(
+                    object : FoldingDescriptor(
+                        multilineMacro.node,
+                        TextRange(
+                            startOffset,
+                            multilineMacro.textRange.endOffset,
+                        ),
+                        FoldingGroup.newGroup("rpm-spec-multiline-macro"),
+                    ) {
+                        override fun getPlaceholderText(): String {
+                            return "..."
+                        }
+                    },
+                )
             }
         }
 

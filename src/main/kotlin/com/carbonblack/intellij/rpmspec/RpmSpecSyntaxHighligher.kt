@@ -3,11 +3,10 @@ package com.carbonblack.intellij.rpmspec
 import com.carbonblack.intellij.rpmspec.psi.RpmSpecTypes
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
-
-import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
 
 class RpmSpecSyntaxHighligher : SyntaxHighlighterBase() {
 

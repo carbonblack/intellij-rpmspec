@@ -107,8 +107,8 @@ class RpmSpecHighlightingAnnotator : Annotator {
                         .range(
                             TextRange(
                                 element.textRange.startOffset,
-                                element.textRange.startOffset + (element.macro?.startOffsetInParent ?: 1)
-                            )
+                                element.textRange.startOffset + (element.macro?.startOffsetInParent ?: 1),
+                            ),
                         ).create()
 
                     element.macroBodySeparator?.let { separator ->
@@ -135,7 +135,7 @@ class RpmSpecHighlightingAnnotator : Annotator {
             is RpmSpecShellCommand -> {
                 listOf(
                     TextRange(element.startOffset, (element.startOffset + 2).coerceAtMost(element.endOffset)),
-                    TextRange((element.endOffset - 1).coerceAtLeast(element.startOffset), element.endOffset)
+                    TextRange((element.endOffset - 1).coerceAtLeast(element.startOffset), element.endOffset),
                 ).forEach { range ->
                     holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                         .textAttributes(RpmSpecSyntaxHighligher.BRACES)

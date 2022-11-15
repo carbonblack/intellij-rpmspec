@@ -13,14 +13,14 @@ Install the plugin directly from your IDE or the
 
 ## Feature summary
 
- * Syntax highlighting of SPEC files
- * References, go-to definition, and find usage of macros
- * Discovery of macros on the OS macro path
- * Detection of unresolved macros
- * Basic structure view
- * Code folding of if statements
- * Brace matching
- * Line commenting
+- Syntax highlighting of SPEC files
+- References, go-to definition, and find usage of macros
+- Discovery of macros on the OS macro path
+- Detection of unresolved macros
+- Basic structure view
+- Code folding of if statements
+- Brace matching
+- Line commenting
 
 ## Contributing
 

@@ -9,10 +9,12 @@ import com.intellij.psi.tree.TokenSet
 
 class RpmMacroFindUsagesProvider : FindUsagesProvider {
     override fun getWordsScanner(): WordsScanner {
-        return DefaultWordsScanner(RpmMacroLexerAdapter(),
-                TokenSet.create(RpmMacroTypes.IDENTIFIER),
-                TokenSet.create(RpmMacroTypes.COMMENT),
-                TokenSet.EMPTY)
+        return DefaultWordsScanner(
+            RpmMacroLexerAdapter(),
+            TokenSet.create(RpmMacroTypes.IDENTIFIER),
+            TokenSet.create(RpmMacroTypes.COMMENT),
+            TokenSet.EMPTY,
+        )
     }
 
     override fun canFindUsagesFor(psiElement: PsiElement) = psiElement is PsiNamedElement

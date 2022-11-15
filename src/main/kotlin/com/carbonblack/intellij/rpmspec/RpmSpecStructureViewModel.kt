@@ -5,8 +5,8 @@ import com.intellij.ide.structureView.*
 import com.intellij.psi.PsiFile
 
 class RpmSpecStructureViewModel(psiFile: PsiFile) :
-        StructureViewModelBase(psiFile, RpmSpecStructureViewElement(psiFile)),
-        StructureViewModel.ElementInfoProvider {
+    StructureViewModelBase(psiFile, RpmSpecStructureViewElement(psiFile)),
+    StructureViewModel.ElementInfoProvider {
 
     override fun isAlwaysShowsPlus(element: StructureViewTreeElement) = element.value is RpmSpecFile
     override fun isAlwaysLeaf(element: StructureViewTreeElement) = element.value !is RpmSpecFile

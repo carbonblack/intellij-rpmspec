@@ -9,19 +9,22 @@ import com.intellij.util.ProcessingContext
 
 class RpmSpecCompletionContributor : CompletionContributor() {
     init {
-        extend(CompletionType.BASIC,
+        extend(
+            CompletionType.BASIC,
             PlatformPatterns.psiElement(RpmSpecTypes.IDENTIFIER).withLanguage(RpmSpecLanguage),
             object : CompletionProvider<CompletionParameters>() {
                 public override fun addCompletions(
                     parameters: CompletionParameters,
                     context: ProcessingContext,
-                    resultSet: CompletionResultSet
+                    resultSet: CompletionResultSet,
                 ) {
-                    resultSet.addAllElements(RpmSpecMacroElement.builtInMacros.map {
-                        LookupElementBuilder.create(it).withTypeText("built-in macro")
-                    })
+                    resultSet.addAllElements(
+                        RpmSpecMacroElement.builtInMacros.map {
+                            LookupElementBuilder.create(it).withTypeText("built-in macro")
+                        },
+                    )
                 }
-            }
+            },
         )
     }
 

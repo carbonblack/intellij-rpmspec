@@ -10,6 +10,6 @@ class RpmSpecFileViewProviderFactory : FileViewProviderFactory {
         virtualFile: VirtualFile,
         language: Language,
         psiManager: PsiManager,
-        physical: Boolean
+        physical: Boolean,
     ) = RpmSpecFileViewProvider(psiManager, virtualFile, physical)
 }

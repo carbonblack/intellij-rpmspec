@@ -24,9 +24,9 @@ class RpmSpecStructureViewElement(val element: NavigatablePsiElement) : Structur
 
     override fun getChildren(): Array<TreeElement> {
         return element.children
-                .mapNotNull { it as? NavigatablePsiElement }
-                .map { RpmSpecStructureViewElement(it) }
-                .toTypedArray()
+            .mapNotNull { it as? NavigatablePsiElement }
+            .map { RpmSpecStructureViewElement(it) }
+            .toTypedArray()
     }
 
     override fun getValue() = element

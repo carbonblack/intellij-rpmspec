@@ -19,13 +19,16 @@ class RpmSpecEditorHighlighter(project: Project?, virtualFile: VirtualFile?, col
 
     init {
         val rpmSpecHighlighter = RpmSpecSyntaxHighligher()
-        val rpmSpecLayerDescriptor = LayerDescriptor(object : SyntaxHighlighter {
-            override fun getHighlightingLexer(): Lexer = rpmSpecHighlighter.highlightingLexer
+        val rpmSpecLayerDescriptor = LayerDescriptor(
+            object : SyntaxHighlighter {
+                override fun getHighlightingLexer(): Lexer = rpmSpecHighlighter.highlightingLexer
 
-            override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
-                return rpmSpecHighlighter.getTokenHighlights(tokenType)
-            }
-        }, "")
+                override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
+                    return rpmSpecHighlighter.getTokenHighlights(tokenType)
+                }
+            },
+            "",
+        )
 
         registerLayer(RpmSpecShellTypes.SPEC_FILE, rpmSpecLayerDescriptor)
         registerLayer(RpmSpecShellTypes.SPEC_FILE_MACRO_LUA, rpmSpecLayerDescriptor)
@@ -37,12 +40,15 @@ class RpmSpecEditorHighlighter(project: Project?, virtualFile: VirtualFile?, col
         Language.findLanguageByID("Shell Script")?.let { shLanguage ->
             val shellHighlighter =
                 SyntaxHighlighterFactory.getSyntaxHighlighter(shLanguage, project, virtualFile)
-            val shellLayerDescriptor = LayerDescriptor(object : SyntaxHighlighter {
-                override fun getHighlightingLexer(): Lexer = shellHighlighter.highlightingLexer
+            val shellLayerDescriptor = LayerDescriptor(
+                object : SyntaxHighlighter {
+                    override fun getHighlightingLexer(): Lexer = shellHighlighter.highlightingLexer
 
-                override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> =
-                    shellHighlighter.getTokenHighlights(tokenType)
-            }, "")
+                    override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> =
+                        shellHighlighter.getTokenHighlights(tokenType)
+                },
+                "",
+            )
 
             registerLayer(RpmSpecShellTypes.SHELL_TEXT, shellLayerDescriptor)
             registerLayer(RpmSpecShellTypes.SHELL_WHITE_SPACE, shellLayerDescriptor)
@@ -51,12 +57,15 @@ class RpmSpecEditorHighlighter(project: Project?, virtualFile: VirtualFile?, col
         Language.findLanguageByID("Lua")?.let { luaLanguage ->
             val luaHighlighter =
                 SyntaxHighlighterFactory.getSyntaxHighlighter(luaLanguage, project, virtualFile)
-            val luaLayerDescriptor = LayerDescriptor(object : SyntaxHighlighter {
-                override fun getHighlightingLexer(): Lexer = luaHighlighter.highlightingLexer
+            val luaLayerDescriptor = LayerDescriptor(
+                object : SyntaxHighlighter {
+                    override fun getHighlightingLexer(): Lexer = luaHighlighter.highlightingLexer
 
-                override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> =
-                    luaHighlighter.getTokenHighlights(tokenType)
-            }, "")
+                    override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> =
+                        luaHighlighter.getTokenHighlights(tokenType)
+                },
+                "",
+            )
 
             registerLayer(RpmSpecShellTypes.LUA_TEXT, luaLayerDescriptor)
             registerLayer(RpmSpecShellTypes.LUA_WHITE_SPACE, luaLayerDescriptor)

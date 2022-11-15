@@ -29,7 +29,7 @@ class RpmSpecParserDefinition : ParserDefinition {
     override fun createFile(viewProvider: FileViewProvider) = RpmSpecFile(viewProvider)
 
     override fun spaceExistenceTypeBetweenTokens(left: ASTNode, right: ASTNode) =
-            ParserDefinition.SpaceRequirements.MAY
+        ParserDefinition.SpaceRequirements.MAY
 
     override fun createElement(node: ASTNode): PsiElement = RpmSpecTypes.Factory.createElement(node)
 }

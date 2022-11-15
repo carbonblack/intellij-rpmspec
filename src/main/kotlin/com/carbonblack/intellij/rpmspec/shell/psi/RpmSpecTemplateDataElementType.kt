@@ -14,14 +14,14 @@ class RpmSpecTemplateDataElementType(
     debugName: String,
     language: Language?,
     private val templateElementTypes: TokenSet,
-    outerElementType: IElementType
+    outerElementType: IElementType,
 ) :
     TemplateDataElementType(debugName, language, templateElementTypes.types.first(), outerElementType) {
 
     override fun createTemplateText(
         sourceCode: CharSequence,
         baseLexer: Lexer,
-        rangeCollector: RangeCollector
+        rangeCollector: RangeCollector,
     ): CharSequence {
         val result = StringBuilder(sourceCode.length)
         baseLexer.start(sourceCode)
@@ -31,9 +31,9 @@ class RpmSpecTemplateDataElementType(
             val newRange = TextRange.create(baseLexer.tokenStart, baseLexer.tokenEnd)
             assert(currentRange.endOffset == newRange.startOffset) {
                 "Inconsistent tokens stream from " + baseLexer +
-                        ": " + getRangeDump(
+                    ": " + getRangeDump(
                     currentRange,
-                    sourceCode
+                    sourceCode,
                 ) + " followed by " + getRangeDump(newRange, sourceCode)
             }
 

@@ -4,5 +4,5 @@ import com.intellij.psi.PsiNameIdentifierOwner
 
 interface RpmSpecTagElement : PsiNameIdentifierOwner {
 
-    fun knownTag() : Boolean
+    fun knownTag(): Boolean
 }

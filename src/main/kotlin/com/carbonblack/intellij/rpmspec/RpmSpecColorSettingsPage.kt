@@ -4,18 +4,19 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.options.colors.*
 
 private val DESCRIPTORS = arrayOf(
-        AttributesDescriptor("Key", RpmSpecSyntaxHighligher.KEY),
-        AttributesDescriptor("Separator", RpmSpecSyntaxHighligher.SEPARATOR),
-        AttributesDescriptor("Value", RpmSpecSyntaxHighligher.VALUE),
-        AttributesDescriptor("Body item", RpmSpecSyntaxHighligher.BODY_ITEM),
-        AttributesDescriptor("Macro braces", RpmSpecSyntaxHighligher.MACRO_ITEM),
-        AttributesDescriptor("Macro", RpmSpecSyntaxHighligher.MACRO_VALUE_ITEM),
-        AttributesDescriptor("Comment", RpmSpecSyntaxHighligher.COMMENT),
-        AttributesDescriptor("Text", RpmSpecSyntaxHighligher.TEXT),
-        AttributesDescriptor("Changelog date", RpmSpecSyntaxHighligher.CHANGELOG_DATE),
-        AttributesDescriptor("Changelog name", RpmSpecSyntaxHighligher.CHANGELOG_NAME),
-        AttributesDescriptor("Changelog email", RpmSpecSyntaxHighligher.CHANGELOG_EMAIL),
-        AttributesDescriptor("Version", RpmSpecSyntaxHighligher.VERSION))
+    AttributesDescriptor("Key", RpmSpecSyntaxHighligher.KEY),
+    AttributesDescriptor("Separator", RpmSpecSyntaxHighligher.SEPARATOR),
+    AttributesDescriptor("Value", RpmSpecSyntaxHighligher.VALUE),
+    AttributesDescriptor("Body item", RpmSpecSyntaxHighligher.BODY_ITEM),
+    AttributesDescriptor("Macro braces", RpmSpecSyntaxHighligher.MACRO_ITEM),
+    AttributesDescriptor("Macro", RpmSpecSyntaxHighligher.MACRO_VALUE_ITEM),
+    AttributesDescriptor("Comment", RpmSpecSyntaxHighligher.COMMENT),
+    AttributesDescriptor("Text", RpmSpecSyntaxHighligher.TEXT),
+    AttributesDescriptor("Changelog date", RpmSpecSyntaxHighligher.CHANGELOG_DATE),
+    AttributesDescriptor("Changelog name", RpmSpecSyntaxHighligher.CHANGELOG_NAME),
+    AttributesDescriptor("Changelog email", RpmSpecSyntaxHighligher.CHANGELOG_EMAIL),
+    AttributesDescriptor("Version", RpmSpecSyntaxHighligher.VERSION),
+)
 
 class RpmSpecColorSettingsPage : ColorSettingsPage {
 
@@ -59,7 +60,8 @@ class RpmSpecColorSettingsPage : ColorSettingsPage {
 
         %changelog
         * Tue May 31 2016 Adam Miller <maxamillion@fedoraproject.org> - 1.0-1
-        - First cello package""".trimIndent()
+        - First cello package
+    """.trimIndent()
 
     override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey>? = null
 

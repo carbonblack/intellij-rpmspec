@@ -6,17 +6,19 @@ import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 
-private val KNOWN_TAGS = listOf("name", "version", "release", "epoch", "summary", "license",
-        "distribution", "disturl", "vendor", "group", "packager", "url",
-        "vcs", "source", "patch", "nosource", "nopatch", "excludearch", "exclusivearch",
-        "excludeos", "exclusiveos", "icon", "provides", "requires", "recommends", "suggests",
-        "supplements", "enhances", "prereq", "conflicts", "obsoletes", "prefixes", "prefix",
-        "buildroot", "buildarchitectures", "buildarch", "buildconflicts", "buildprereq",
-        "buildrequires", "autoreqprov", "autoreq", "autoprov", "docdir", "disttag", "bugurl",
-        "orderwithrequires", "removepathpostfixes", "modularitylabel")
+private val KNOWN_TAGS = listOf(
+    "name", "version", "release", "epoch", "summary", "license",
+    "distribution", "disturl", "vendor", "group", "packager", "url",
+    "vcs", "source", "patch", "nosource", "nopatch", "excludearch", "exclusivearch",
+    "excludeos", "exclusiveos", "icon", "provides", "requires", "recommends", "suggests",
+    "supplements", "enhances", "prereq", "conflicts", "obsoletes", "prefixes", "prefix",
+    "buildroot", "buildarchitectures", "buildarch", "buildconflicts", "buildprereq",
+    "buildrequires", "autoreqprov", "autoreq", "autoprov", "docdir", "disttag", "bugurl",
+    "orderwithrequires", "removepathpostfixes", "modularitylabel",
+)
 
 abstract class RpmSpecTagElementImpl(node: ASTNode) :
-        ASTWrapperPsiElement(node), RpmSpecTagElement {
+    ASTWrapperPsiElement(node), RpmSpecTagElement {
 
     override fun getNameIdentifier() = node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi
 
@@ -34,8 +36,8 @@ abstract class RpmSpecTagElementImpl(node: ASTNode) :
     override fun getReference() = RpmSpecReference(this, TextRange(0, name?.length ?: 0))
 
     override fun knownTag() = name?.let {
-        it.toLowerCase() in KNOWN_TAGS
-                || "source\\d*".toRegex().matches(it.toLowerCase())
-                || "patch\\d+".toRegex().matches(it.toLowerCase())
+        it.toLowerCase() in KNOWN_TAGS ||
+            "source\\d*".toRegex().matches(it.toLowerCase()) ||
+            "patch\\d+".toRegex().matches(it.toLowerCase())
     } ?: false
 }

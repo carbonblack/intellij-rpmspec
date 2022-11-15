@@ -7,14 +7,16 @@ import com.intellij.openapi.fileTypes.LanguageFileType
 
 object RpmSpecFileType : LanguageFileType(RpmSpecLanguage) {
     init {
-        FileTypeEditorHighlighterProviders.INSTANCE.addExplicitExtension(this,
+        FileTypeEditorHighlighterProviders.INSTANCE.addExplicitExtension(
+            this,
             EditorHighlighterProvider { project, _, virtualFile, colors ->
                 RpmSpecEditorHighlighter(
                     project,
                     virtualFile,
-                    colors
+                    colors,
                 )
-            })
+            },
+        )
     }
 
     override fun getName() = "RPM SPEC"

@@ -11,7 +11,6 @@ abstract class RpmMacroMacroElementImpl(node: ASTNode) : ASTWrapperPsiElement(no
     override fun getNameIdentifier() =
         node.findChildByType(RpmMacroTypes.IDENTIFIER)?.psi
 
-
     override fun setName(name: String): PsiElement {
         node.findChildByType(RpmMacroTypes.IDENTIFIER)?.let { keyNode ->
             val macro = RpmMacroElementFactory.createMacro(project, name)

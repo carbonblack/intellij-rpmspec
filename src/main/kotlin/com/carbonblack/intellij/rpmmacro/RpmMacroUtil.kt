@@ -20,7 +20,6 @@ import java.io.File
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Paths
-
 import java.util.concurrent.TimeUnit
 import kotlin.streams.asSequence
 
@@ -48,9 +47,9 @@ private fun List<String>.runCommand(workingDir: File? = null, action: (String) -
         child.join()
         if (child.isCancelled) {
             cancel()
-        } else if (proc.exitValue() != 0) {
-            throw Exception("RPM process exited with non-zero return code.")
         }
+
+        check(proc.exitValue() == 0) { "RPM process exited with non-zero return code: ${proc.exitValue()}" }
     }
 }
 

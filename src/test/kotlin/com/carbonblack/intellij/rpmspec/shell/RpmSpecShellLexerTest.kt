@@ -18,6 +18,6 @@ class RpmSpecShellLexerTest : LexerTestCase() {
 
     override fun getPathToTestDataFile(extension: String?): String {
         val filename = "/spec/shell/${getTestName(true)}$extension"
-        return javaClass.getResource(filename)?.path ?: throw Exception("Missing file $filename")
+        return checkNotNull(javaClass.getResource(filename)?.path) { "Missing file $filename" }
     }
 }
