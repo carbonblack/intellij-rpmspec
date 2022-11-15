@@ -4,10 +4,11 @@ import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.grammarkit") version "2021.2.1"
-    id("org.jetbrains.intellij") version "1.3.0"
     id("com.diffplug.spotless") version "6.11.0"
     id("io.gitlab.arturbosch.detekt") version "1.21.0"
+    id("org.gradle.test-retry") version "1.4.1"
+    id("org.jetbrains.grammarkit") version "2021.2.1"
+    id("org.jetbrains.intellij") version "1.3.0"
     // See: https://plugins.jetbrains.com/docs/intellij/kotlin.html#kotlin-standard-library
     kotlin("jvm") version "1.5.10"
     java
@@ -68,6 +69,10 @@ tasks.withType<Test> {
     isScanForTestClasses = false
     // Only run tests from classes that end with "Test"
     include("**/*Test.class")
+
+    retry {
+        maxRetries.set(2)
+    }
 }
 
 tasks.withType<RunIdeTask> {
