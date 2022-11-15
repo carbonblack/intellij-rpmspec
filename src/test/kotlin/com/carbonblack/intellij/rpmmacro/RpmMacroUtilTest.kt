@@ -36,7 +36,7 @@ class RpmMacroUtilTest : BasePlatformTestCase() {
                 "/etc/rpm/macros.*",
                 "/etc/rpm/macros",
                 "/etc/rpm/x86_64-linux/macros",
-                "~/.rpmmacros",
+                "${System.getProperty("user.home")}/.rpmmacros",
             )
     }
 
@@ -63,7 +63,7 @@ class RpmMacroUtilTest : BasePlatformTestCase() {
                 "/usr/local/etc/rpm/macros.*",
                 "/usr/local/etc/rpm/macros",
                 "/usr/local/etc/rpm/x86_64-darwin/macros",
-                "~/.rpmmacros",
+                "${System.getProperty("user.home")}/.rpmmacros",
             )
     }
 
