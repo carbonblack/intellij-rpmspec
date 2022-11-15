@@ -106,6 +106,7 @@ object RpmMacroUtil {
 
         return paths.map {
             it.replace("%{_target}", target ?: "x86_64-linux")
+                .replaceFirst("^~".toRegex(), System.getProperty("user.home"))
         }
     }
 
