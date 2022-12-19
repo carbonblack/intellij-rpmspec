@@ -8,6 +8,10 @@ class RpmSpecParsingTest : ParsingTestCase("", "spec", RpmSpecParserDefinition()
         doTest(true)
     }
 
+    fun testAutoSpecTestData() {
+        doTest(true)
+    }
+
     override fun getTestDataPath(): String = "src/test/resources/spec"
 
     override fun skipSpaces(): Boolean = false
