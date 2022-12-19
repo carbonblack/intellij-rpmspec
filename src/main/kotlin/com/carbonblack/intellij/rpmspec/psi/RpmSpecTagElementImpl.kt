@@ -36,8 +36,8 @@ abstract class RpmSpecTagElementImpl(node: ASTNode) :
     override fun getReference() = RpmSpecReference(this, TextRange(0, name?.length ?: 0))
 
     override fun knownTag() = name?.let {
-        it.toLowerCase() in KNOWN_TAGS ||
-            "source\\d*".toRegex().matches(it.toLowerCase()) ||
-            "patch\\d+".toRegex().matches(it.toLowerCase())
+        it.lowercase() in KNOWN_TAGS ||
+            "source\\d*".toRegex().matches(it.lowercase()) ||
+            "patch\\d+".toRegex().matches(it.lowercase())
     } ?: false
 }

@@ -13,5 +13,5 @@ style:
 complexity:
   LongMethod:
     active: false
-  ComplexMethod:
+  CyclomaticComplexMethod:
     active: false

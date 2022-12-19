@@ -4,13 +4,13 @@ import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.diffplug.spotless") version "6.11.0"
-    id("io.gitlab.arturbosch.detekt") version "1.21.0"
-    id("org.gradle.test-retry") version "1.4.1"
-    id("org.jetbrains.grammarkit") version "2021.2.1"
-    id("org.jetbrains.intellij") version "1.3.0"
+    id("com.diffplug.spotless") version "6.12.0"
+    id("io.gitlab.arturbosch.detekt") version "1.22.0"
+    id("org.gradle.test-retry") version "1.5.0"
+    id("org.jetbrains.grammarkit") version "2022.3"
+    id("org.jetbrains.intellij") version "1.11.0"
     // See: https://plugins.jetbrains.com/docs/intellij/kotlin.html#kotlin-standard-library
-    kotlin("jvm") version "1.5.10"
+    kotlin("jvm") version "1.7.0"
     java
 }
 
@@ -43,16 +43,19 @@ detekt {
 }
 
 group = "com.carbonblack"
-version = "2.0.1"
+version = "2.1.0"
 
 tasks.compileJava {
-    options.release.set(11)
+    options.release.set(17)
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
-    kotlinOptions.apiVersion = "1.4"
-    kotlinOptions.freeCompilerArgs = listOf("-Xjvm-default=enable")
+    kotlinOptions.jvmTarget = "17"
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("-Xlint:deprecation")
+    options.compilerArgs.add("-Xlint:unchecked")
 }
 
 sourceSets {
@@ -84,14 +87,14 @@ repositories {
 }
 
 dependencies {
-    testImplementation("io.mockk", "mockk", "1.12.2")
-    testImplementation("io.strikt", "strikt-core", "0.33.0")
+    testImplementation("io.mockk", "mockk", "1.13.3")
+    testImplementation("io.strikt", "strikt-core", "0.34.1")
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     type.set("IC")
-    version.set("2021.3") // IntelliJ version and Kotlin version must match
+    version.set("2022.3") // IntelliJ version and Kotlin version must match
     updateSinceUntilBuild.set(false)
 
     plugins.set(listOf("com.jetbrains.sh")) // , "au.com.glassechidna.luanalysis:1.2.2-IDEA203"))
@@ -103,6 +106,28 @@ val generateSpecParser = tasks.create<GenerateParserTask>("generateSpecParser") 
     pathToParser.set("/com/carbonblack/intellij/rpmspec/parser/RpmSpecParser.java")
     pathToPsiRoot.set("/com/carbonblack/intellij/rpmspec/psi")
     purgeOldFiles.set(true)
+
+    // These need to be set due to https://github.com/JetBrains/gradle-grammar-kit-plugin/issues/108
+    sourceFile.convention(
+        source.map {
+            project.layout.projectDirectory.file(it)
+        },
+    )
+    targetRootOutputDir.convention(
+        targetRoot.map {
+            project.layout.projectDirectory.dir(it)
+        },
+    )
+    parserFile.convention(
+        pathToParser.map {
+            project.layout.projectDirectory.file("${targetRoot.get()}/$it")
+        },
+    )
+    psiDir.convention(
+        pathToPsiRoot.map {
+            project.layout.projectDirectory.dir("${targetRoot.get()}/$it")
+        },
+    )
 }
 
 val generateSpecLexer = tasks.create<GenerateLexerTask>("generateSpecLexer") {
@@ -119,6 +144,28 @@ val generateMacroParser = tasks.create<GenerateParserTask>("generateMacroParser"
     pathToParser.set("/com/carbonblack/intellij/rpmmacro/parser/RpmMacroParser.java")
     pathToPsiRoot.set("/com/carbonblack/intellij/rpmmacro/psi")
     purgeOldFiles.set(true)
+
+    // These need to be set due to https://github.com/JetBrains/gradle-grammar-kit-plugin/issues/108
+    sourceFile.convention(
+        source.map {
+            project.layout.projectDirectory.file(it)
+        },
+    )
+    targetRootOutputDir.convention(
+        targetRoot.map {
+            project.layout.projectDirectory.dir(it)
+        },
+    )
+    parserFile.convention(
+        pathToParser.map {
+            project.layout.projectDirectory.file("${targetRoot.get()}/$it")
+        },
+    )
+    psiDir.convention(
+        pathToPsiRoot.map {
+            project.layout.projectDirectory.dir("${targetRoot.get()}/$it")
+        },
+    )
 }
 
 val generateMacroLexer = tasks.create<GenerateLexerTask>("generateMacroLexer") {

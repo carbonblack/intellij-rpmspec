@@ -5,6 +5,7 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
+import java.util.*
 
 abstract class RpmSpecMacroElementImpl(node: ASTNode) :
     ASTWrapperPsiElement(node), PsiNameIdentifierOwner, RpmSpecMacroElement {
@@ -24,5 +25,5 @@ abstract class RpmSpecMacroElementImpl(node: ASTNode) :
 
     override fun getReference() = RpmSpecReference(this, TextRange(0, name?.length ?: 0))
 
-    override val isBuiltInMacro = (name?.toLowerCase() ?: "") in RpmSpecMacroElement.builtInMacros
+    override val isBuiltInMacro = (name?.lowercase() ?: "") in RpmSpecMacroElement.builtInMacros
 }

@@ -88,9 +88,9 @@ class RpmSpecReference(element: PsiElement, textRange: TextRange) :
         }
 
         // We might be a special macro mapped to a tag
-        if (key.toLowerCase() in TAGS_WITH_MACROS ||
-            key.toLowerCase().startsWith("patch") ||
-            key.toLowerCase().startsWith("source")
+        if (key.lowercase() in TAGS_WITH_MACROS ||
+            key.lowercase().startsWith("patch") ||
+            key.lowercase().startsWith("source")
         ) {
             val tags = PsiTreeUtil.findChildrenOfType(myElement.containingFile, RpmSpecTag::class.java)
             val filteredTags = tags.filter { it.firstChild.text.equals(key, ignoreCase = true) }
