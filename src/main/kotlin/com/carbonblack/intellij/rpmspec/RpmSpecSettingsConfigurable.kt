@@ -7,8 +7,8 @@ import com.intellij.ui.components.JBList
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
 import com.intellij.util.ui.FormBuilder
+import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
-import java.awt.Insets
 import javax.swing.*
 import kotlin.reflect.KProperty
 
@@ -31,7 +31,7 @@ class RpmSpecSettingsConfigurable : Configurable {
 
     private val detectedPathsList = JBList<String>().apply {
         selectionMode = ListSelectionModel.SINGLE_SELECTION
-        border = IdeBorderFactory.createEmptyBorder(Insets(0, 3, 0, 0))
+        border = IdeBorderFactory.createEmptyBorder(JBUI.insetsLeft(3))
         isFocusable = false
     }
 

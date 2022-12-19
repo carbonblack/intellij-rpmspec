@@ -22,11 +22,11 @@ class RpmMacroReference(element: PsiElement, textRange: TextRange) :
     override fun getVariants(): Array<Any> {
         val file = myElement.containingFile
         val macros = RpmMacroUtil.findMacros(file)
-        val variants = macros.filter { it.name.isNotEmpty() }.map {
+        val variants = macros.filter { it.name.isNotEmpty() }.associate {
             it.name to LookupElementBuilder.create(it)
                 .withIcon(RpmMacroIcons.FILE)
                 .withTypeText(it.containingFile.name)
-        }.toMap()
+        }
         return variants.values.toTypedArray()
     }
 }

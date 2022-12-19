@@ -9,16 +9,16 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 2.0.1:</b>
+        <b>Changes in version 2.1.0:</b>
         <ul>
-          <li>Support additional special character types in macro bodies</li>
+          <li>Build against IntelliJ 2022.3 and Java 17</li>
         </ul><br>
         </html>
             ]]>
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="213"/>
+    <idea-version since-build="223"/>
 
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true" config-file="rpmSpecFile-withSh.xml">com.jetbrains.sh</depends>
