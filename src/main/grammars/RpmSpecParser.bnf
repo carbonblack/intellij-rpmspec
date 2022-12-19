@@ -85,7 +85,7 @@ filesBody ::= (filesDirective|COMMENT|EOL|<<ifExpr filesBody>>|macroDefinition|m
 filesDirective ::= FILES_DIRECTIVE_TOKEN (filesDirective|anything)* {pin=1}
 
 changelogSection ::= changelog changelogBody {pin=1}
-changelogBody ::= (EOL|changelogItem)*
+changelogBody ::= (EOL|changelogItem|fullMacro)*
 changelogItem ::= (changelogHeader EOL changelogEntry*)
 changelogHeader ::= CL_HEADER_TOKEN changelogDate changelogAuthor changelogEmail? '-'? changelogVersion? {pin=1}
 changelogDate ::= IDENTIFIER IDENTIFIER INTEGER_LITERAL INTEGER_LITERAL
