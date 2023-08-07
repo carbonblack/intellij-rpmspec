@@ -34,7 +34,7 @@ detekt {
 }
 
 group = "com.carbonblack"
-version = "2.1.0"
+version = "2.2.0"
 
 tasks.compileJava {
     options.release.set(17)

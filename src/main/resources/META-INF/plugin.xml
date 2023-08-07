@@ -9,10 +9,10 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 2.1.0:</b>
+        <b>Changes in version 2.2.0:</b>
         <ul>
-          <li>Build against IntelliJ 2022.3 and Java 17</li>
-          <li>Allow macros such as %autochangelog within the changelog section</li>
+          <li>Build against IntelliJ 2023.2</li>
+          <li>Fix section headers sometimes not being highlighted</li>
         </ul><br>
         </html>
             ]]>
