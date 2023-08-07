@@ -144,6 +144,33 @@ class RpmSpecHighlightingAnnotator : Annotator {
             }
         }
 
+        // Explicitly highlight the section headers; this resolves issues with the shell sections
+        // causing the headers to be un-highlighted.
+        when (element) {
+            is RpmSpecFilesSection,
+            is RpmSpecPackageSection,
+            is RpmSpecDescriptionSection,
+            is RpmSpecChangelogSection,
+            -> element.node.getChildren(TokenSet.ANY)
+                .firstOrNull {
+                    it.elementType == RpmSpecTypes.FILES ||
+                        it.elementType == RpmSpecTypes.PACKAGE ||
+                        it.elementType == RpmSpecTypes.CHANGELOG ||
+                        it.elementType == RpmSpecTypes.DESCRIPTION
+                }?.let {
+                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .textAttributes(RpmSpecSyntaxHighligher.RESERVED)
+                        .range(it.textRange).create()
+                }
+            is RpmSpecGenericSection -> element.node.getChildren(TokenSet.ANY).firstOrNull()?.let {
+                if (element.text.firstOrNull() == '%') {
+                    holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                        .textAttributes(RpmSpecSyntaxHighligher.RESERVED)
+                        .range(it.textRange).create()
+                }
+            }
+        }
+
         val colorType = when (element) {
             is RpmSpecChangelogItem -> RpmSpecSyntaxHighligher.TEXT
             is RpmSpecChangelogEntry -> RpmSpecSyntaxHighligher.TEXT
