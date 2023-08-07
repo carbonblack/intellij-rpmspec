@@ -4,42 +4,33 @@ import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.diffplug.spotless") version "6.12.0"
-    id("io.gitlab.arturbosch.detekt") version "1.22.0"
-    id("org.gradle.test-retry") version "1.5.0"
-    id("org.jetbrains.grammarkit") version "2022.3"
-    id("org.jetbrains.intellij") version "1.11.0"
+    id("com.diffplug.spotless") version "6.20.0"
+    id("io.gitlab.arturbosch.detekt") version "1.23.1"
+    id("org.gradle.test-retry") version "1.5.4"
+    id("org.jetbrains.grammarkit") version "2022.3.1"
+    id("org.jetbrains.intellij") version "1.15.0"
     // See: https://plugins.jetbrains.com/docs/intellij/kotlin.html#kotlin-standard-library
-    kotlin("jvm") version "1.7.0"
+    kotlin("jvm") version "1.8.20"
     java
 }
 
 spotless {
-    val ktlintVersion = "0.46.1"
-
-    val ktlintOverrides = mapOf(
-        "disabled_rules" to "filename,no-wildcard-imports,string-template",
-        "ij_kotlin_allow_trailing_comma" to "true",
-        "ij_kotlin_allow_trailing_comma_on_call_site" to "true",
-    )
+    val ktlintVersion = "0.50.0"
 
     kotlin {
         ktlint(ktlintVersion)
-            .setUseExperimental(true)
-            .editorConfigOverride(ktlintOverrides)
+            .editorConfigOverride(mapOf("ktlint_experimentasl" to "enabled"))
     }
 
     kotlinGradle {
         target("*.gradle.kts")
         ktlint(ktlintVersion)
-            .setUseExperimental(true)
-            .editorConfigOverride(ktlintOverrides)
     }
 }
 
 detekt {
     buildUponDefaultConfig = true
-    config = files("$projectDir/detekt.yml")
+    config.setFrom("$projectDir/detekt.yml")
 }
 
 group = "com.carbonblack"
@@ -87,51 +78,29 @@ repositories {
 }
 
 dependencies {
-    testImplementation("io.mockk", "mockk", "1.13.3")
+    testImplementation("io.mockk", "mockk", "1.13.5")
     testImplementation("io.strikt", "strikt-core", "0.34.1")
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     type.set("IC")
-    version.set("2022.3") // IntelliJ version and Kotlin version must match
+    version.set("2023.2") // IntelliJ version and Kotlin version must match
     updateSinceUntilBuild.set(false)
 
     plugins.set(listOf("com.jetbrains.sh")) // , "au.com.glassechidna.luanalysis:1.2.2-IDEA203"))
 }
 
 val generateSpecParser = tasks.create<GenerateParserTask>("generateSpecParser") {
-    source.set("$projectDir/src/main/grammars/RpmSpecParser.bnf")
+    sourceFile.set(file("$projectDir/src/main/grammars/RpmSpecParser.bnf"))
     targetRoot.set("$projectDir/src/main/gen")
     pathToParser.set("/com/carbonblack/intellij/rpmspec/parser/RpmSpecParser.java")
     pathToPsiRoot.set("/com/carbonblack/intellij/rpmspec/psi")
     purgeOldFiles.set(true)
-
-    // These need to be set due to https://github.com/JetBrains/gradle-grammar-kit-plugin/issues/108
-    sourceFile.convention(
-        source.map {
-            project.layout.projectDirectory.file(it)
-        },
-    )
-    targetRootOutputDir.convention(
-        targetRoot.map {
-            project.layout.projectDirectory.dir(it)
-        },
-    )
-    parserFile.convention(
-        pathToParser.map {
-            project.layout.projectDirectory.file("${targetRoot.get()}/$it")
-        },
-    )
-    psiDir.convention(
-        pathToPsiRoot.map {
-            project.layout.projectDirectory.dir("${targetRoot.get()}/$it")
-        },
-    )
 }
 
 val generateSpecLexer = tasks.create<GenerateLexerTask>("generateSpecLexer") {
-    source.set("$projectDir/src/main/grammars/RpmSpecLexer.flex")
+    sourceFile.set(file("$projectDir/src/main/grammars/RpmSpecLexer.flex"))
     skeleton.set(file("$projectDir/src/main/grammars/idea-flex.skeleton"))
     targetDir.set("$projectDir/src/main/gen/com/carbonblack/intellij/rpmspec")
     targetClass.set("_RpmSpecLexer")
@@ -139,37 +108,15 @@ val generateSpecLexer = tasks.create<GenerateLexerTask>("generateSpecLexer") {
 }
 
 val generateMacroParser = tasks.create<GenerateParserTask>("generateMacroParser") {
-    source.set("$projectDir/src/main/grammars/RpmMacroParser.bnf")
+    sourceFile.set(file("$projectDir/src/main/grammars/RpmMacroParser.bnf"))
     targetRoot.set("$projectDir/src/main/gen")
     pathToParser.set("/com/carbonblack/intellij/rpmmacro/parser/RpmMacroParser.java")
     pathToPsiRoot.set("/com/carbonblack/intellij/rpmmacro/psi")
     purgeOldFiles.set(true)
-
-    // These need to be set due to https://github.com/JetBrains/gradle-grammar-kit-plugin/issues/108
-    sourceFile.convention(
-        source.map {
-            project.layout.projectDirectory.file(it)
-        },
-    )
-    targetRootOutputDir.convention(
-        targetRoot.map {
-            project.layout.projectDirectory.dir(it)
-        },
-    )
-    parserFile.convention(
-        pathToParser.map {
-            project.layout.projectDirectory.file("${targetRoot.get()}/$it")
-        },
-    )
-    psiDir.convention(
-        pathToPsiRoot.map {
-            project.layout.projectDirectory.dir("${targetRoot.get()}/$it")
-        },
-    )
 }
 
 val generateMacroLexer = tasks.create<GenerateLexerTask>("generateMacroLexer") {
-    source.set("$projectDir/src/main/grammars/RpmMacroLexer.flex")
+    sourceFile.set(file("$projectDir/src/main/grammars/RpmMacroLexer.flex"))
     skeleton.set(file("$projectDir/src/main/grammars/idea-flex.skeleton"))
     targetDir.set("$projectDir/src/main/gen/com/carbonblack/intellij/rpmmacro")
     targetClass.set("_RpmMacroLexer")
@@ -177,14 +124,14 @@ val generateMacroLexer = tasks.create<GenerateLexerTask>("generateMacroLexer") {
 }
 
 val generateShellLexer = tasks.create<GenerateLexerTask>("generateShellLexer") {
-    source.set("$projectDir/src/main/grammars/RpmSpecShellLexer.flex")
+    sourceFile.set(file("$projectDir/src/main/grammars/RpmSpecShellLexer.flex"))
     skeleton.set(file("$projectDir/src/main/grammars/idea-flex.skeleton"))
     targetDir.set("$projectDir/src/main/gen/com/carbonblack/intellij/rpmspec/shell")
     targetClass.set("_RpmSpecShellLexer")
     purgeOldFiles.set(true)
 }
 
-val generateGrammars = tasks.register("generateGrammars") {
+val generateGrammars: TaskProvider<Task> = tasks.register("generateGrammars") {
     dependsOn(generateSpecParser, generateSpecLexer, generateMacroParser, generateMacroLexer, generateShellLexer)
 }
 

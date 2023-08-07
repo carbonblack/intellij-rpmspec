@@ -32,9 +32,9 @@ class RpmSpecTemplateDataElementType(
             assert(currentRange.endOffset == newRange.startOffset) {
                 "Inconsistent tokens stream from " + baseLexer +
                     ": " + getRangeDump(
-                    currentRange,
-                    sourceCode,
-                ) + " followed by " + getRangeDump(newRange, sourceCode)
+                        currentRange,
+                        sourceCode,
+                    ) + " followed by " + getRangeDump(newRange, sourceCode)
             }
 
             currentRange = newRange

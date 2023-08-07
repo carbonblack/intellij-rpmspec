@@ -16,7 +16,8 @@ class RpmSpecDescriptionProvider : ElementDescriptionProvider {
     override fun getElementDescription(element: PsiElement, location: ElementDescriptionLocation) = when (element) {
         is RpmSpecTag,
         is RpmMacroMacro,
-        is RpmSpecMacroDefinition, -> when (location) {
+        is RpmSpecMacroDefinition,
+        -> when (location) {
             is UsageViewNodeTextLocation -> element.text
             is UsageViewShortNameLocation -> element.text
             is UsageViewLongNameLocation -> element.text

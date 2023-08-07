@@ -2,12 +2,14 @@ package com.carbonblack.intellij.rpmspec
 
 import com.carbonblack.intellij.rpmmacro.RpmMacroUtil
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.*
+import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.util.io.exists
 import com.intellij.util.xmlb.XmlSerializerUtil
 import java.io.File
 import java.nio.file.Paths
+import kotlin.io.path.exists
 
 private val log = Logger.getInstance(RpmMacroUtil::class.java)
 

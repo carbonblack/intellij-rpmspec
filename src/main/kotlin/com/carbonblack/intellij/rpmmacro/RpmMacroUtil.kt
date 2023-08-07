@@ -9,18 +9,22 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
-import com.intellij.psi.search.*
+import com.intellij.psi.search.FileTypeIndex
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.util.io.exists
 import com.intellij.util.io.isDirectory
 import com.intellij.util.io.isFile
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.annotations.TestOnly
 import java.io.File
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
+import kotlin.io.path.exists
 import kotlin.streams.asSequence
 
 private val log = Logger.getInstance(RpmMacroUtil::class.java)
@@ -76,7 +80,9 @@ object RpmMacroUtil {
                         .filter { it?.isFile() == true && matcher.matches(it.fileName) }
                         .mapNotNull { LocalFileSystem.getInstance().findFileByPath(it.toString()) }
                         .toList()
-                } else emptyList()
+                } else {
+                    emptyList()
+                }
             } else {
                 LocalFileSystem.getInstance().findFileByPath(path)?.let { listOf(it) } ?: emptyList()
             }
