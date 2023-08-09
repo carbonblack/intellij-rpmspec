@@ -1,4 +1,10 @@
+<img src='/src/main/resources/META-INF/pluginIcon.svg?raw=true' alt="plugin icon" width='64' />  
+
 # RPM SPEC file support IntelliJ
+
+[![Build](https://github.com/carbonblack/intellij-rpmspec/actions/workflows/gradle.yml/badge.svg?branch=master)](https://github.com/carbonblack/intellij-rpmspec/actions/workflows/gradle.yml)
+[![Version](https://img.shields.io/jetbrains/plugin/v/12552.svg)](https://plugins.jetbrains.com/plugin/12552)
+[![Downloads](https://img.shields.io/jetbrains/plugin/d/12552.svg)](https://plugins.jetbrains.com/plugin/12552)
 
 IntelliJ plugin for basic support of RPM SPEC files.
 
