@@ -1,30 +1,29 @@
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.grammarkit.tasks.GenerateLexerTask
 import org.jetbrains.grammarkit.tasks.GenerateParserTask
 import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.diffplug.spotless") version "6.20.0"
-    id("io.gitlab.arturbosch.detekt") version "1.23.1"
-    id("org.gradle.test-retry") version "1.5.4"
-    id("org.jetbrains.grammarkit") version "2022.3.1"
-    id("org.jetbrains.intellij") version "1.15.0"
-    // See: https://plugins.jetbrains.com/docs/intellij/kotlin.html#kotlin-standard-library
-    kotlin("jvm") version "1.8.20"
+    alias(libs.plugins.com.diffplug.spotless)
+    alias(libs.plugins.com.github.ben.manes.versions)
+    alias(libs.plugins.io.gitlab.arturbosch.detekt)
+    alias(libs.plugins.nl.littlerobots.version.catalog.update)
+    alias(libs.plugins.org.gradle.test.retry)
+    alias(libs.plugins.org.jetbrains.grammarkit)
+    alias(libs.plugins.org.jetbrains.intellij)
+    alias(libs.plugins.org.jetbrains.kotlin.jvm)
     java
 }
 
 spotless {
-    val ktlintVersion = "0.50.0"
-
     kotlin {
-        ktlint(ktlintVersion)
-            .editorConfigOverride(mapOf("ktlint_experimentasl" to "enabled"))
+        ktlint(libs.versions.com.pinterest.ktlint.get())
     }
 
     kotlinGradle {
         target("*.gradle.kts")
-        ktlint(ktlintVersion)
+        ktlint(libs.versions.com.pinterest.ktlint.get())
     }
 }
 
@@ -34,7 +33,7 @@ detekt {
 }
 
 group = "com.carbonblack"
-version = "2.2.0"
+version = "2.2.1"
 
 tasks.compileJava {
     options.release.set(17)
@@ -78,14 +77,14 @@ repositories {
 }
 
 dependencies {
-    testImplementation("io.mockk", "mockk", "1.13.5")
-    testImplementation("io.strikt", "strikt-core", "0.34.1")
+    testImplementation(libs.io.mockk.mockk)
+    testImplementation(libs.io.strikt.strikt.core)
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     type.set("IC")
-    version.set("2023.2") // IntelliJ version and Kotlin version must match
+    version.set(libs.versions.com.jetbrains.ideaIC)
     updateSinceUntilBuild.set(false)
 
     plugins.set(listOf("com.jetbrains.sh")) // , "au.com.glassechidna.luanalysis:1.2.2-IDEA203"))
@@ -137,4 +136,17 @@ val generateGrammars: TaskProvider<Task> = tasks.register("generateGrammars") {
 
 tasks.withType<KotlinCompile> {
     dependsOn(generateGrammars)
+}
+
+tasks.withType<DependencyUpdatesTask> {
+    fun isNonStable(version: String): Boolean {
+        val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
+        val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+        val isStable = stableKeyword || regex.matches(version)
+        return isStable.not()
+    }
+
+    rejectVersionIf {
+        isNonStable(candidate.version) && !isNonStable(currentVersion)
+    }
 }

@@ -16,7 +16,7 @@ class RpmSpecShellLexerTest : LexerTestCase() {
     override fun createLexer(): Lexer = RpmSpecShellLexerAdapter()
     override fun getDirPath(): String = "src/test/resources/macros/shell"
 
-    override fun getPathToTestDataFile(extension: String?): String {
+    override fun getPathToTestDataFile(extension: String): String {
         val filename = "/spec/shell/${getTestName(true)}$extension"
         return checkNotNull(javaClass.getResource(filename)?.path) { "Missing file $filename" }
     }
