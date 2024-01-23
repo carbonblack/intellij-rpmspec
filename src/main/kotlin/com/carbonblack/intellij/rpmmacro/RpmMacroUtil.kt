@@ -12,8 +12,6 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.util.io.isDirectory
-import com.intellij.util.io.isFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -25,6 +23,8 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.exists
+import kotlin.io.path.isDirectory
+import kotlin.io.path.isRegularFile
 import kotlin.streams.asSequence
 
 private val log = Logger.getInstance(RpmMacroUtil::class.java)
@@ -77,7 +77,7 @@ object RpmMacroUtil {
 
                 if (startPath.exists() && startPath.isDirectory()) {
                     Files.walk(startPath).asSequence()
-                        .filter { it?.isFile() == true && matcher.matches(it.fileName) }
+                        .filter { it?.isRegularFile() == true && matcher.matches(it.fileName) }
                         .mapNotNull { LocalFileSystem.getInstance().findFileByPath(it.toString()) }
                         .toList()
                 } else {

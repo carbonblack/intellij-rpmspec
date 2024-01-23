@@ -9,17 +9,17 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 2.2.0:</b>
+        <b>Changes in version 2.2.1:</b>
         <ul>
-          <li>Build against IntelliJ 2023.2</li>
-          <li>Fix section headers sometimes not being highlighted</li>
+          <li>Build against IntelliJ 2023.3</li>
+          <li>Update build dependencies</li>
         </ul><br>
         </html>
             ]]>
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="232"/>
+    <idea-version since-build="233"/>
 
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true" config-file="rpmSpecFile-withSh.xml">com.jetbrains.sh</depends>
