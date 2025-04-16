@@ -1,24 +1,25 @@
 [versions]
-com-diffplug-spotless = "6.25.0"
-com-github-ben-manes-versions = "0.51.0"
+com-diffplug-spotless = "7.2.1"
+com-github-ben-manes-versions = "0.52.0"
 # @keep this version, it's used by the intellij plugin
-com-jetbrains-ideaIC = "2023.3.2"
+com-jetbrains-ideaIC = "2025.1"
 # @keep this version, it's used by the spotless plugin
-com-pinterest-ktlint = "1.1.1"
-io-gitlab-arturbosch-detekt = "1.23.4"
-io-mockk = "1.13.9"
-io-strikt-strikt-core = "0.34.1"
-nl-littlerobots-version-catalog-update = "0.8.3"
-org-gradle-test-retry = "1.5.8"
-# @pin grammarkit 2022.3.2 introduces breaking changes with our use of idea-flex.skeleton
-org-jetbrains-grammarkit = "2022.3.1"
-org-jetbrains-intellij = "1.17.0"
+com-pinterest-ktlint = "1.5.0"
+io-gitlab-arturbosch-detekt = "1.23.8"
+io-mockk = "1.14.5"
+io-strikt-strikt-core = "0.35.1"
+junit-junit = "4.13.2"
+nl-littlerobots-version-catalog-update = "1.0.0"
+org-gradle-test-retry = "1.6.2"
+org-jetbrains-grammarkit = "2022.3.2.2"
+org-jetbrains-intellij-platform = "2.5.0"
 # @pin kotlin to the same version shipped with intellij, See: https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#kotlin-standard-library
-org-jetbrains-kotlin-jvm = "1.9.10"
+org-jetbrains-kotlin-jvm = "2.1.10"
 
 [libraries]
 io-mockk-mockk = { module = "io.mockk:mockk", version.ref = "io-mockk" }
 io-strikt-strikt-core = { module = "io.strikt:strikt-core", version.ref = "io-strikt-strikt-core" }
+junit-junit = { module = "junit:junit", version.ref = "junit-junit" }
 
 [plugins]
 com-diffplug-spotless = { id = "com.diffplug.spotless", version.ref = "com-diffplug-spotless" }
@@ -27,5 +28,5 @@ io-gitlab-arturbosch-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref 
 nl-littlerobots-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "nl-littlerobots-version-catalog-update" }
 org-gradle-test-retry = { id = "org.gradle.test-retry", version.ref = "org-gradle-test-retry" }
 org-jetbrains-grammarkit = { id = "org.jetbrains.grammarkit", version.ref = "org-jetbrains-grammarkit" }
-org-jetbrains-intellij = { id = "org.jetbrains.intellij", version.ref = "org-jetbrains-intellij" }
+org-jetbrains-intellij-platform = { id = "org.jetbrains.intellij.platform", version.ref = "org-jetbrains-intellij-platform" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }

@@ -9,9 +9,9 @@
 
     <change-notes><![CDATA[
         <html>
-        <b>Changes in version 2.2.1:</b>
+        <b>Changes in version 2.3.0:</b>
         <ul>
-          <li>Build against IntelliJ 2023.3</li>
+          <li>Build against IntelliJ 2025.1</li>
           <li>Update build dependencies</li>
         </ul><br>
         </html>
@@ -19,7 +19,7 @@
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="233"/>
+    <idea-version since-build="251"/>
 
     <depends>com.intellij.modules.lang</depends>
     <depends optional="true" config-file="rpmSpecFile-withSh.xml">com.jetbrains.sh</depends>

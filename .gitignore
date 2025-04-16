@@ -3,3 +3,4 @@ build
 src/main/gen
 *~
 out
+.intellijPlatform
