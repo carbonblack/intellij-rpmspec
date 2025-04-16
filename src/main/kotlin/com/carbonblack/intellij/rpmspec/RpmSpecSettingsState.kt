@@ -26,18 +26,16 @@ class RpmSpecSettingsState : PersistentStateComponent<RpmSpecSettingsState> {
         val instance: RpmSpecSettingsState
             get() = ApplicationManager.getApplication().getService(RpmSpecSettingsState::class.java)
 
-        private fun findRpmPath(): String? {
-            return try {
-                System.getenv().getOrDefault("PATH", "")
-                    .split(File.pathSeparator)
-                    .map { Paths.get(it).resolve("rpm") }
-                    .find { it.exists() }
-                    ?.toAbsolutePath()
-                    ?.toString()
-            } catch (e: Exception) {
-                log.warn("Error trying to find rpm executable.", e)
-                null
-            }
+        private fun findRpmPath(): String? = try {
+            System.getenv().getOrDefault("PATH", "")
+                .split(File.pathSeparator)
+                .map { Paths.get(it).resolve("rpm") }
+                .find { it.exists() }
+                ?.toAbsolutePath()
+                ?.toString()
+        } catch (e: Exception) {
+            log.warn("Error trying to find rpm executable.", e)
+            null
         }
     }
 }

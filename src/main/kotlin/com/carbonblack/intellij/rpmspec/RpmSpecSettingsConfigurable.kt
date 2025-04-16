@@ -9,13 +9,13 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.util.ui.FormBuilder
 import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
-import javax.swing.*
+import javax.swing.JComponent
+import javax.swing.JPanel
+import javax.swing.ListSelectionModel
 import kotlin.reflect.KProperty
 
 private class TextFieldDelegate(private val textField: JBTextField) {
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): String {
-        return textField.text
-    }
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): String = textField.text
 
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
         textField.text = value
@@ -52,9 +52,7 @@ class RpmSpecSettingsConfigurable : Configurable {
             .panel
     }
 
-    override fun isModified(): Boolean {
-        return rpmCommandPath != RpmSpecSettingsState.instance.rpmCommandPath
-    }
+    override fun isModified(): Boolean = rpmCommandPath != RpmSpecSettingsState.instance.rpmCommandPath
 
     override fun apply() {
         RpmSpecSettingsState.instance.rpmCommandPath = rpmCommandPath

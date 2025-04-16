@@ -14,8 +14,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.tree.IElementType
 
-class RpmSpecEditorHighlighter(project: Project?, virtualFile: VirtualFile?, colors: EditorColorsScheme) :
-    LayeredLexerEditorHighlighter(RpmSpecTemplateSyntaxHighligher(), colors) {
+class RpmSpecEditorHighlighter(
+    project: Project?,
+    virtualFile: VirtualFile?,
+    colors: EditorColorsScheme,
+) : LayeredLexerEditorHighlighter(RpmSpecTemplateSyntaxHighligher(), colors) {
 
     init {
         val rpmSpecHighlighter = RpmSpecSyntaxHighligher()
@@ -23,9 +26,8 @@ class RpmSpecEditorHighlighter(project: Project?, virtualFile: VirtualFile?, col
             object : SyntaxHighlighter {
                 override fun getHighlightingLexer(): Lexer = rpmSpecHighlighter.highlightingLexer
 
-                override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> {
-                    return rpmSpecHighlighter.getTokenHighlights(tokenType)
-                }
+                override fun getTokenHighlights(tokenType: IElementType): Array<TextAttributesKey> =
+                    rpmSpecHighlighter.getTokenHighlights(tokenType)
             },
             "",
         )

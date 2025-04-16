@@ -5,7 +5,6 @@ import com.intellij.lang.refactoring.RefactoringSupportProvider
 import com.intellij.psi.PsiElement
 
 class RpmSpecRefactoringSupportProvider : RefactoringSupportProvider() {
-    override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean {
-        return element is RpmSpecMacroDefinition
-    }
+    override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean =
+        element is RpmSpecMacroDefinition
 }

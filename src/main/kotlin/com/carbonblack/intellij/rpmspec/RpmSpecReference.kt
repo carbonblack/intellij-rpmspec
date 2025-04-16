@@ -9,7 +9,7 @@ import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
 import com.google.common.util.concurrent.UncheckedExecutionException
-import com.intellij.codeInsight.lookup.*
+import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
@@ -49,7 +49,8 @@ private val systemMacrosCache: LoadingCache<Pair<String, Project>, Optional<PsiE
     )
 
 class RpmSpecReference(element: PsiElement, textRange: TextRange) :
-    PsiReferenceBase<PsiElement>(element, textRange), PsiPolyVariantReference {
+    PsiReferenceBase<PsiElement>(element, textRange),
+    PsiPolyVariantReference {
     private val key: String = element.text.substring(textRange.startOffset, textRange.endOffset)
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {

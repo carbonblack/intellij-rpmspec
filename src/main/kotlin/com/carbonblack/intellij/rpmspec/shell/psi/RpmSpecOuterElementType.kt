@@ -7,9 +7,8 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.ILeafElementType
 
 class RpmSpecOuterElementType(debugName: String) :
-    IElementType(debugName, RpmSpecLanguage), ILeafElementType {
+    IElementType(debugName, RpmSpecLanguage),
+    ILeafElementType {
 
-    override fun createLeafNode(charSequence: CharSequence): ASTNode {
-        return OuterLanguageElementImpl(this, charSequence)
-    }
+    override fun createLeafNode(charSequence: CharSequence): ASTNode = OuterLanguageElementImpl(this, charSequence)
 }
