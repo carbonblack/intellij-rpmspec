@@ -13,6 +13,7 @@
         <ul>
           <li>Build against IntelliJ 2025.1</li>
           <li>Update build dependencies</li>
+          <li>Fix ArrayIndexOutOfBoundsException on projects with large number of SPEC files</li>
         </ul><br>
         </html>
             ]]>
