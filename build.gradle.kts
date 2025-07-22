@@ -1,7 +1,10 @@
+
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.grammarkit.tasks.GenerateLexerTask
 import org.jetbrains.grammarkit.tasks.GenerateParserTask
-import org.jetbrains.intellij.tasks.RunIdeTask
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -11,7 +14,7 @@ plugins {
     alias(libs.plugins.nl.littlerobots.version.catalog.update)
     alias(libs.plugins.org.gradle.test.retry)
     alias(libs.plugins.org.jetbrains.grammarkit)
-    alias(libs.plugins.org.jetbrains.intellij)
+    alias(libs.plugins.org.jetbrains.intellij.platform)
     alias(libs.plugins.org.jetbrains.kotlin.jvm)
     java
 }
@@ -33,14 +36,19 @@ detekt {
 }
 
 group = "com.carbonblack"
-version = "2.2.1"
+version = "2.3.0"
 
-tasks.compileJava {
-    options.release.set(17)
+// See http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for Java target
+val javaVersion = JavaVersion.VERSION_21
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.fromTarget(javaVersion.toString()))
+    }
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
+java {
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -68,69 +76,74 @@ tasks.withType<Test> {
     }
 }
 
-tasks.withType<RunIdeTask> {
-    jvmArgs("-Xmx2048m")
-}
-
 repositories {
     mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 dependencies {
+    intellijPlatform {
+        intellijIdeaCommunity(libs.versions.com.jetbrains.ideaIC)
+        bundledPlugin("com.jetbrains.sh")
+
+        testFramework(TestFrameworkType.Platform)
+    }
+
     testImplementation(libs.io.mockk.mockk)
     testImplementation(libs.io.strikt.strikt.core)
+    testImplementation(libs.junit.junit)
 }
 
-// See https://github.com/JetBrains/gradle-intellij-plugin/
-intellij {
-    type.set("IC")
-    version.set(libs.versions.com.jetbrains.ideaIC)
-    updateSinceUntilBuild.set(false)
-
-    plugins.set(listOf("com.jetbrains.sh")) // , "au.com.glassechidna.luanalysis:1.2.2-IDEA203"))
+intellijPlatform {
+    pluginVerification {
+        freeArgs = listOf("-mute", "TemplateWordInPluginId")
+        ides {
+            ide(IntelliJPlatformType.IntellijIdeaCommunity, libs.versions.com.jetbrains.ideaIC.get())
+            recommended()
+        }
+    }
 }
 
-val generateSpecParser = tasks.create<GenerateParserTask>("generateSpecParser") {
+val generateSpecParser = tasks.register<GenerateParserTask>("generateSpecParser") {
     sourceFile.set(file("$projectDir/src/main/grammars/RpmSpecParser.bnf"))
-    targetRoot.set("$projectDir/src/main/gen")
+    targetRootOutputDir.set(file("$projectDir/src/main/gen"))
     pathToParser.set("/com/carbonblack/intellij/rpmspec/parser/RpmSpecParser.java")
     pathToPsiRoot.set("/com/carbonblack/intellij/rpmspec/psi")
     purgeOldFiles.set(true)
 }
 
-val generateSpecLexer = tasks.create<GenerateLexerTask>("generateSpecLexer") {
+val generateSpecLexer = tasks.register<GenerateLexerTask>("generateSpecLexer") {
     sourceFile.set(file("$projectDir/src/main/grammars/RpmSpecLexer.flex"))
     skeleton.set(file("$projectDir/src/main/grammars/idea-flex.skeleton"))
-    targetDir.set("$projectDir/src/main/gen/com/carbonblack/intellij/rpmspec")
-    targetClass.set("_RpmSpecLexer")
-    purgeOldFiles.set(true)
+    targetOutputDir.set(file("$projectDir/src/main/gen/com/carbonblack/intellij/rpmspec"))
+    purgeOldFiles.set(false)
 }
 
-val generateMacroParser = tasks.create<GenerateParserTask>("generateMacroParser") {
+val generateMacroParser = tasks.register<GenerateParserTask>("generateMacroParser") {
     sourceFile.set(file("$projectDir/src/main/grammars/RpmMacroParser.bnf"))
-    targetRoot.set("$projectDir/src/main/gen")
+    targetRootOutputDir.set(file("$projectDir/src/main/gen"))
     pathToParser.set("/com/carbonblack/intellij/rpmmacro/parser/RpmMacroParser.java")
     pathToPsiRoot.set("/com/carbonblack/intellij/rpmmacro/psi")
     purgeOldFiles.set(true)
 }
 
-val generateMacroLexer = tasks.create<GenerateLexerTask>("generateMacroLexer") {
+val generateMacroLexer = tasks.register<GenerateLexerTask>("generateMacroLexer") {
     sourceFile.set(file("$projectDir/src/main/grammars/RpmMacroLexer.flex"))
     skeleton.set(file("$projectDir/src/main/grammars/idea-flex.skeleton"))
-    targetDir.set("$projectDir/src/main/gen/com/carbonblack/intellij/rpmmacro")
-    targetClass.set("_RpmMacroLexer")
+    targetOutputDir.set(file("$projectDir/src/main/gen/com/carbonblack/intellij/rpmmacro"))
     purgeOldFiles.set(true)
 }
 
-val generateShellLexer = tasks.create<GenerateLexerTask>("generateShellLexer") {
+val generateShellLexer = tasks.register<GenerateLexerTask>("generateShellLexer") {
     sourceFile.set(file("$projectDir/src/main/grammars/RpmSpecShellLexer.flex"))
     skeleton.set(file("$projectDir/src/main/grammars/idea-flex.skeleton"))
-    targetDir.set("$projectDir/src/main/gen/com/carbonblack/intellij/rpmspec/shell")
-    targetClass.set("_RpmSpecShellLexer")
+    targetOutputDir.set(file("$projectDir/src/main/gen/com/carbonblack/intellij/rpmspec/shell"))
     purgeOldFiles.set(true)
 }
 
-val generateGrammars: TaskProvider<Task> = tasks.register("generateGrammars") {
+val generateGrammars = tasks.register("generateGrammars") {
     dependsOn(generateSpecParser, generateSpecLexer, generateMacroParser, generateMacroLexer, generateShellLexer)
 }
 

@@ -7,7 +7,7 @@ import com.intellij.openapi.fileTypes.LanguageFileType
 
 object RpmSpecFileType : LanguageFileType(RpmSpecLanguage) {
     init {
-        FileTypeEditorHighlighterProviders.INSTANCE.addExplicitExtension(
+        FileTypeEditorHighlighterProviders.getInstance().addExplicitExtension(
             this,
             EditorHighlighterProvider { project, _, virtualFile, colors ->
                 RpmSpecEditorHighlighter(

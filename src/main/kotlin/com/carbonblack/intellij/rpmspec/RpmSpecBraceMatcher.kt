@@ -16,15 +16,13 @@ class RpmSpecBraceMatcher : PairedBraceMatcher {
 
     override fun getPairs() = PAIRS
 
-    override fun isPairedBracesAllowedBeforeType(lbraceType: IElementType, tokenType: IElementType?): Boolean {
-        return (
-            WHITE_SPACE === tokenType ||
-                tokenType === RpmSpecTypes.RBRACE ||
-                tokenType === RpmSpecTypes.RPAREN ||
-                tokenType === RpmSpecTypes.EOL ||
-                null == tokenType
-            )
-    }
+    override fun isPairedBracesAllowedBeforeType(lbraceType: IElementType, tokenType: IElementType?): Boolean = (
+        WHITE_SPACE === tokenType ||
+            tokenType === RpmSpecTypes.RBRACE ||
+            tokenType === RpmSpecTypes.RPAREN ||
+            tokenType === RpmSpecTypes.EOL ||
+            null == tokenType
+        )
 
     override fun getCodeConstructStart(file: PsiFile, openingBraceOffset: Int) = openingBraceOffset
 }

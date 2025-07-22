@@ -12,6 +12,7 @@ ktlint_code_style = intellij_idea
 ktlint_standard_filename = disabled
 ktlint_standard_no-wildcard-imports = disabled
 ktlint_standard_string-template = disabled
+ktlint_standard_function-signature = disabled
 
 ij_kotlin_allow_trailing_comma = true
 ij_kotlin_allow_trailing_comma_on_call_site = true

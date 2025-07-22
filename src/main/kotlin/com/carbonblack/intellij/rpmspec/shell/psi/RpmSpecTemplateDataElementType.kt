@@ -15,8 +15,7 @@ class RpmSpecTemplateDataElementType(
     language: Language?,
     private val templateElementTypes: TokenSet,
     outerElementType: IElementType,
-) :
-    TemplateDataElementType(debugName, language, templateElementTypes.types.first(), outerElementType) {
+) : TemplateDataElementType(debugName, language, templateElementTypes.types.first(), outerElementType) {
 
     override fun createTemplateText(
         sourceCode: CharSequence,
@@ -51,9 +50,8 @@ class RpmSpecTemplateDataElementType(
         return result
     }
 
-    private fun getRangeDump(range: TextRange, sequence: CharSequence): String {
-        return "'" + StringUtil.escapeLineBreak(range.subSequence(sequence).toString()) + "' " + range
-    }
+    private fun getRangeDump(range: TextRange, sequence: CharSequence): String =
+        "'" + StringUtil.escapeLineBreak(range.subSequence(sequence).toString()) + "' " + range
 
     override fun createBaseLexer(viewProvider: TemplateLanguageFileViewProvider?): Lexer = RpmSpecShellLexerAdapter()
 }

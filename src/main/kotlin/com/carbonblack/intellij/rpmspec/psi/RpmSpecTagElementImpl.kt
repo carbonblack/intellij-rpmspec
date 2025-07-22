@@ -4,7 +4,7 @@ import com.carbonblack.intellij.rpmspec.RpmSpecReference
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
 
 private val KNOWN_TAGS = listOf(
     "name", "version", "release", "epoch", "summary", "license",
@@ -18,7 +18,8 @@ private val KNOWN_TAGS = listOf(
 )
 
 abstract class RpmSpecTagElementImpl(node: ASTNode) :
-    ASTWrapperPsiElement(node), RpmSpecTagElement {
+    ASTWrapperPsiElement(node),
+    RpmSpecTagElement {
 
     override fun getNameIdentifier() = node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi
 

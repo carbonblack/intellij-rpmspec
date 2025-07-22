@@ -4,10 +4,13 @@ import com.carbonblack.intellij.rpmspec.RpmSpecReference
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNameIdentifierOwner
+import com.intellij.psi.PsiReference
 
 abstract class RpmSpecMacroDefinitionElementImpl(node: ASTNode) :
-    ASTWrapperPsiElement(node), PsiNameIdentifierOwner {
+    ASTWrapperPsiElement(node),
+    PsiNameIdentifierOwner {
 
     override fun getNameIdentifier() = node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi
 
@@ -22,10 +25,8 @@ abstract class RpmSpecMacroDefinitionElementImpl(node: ASTNode) :
 
     override fun getName() = node.findChildByType(RpmSpecTypes.IDENTIFIER)?.text
 
-    override fun getReference(): PsiReference? {
-        return node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi?.let {
-            RpmSpecReference(this, TextRange(it.startOffsetInParent, it.startOffsetInParent + it.textLength))
-        }
+    override fun getReference(): PsiReference? = node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi?.let {
+        RpmSpecReference(this, TextRange(it.startOffsetInParent, it.startOffsetInParent + it.textLength))
     }
 
     override fun getTextOffset() = nameIdentifier?.textOffset ?: 0

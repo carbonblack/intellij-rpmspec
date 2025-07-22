@@ -7,9 +7,10 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 
-abstract class RpmMacroMacroElementImpl(node: ASTNode) : ASTWrapperPsiElement(node), RpmMacroMacroElement {
-    override fun getNameIdentifier() =
-        node.findChildByType(RpmMacroTypes.IDENTIFIER)?.psi
+abstract class RpmMacroMacroElementImpl(node: ASTNode) :
+    ASTWrapperPsiElement(node),
+    RpmMacroMacroElement {
+    override fun getNameIdentifier() = node.findChildByType(RpmMacroTypes.IDENTIFIER)?.psi
 
     override fun setName(name: String): PsiElement {
         node.findChildByType(RpmMacroTypes.IDENTIFIER)?.let { keyNode ->

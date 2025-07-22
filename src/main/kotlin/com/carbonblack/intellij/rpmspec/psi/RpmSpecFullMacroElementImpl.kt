@@ -4,7 +4,8 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 
 abstract class RpmSpecFullMacroElementImpl(node: ASTNode) :
-    ASTWrapperPsiElement(node), RpmSpecFullMacro {
+    ASTWrapperPsiElement(node),
+    RpmSpecFullMacro {
 
     override val isConditionalMacro: Boolean = macroConditional != null
 

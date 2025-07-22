@@ -77,7 +77,7 @@ object RpmMacroUtil {
 
                 if (startPath.exists() && startPath.isDirectory()) {
                     Files.walk(startPath).asSequence()
-                        .filter { it?.isRegularFile() == true && matcher.matches(it.fileName) }
+                        .filter { it.isRegularFile() == true && matcher.matches(it.fileName) }
                         .mapNotNull { LocalFileSystem.getInstance().findFileByPath(it.toString()) }
                         .toList()
                 } else {
@@ -127,9 +127,7 @@ object RpmMacroUtil {
         }
     }
 
-    fun findMacros(file: PsiFile): Collection<RpmMacroMacro> {
-        return (file as? RpmMacroFile)?.let { macroFile ->
-            PsiTreeUtil.findChildrenOfType(macroFile, RpmMacroMacro::class.java)
-        } ?: emptyList()
-    }
+    fun findMacros(file: PsiFile): Collection<RpmMacroMacro> = (file as? RpmMacroFile)?.let { macroFile ->
+        PsiTreeUtil.findChildrenOfType(macroFile, RpmMacroMacro::class.java)
+    } ?: emptyList()
 }

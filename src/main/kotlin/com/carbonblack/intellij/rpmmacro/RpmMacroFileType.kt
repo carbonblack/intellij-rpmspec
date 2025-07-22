@@ -10,7 +10,5 @@ object RpmMacroFileType : LanguageFileType(RpmMacroLanguage), FileTypeIdentifiab
     override fun getDefaultExtension() = "rpmmacros"
     override fun getIcon() = RpmMacroIcons.FILE
 
-    override fun isMyFileType(file: VirtualFile): Boolean {
-        return RpmMacroUtil.macroPathFiles.contains(file)
-    }
+    override fun isMyFileType(file: VirtualFile): Boolean = RpmMacroUtil.macroPathFiles.contains(file)
 }

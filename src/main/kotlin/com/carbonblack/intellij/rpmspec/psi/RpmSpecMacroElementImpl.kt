@@ -4,10 +4,13 @@ import com.carbonblack.intellij.rpmspec.RpmSpecReference
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNameIdentifierOwner
 
 abstract class RpmSpecMacroElementImpl(node: ASTNode) :
-    ASTWrapperPsiElement(node), PsiNameIdentifierOwner, RpmSpecMacroElement {
+    ASTWrapperPsiElement(node),
+    PsiNameIdentifierOwner,
+    RpmSpecMacroElement {
 
     override fun getNameIdentifier() = node.findChildByType(RpmSpecTypes.IDENTIFIER)?.psi
 
