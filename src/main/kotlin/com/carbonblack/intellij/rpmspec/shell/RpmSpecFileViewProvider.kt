@@ -17,20 +17,25 @@ import com.intellij.psi.tree.TokenSet
 
 private val OUTER_SPEC = RpmSpecOuterElementType("RPM Spec Element")
 
+private val TEMPLATE_DATA_ELEMENT = RpmSpecTemplateDataElementType(
+    "RPM Spec Shell Template",
+    RpmSpecLanguage,
+    TokenSet.create(
+        RpmSpecShellTypes.SHELL_TEXT,
+        RpmSpecShellTypes.SPEC_FILE_MACRO_IDENTIFIER_SHELL,
+        RpmSpecShellTypes.SHELL_WHITE_SPACE,
+        RpmSpecShellTypes.SPEC_WHITE_SPACE,
+        RpmSpecShellTypes.LUA_WHITE_SPACE,
+    ),
+    OUTER_SPEC,
+)
+
 class RpmSpecFileViewProvider(
     manager: PsiManager,
     virtualFile: VirtualFile,
     eventSystemEnabled: Boolean,
 ) : MultiplePsiFilesPerDocumentFileViewProvider(manager, virtualFile, eventSystemEnabled),
     TemplateLanguageFileViewProvider {
-
-    private val templateDataElement =
-        RpmSpecTemplateDataElementType(
-            "RPM Spec Shell Template",
-            RpmSpecLanguage,
-            TokenSet.create(RpmSpecShellTypes.SHELL_TEXT, RpmSpecShellTypes.SPEC_FILE_MACRO_IDENTIFIER_SHELL, RpmSpecShellTypes.SHELL_WHITE_SPACE, RpmSpecShellTypes.SPEC_WHITE_SPACE, RpmSpecShellTypes.LUA_WHITE_SPACE),
-            OUTER_SPEC,
-        )
 
     override fun getBaseLanguage(): Language = RpmSpecLanguage
     override fun getTemplateDataLanguage(): Language = Language.findLanguageByID("Shell Script") ?: PlainTextLanguage.INSTANCE
@@ -45,7 +50,7 @@ class RpmSpecFileViewProvider(
             parser == null -> null
             lang === this.baseLanguage -> parser.createFile(this)
             lang === templateDataLanguage -> (parser.createFile(this) as PsiFileImpl).apply {
-                contentElementType = templateDataElement
+                contentElementType = TEMPLATE_DATA_ELEMENT
             }
             else -> null
         }
